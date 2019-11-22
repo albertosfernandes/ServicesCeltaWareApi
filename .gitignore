@@ -3,3 +3,9 @@
 ################################################################################
 
 /.vs
+/ServicesCeltaware.BackEnd/bin/Debug/netcoreapp2.2
+/ServicesCeltaware.BackEnd/obj
+/ServicesCeltaWare.DAL/bin/Debug/netcoreapp2.2
+/ServicesCeltaWare.DAL/obj
+/ServicesCeltaWare.Model/bin/Debug/netcoreapp2.2
+/ServicesCeltaWare.Model/obj
