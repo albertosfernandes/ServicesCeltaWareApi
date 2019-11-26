@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ServicesCeltaWare.DAL;
 using ServicesCeltaWare.Model;
 
@@ -23,10 +24,12 @@ namespace ServicesCeltaware.BackEnd.Controllers
         }
 
         public IList<ModelCustomerProduct> Get(int id)
-        {
-            var result = _repository.GetAll();
-            return result.Where(x => x.CustomerId == id).ToList();
-            
+        {            
+            var teste = _repository.Get();
+            return teste.Include(c => c.Customer).                
+                Include(p => p.Product).
+                Where(x => x.CustomerId == id).
+                ToList();                                    
         }
     }
 }

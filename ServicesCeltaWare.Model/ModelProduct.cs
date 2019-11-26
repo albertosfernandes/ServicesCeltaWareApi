@@ -11,6 +11,6 @@ namespace ServicesCeltaWare.Model
         public int ProductId { get; set; }
         public string Name { get; set; }
 
-        public IList<ModelCustomerProduct> CustomersProducts { get; set; }
+        //public virtual IList<ModelCustomerProduct> CustomersProducts { get; set; }
     }
 }

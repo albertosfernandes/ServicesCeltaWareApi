@@ -19,6 +19,11 @@ namespace ServicesCeltaWare.DAL
             return _context.Set<TEntity>().ToList();
         }
 
+        public IQueryable<TEntity> Get()
+        {
+            return _context.Set<TEntity>();
+        }
+
         public void Add(TEntity model)
         {
             _context.Add(model);

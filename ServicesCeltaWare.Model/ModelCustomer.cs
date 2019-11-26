@@ -14,6 +14,6 @@ namespace ServicesCeltaWare.Model
         public string Cnpj { get; set; }
         public int CodeCeltaBs { get; set; }
 
-        public IList<ModelCustomerProduct> CustomersProducts { get; set; }
+        //public  virtual IList<ModelCustomerProduct> CustomersProducts { get; set; }
     }
 }
