@@ -31,8 +31,6 @@ namespace ServicesCeltaware.BackEnd
 
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
             services.AddCors(options =>
             {
                 options.AddPolicy("BasePolicy",
@@ -41,6 +39,8 @@ namespace ServicesCeltaware.BackEnd
                     .AllowAnyHeader()
                     .AllowCredentials());
             });
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,12 +50,11 @@ namespace ServicesCeltaware.BackEnd
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseCors("BasePolicy");
 
             app.UseHttpsRedirection();
             app.UseMvc(routes =>
             routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}"));
-
-            app.UseCors(option => option.AllowAnyOrigin());
 
             app.UseMvc();
         }

@@ -19,5 +19,6 @@ namespace ServicesCeltaWare.Model
         public string LoginUser { get; set; }
         public string LoginPassword { get; set; }
         public string InstallDirectory { get; set; }
+        public string SynchronizerServiceName { get; set; }
     }
 }

@@ -36,6 +36,7 @@ namespace ServicesCeltaWare.DAL
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<ModelCustomer>().ToTable("customers");
             modelBuilder.Entity<ModelProduct>().ToTable("products");
+            modelBuilder.Entity<ModelCustomerProduct>().ToTable("customersproducts");
             //modelBuilder.Entity<User>().HasKey(u => u.UserId);
 
         }

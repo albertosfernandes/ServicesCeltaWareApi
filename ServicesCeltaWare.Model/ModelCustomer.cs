@@ -13,6 +13,7 @@ namespace ServicesCeltaWare.Model
         public string FantasyName { get; set; }
         public string Cnpj { get; set; }
         public int CodeCeltaBs { get; set; }
+        public string RootDirectory { get; set; }
 
         //public  virtual IList<ModelCustomerProduct> CustomersProducts { get; set; }
     }
