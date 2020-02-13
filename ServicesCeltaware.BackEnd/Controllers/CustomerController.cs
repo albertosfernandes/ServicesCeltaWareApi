@@ -26,6 +26,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
         [HttpGet]
         public IList<ModelCustomer> GetAll()
         {
+            System.Threading.Thread.Sleep(5 * 1000);
             return _repository.GetAll();
         }
 
