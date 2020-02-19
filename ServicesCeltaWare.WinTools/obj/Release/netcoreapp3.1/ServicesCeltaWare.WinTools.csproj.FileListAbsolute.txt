@@ -1,0 +1,8 @@
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.WinTools\bin\Release\netcoreapp3.1\ServicesCeltaWare.WinTools.deps.json
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.WinTools\bin\Release\netcoreapp3.1\ServicesCeltaWare.WinTools.dll
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.WinTools\bin\Release\netcoreapp3.1\ServicesCeltaWare.WinTools.pdb
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.WinTools\obj\Release\netcoreapp3.1\ServicesCeltaWare.WinTools.csprojAssemblyReference.cache
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.WinTools\obj\Release\netcoreapp3.1\ServicesCeltaWare.WinTools.AssemblyInfoInputs.cache
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.WinTools\obj\Release\netcoreapp3.1\ServicesCeltaWare.WinTools.AssemblyInfo.cs
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.WinTools\obj\Release\netcoreapp3.1\ServicesCeltaWare.WinTools.dll
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.WinTools\obj\Release\netcoreapp3.1\ServicesCeltaWare.WinTools.pdb

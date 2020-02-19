@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "ServicesCeltaWare.WinTools/1.0.0": {
+        "runtime": {
+          "ServicesCeltaWare.WinTools.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ServicesCeltaWare.WinTools/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

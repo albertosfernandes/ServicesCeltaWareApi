@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ServicesCeltaware.BackEnd.Tools;
 using ServicesCeltaWare.DAL;
 using ServicesCeltaWare.Model;
 
@@ -95,6 +96,20 @@ namespace ServicesCeltaware.BackEnd.Controllers
         }
 
         [HttpGet]
+        public ActionResult<string> StatusService(string servicename)
+        {
+            ServicesWindows s = new ServicesWindows();
+            if (servicename.ToUpper().Contains("CELTAWARE.CBS.CSS."))
+            {
+                return s.Status(servicename);                
+            }
+            else
+            {
+                //string a = "CeltaWare.CBS.CSS." + servicename.Remove(0, 7);
+                return s.Status("CeltaWare.CBS.CSS." + servicename.Remove(0, 7));
+            }                        
+        }
+        [HttpGet]
         public IActionResult StarStopService(bool isStart, string servicename)
         {
             try
@@ -102,10 +117,12 @@ namespace ServicesCeltaware.BackEnd.Controllers
                 if (isStart)
                 {
                     StartSynchronizerService(servicename);
+                    System.Threading.Thread.Sleep(9 * 1000);
                 }
                 else
                 {
                     StopSynchronizerService(servicename);
+                    System.Threading.Thread.Sleep(9 * 1000);
                 }
                 return Ok();
             }
@@ -228,7 +245,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
                         p1.StartInfo.RedirectStandardOutput = true;
                         p1.StartInfo.RedirectStandardError = true;
                         p1.Start();
-                    }
+                    }                    
                 }
             }
             catch (Exception err)
@@ -365,7 +382,8 @@ namespace ServicesCeltaware.BackEnd.Controllers
             FileInfo[] files = dirSource.GetFiles();
             foreach (FileInfo file in files)
             {
-                if (!file.Name.Contains("web.config"))
+                string filename = file.Name.ToString().ToLower();
+                if (!filename.Contains("web.config"))
                 {
                     string temppath = Path.Combine(rootDestination, file.Name);
                     file.CopyTo(temppath, isOverwrite);

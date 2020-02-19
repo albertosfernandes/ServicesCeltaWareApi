@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.779
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesCeltaWare.Model", "ServicesCeltaWare.Model\ServicesCeltaWare.Model.csproj", "{041A8F9D-9AC7-4E09-A589-BD299789891F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicesCeltaWare.Model", "ServicesCeltaWare.Model\ServicesCeltaWare.Model.csproj", "{041A8F9D-9AC7-4E09-A589-BD299789891F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesCeltaware.BackEnd", "ServicesCeltaware.BackEnd\ServicesCeltaware.BackEnd.csproj", "{FCD119E4-0E4B-44BC-BF20-5F7430221A30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicesCeltaware.BackEnd", "ServicesCeltaware.BackEnd\ServicesCeltaware.BackEnd.csproj", "{FCD119E4-0E4B-44BC-BF20-5F7430221A30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesCeltaWare.DAL", "ServicesCeltaWare.DAL\ServicesCeltaWare.DAL.csproj", "{B9A73C08-C588-46EC-B159-44A01EF87954}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicesCeltaWare.DAL", "ServicesCeltaWare.DAL\ServicesCeltaWare.DAL.csproj", "{B9A73C08-C588-46EC-B159-44A01EF87954}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
