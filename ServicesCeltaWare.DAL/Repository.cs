@@ -30,9 +30,20 @@ namespace ServicesCeltaWare.DAL
             _context.SaveChanges();
         }
 
+        public void Update(TEntity model)
+        {            
+            _context.SaveChanges();
+        }
+
         public TEntity Find(int id)
         {
             return _context.Find<TEntity>(id);
+        }
+
+        public void Delete(TEntity model)
+        {
+            _context.Remove(model);
+            _context.SaveChanges();
         }
     }
 }

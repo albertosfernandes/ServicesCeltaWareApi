@@ -13,6 +13,7 @@ namespace ServicesCeltaware.BackEnd.Tools
             try
             {
                 string message = null;
+                string errorMessage = null;
                 if (!String.IsNullOrEmpty(serviceName))
                 {
                     using (Process p1 = new Process())
@@ -29,7 +30,7 @@ namespace ServicesCeltaware.BackEnd.Tools
                         {
                             p1.WaitForExit();
                             message = p1.StandardOutput.ReadToEnd();
-
+                            errorMessage = p1.StandardError.ReadToEnd();
                         }
                     }
                 }

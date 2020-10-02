@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ServicesCeltaware.BackEnd.Helpers;
 using ServicesCeltaware.BackEnd.Tools;
 using ServicesCeltaWare.DAL;
 using ServicesCeltaWare.Model;
@@ -78,6 +79,24 @@ namespace ServicesCeltaware.BackEnd.Controllers
         }
 
         [HttpGet]
+        public DateTime GetLastExecution(int customersettingsId)
+        {
+            try
+            {
+                var _customerSettings = _repository.Get()
+                     .Include(c => c.Customer)
+                     .Include(p => p.Product)
+                     .Where(x => x.CustomersProductsId == customersettingsId).First();
+
+                return LastExecution(_customerSettings);
+            }
+            catch (Exception err)
+            {
+                return DateTime.MinValue;
+            }
+        }
+
+        [HttpGet]
         public IActionResult DownloadDeploy(int id, int productId)
         {
             try
@@ -99,7 +118,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
         public ActionResult<string> StatusService(string servicename)
         {
             ServicesWindows s = new ServicesWindows();
-            if (servicename.ToUpper().Contains("CELTAWARE.CBS.CSS."))
+            if (servicename.ToUpper().Contains("CELTAWARE.CBS.CSS.") || servicename.ToUpper().Contains("CELTABSSYNCHRONIZERSERVICE"))
             {
                 return s.Status(servicename);                
             }
@@ -151,7 +170,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
                     }
                     else
                     {
-                        return NotFound("erro");
+                        return NotFound("Erro ao atualizar");
                     }
                 }
                 else
@@ -165,7 +184,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
                 msgError = err.Message;
                 return NotFound(msgError);
             }
-        }
+        }        
 
         public bool Update(ModelCustomerProduct customerProduct)
         {
@@ -178,27 +197,27 @@ namespace ServicesCeltaware.BackEnd.Controllers
                     {
                         case 1:
                             Copy(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\temp\CIP\Release\BSF\", @"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory, true);
-                            MarkVersionFile(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory + @"\version.txt");
-                            UpdateBsfFull(customerProduct);
+                            SystemUpdateHelpers.MarkVersionFile(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory + @"\version.txt");
+                            SystemUpdateHelpers.UpdateBsfFull(customerProduct);
                             break;
                         case 2:
                             Copy(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\temp\CCS\Release\WebService\", @"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory, true);
-                            MarkVersionFile(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory + @"\version.txt");
+                            SystemUpdateHelpers.MarkVersionFile(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory + @"\version.txt");
                             break;
                         case 3:
                             Copy(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\temp\CSS\Release\webservice\", @"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory, true);
-                            MarkVersionFile(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory + @"\version.txt");
+                            SystemUpdateHelpers.MarkVersionFile(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory + @"\version.txt");
                             break;
                         case 4:
                             Copy(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\temp\ReleaseConcentrador\Release\", @"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory, true);
-                            MarkVersionFile(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory + @"\version.txt");
+                            SystemUpdateHelpers.MarkVersionFile(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory + @"\version.txt");
                             break;
                         case 5:
                             if (StopSynchronizerService(customerProduct.SynchronizerServiceName))
                             {
                                 System.Threading.Thread.Sleep(9 * 1000);
                                 Copy(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\temp\CSS\Release\WindowsService\", @"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory, true);
-                                MarkVersionFile(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory + @"\version.txt");
+                                SystemUpdateHelpers.MarkVersionFile(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory + @"\version.txt");
                                 StartSynchronizerService(customerProduct.SynchronizerServiceName);
                             }
                             break;
@@ -217,18 +236,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
             }
         }
 
-        private void MarkVersionFile(string pathFileVersion)
-        {
-            FileInfo fileVersion = new FileInfo(pathFileVersion);
-            if (fileVersion.Exists)
-            {
-                fileVersion.LastWriteTimeUtc = DateTime.Now;
-            }
-            else
-            {
-                fileVersion.Create();
-            }
-        }
+       
 
         private void StartSynchronizerService(string serviceName)
         {
@@ -336,8 +344,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
                 }
                 else
                 {
-                    wc.DownloadFile("http://services.celtaware.com.br/downloads/lastversion/deployment.zip", @"c:\Celta Business Solutions\" + saveDir + @"\temp\deployment.zip");
-                    //wc.DownloadFile("http://localhost:9092/deployment.zip", @"c:\Celta Business Solutions\" + saveDir + @"\temp\deployment.zip");      
+                    wc.DownloadFile("http://services.celtaware.com.br/downloads/lastversion/deployment.zip", @"c:\Celta Business Solutions\" + saveDir + @"\temp\deployment.zip");                      
                 }
                 ExtractFile(saveDir, productId);
             }
@@ -400,99 +407,48 @@ namespace ServicesCeltaware.BackEnd.Controllers
 
             }
 
-        }
-
-        public static void GenerateConfig(string directory)
-        {
-            try
-            {
-                if (!String.IsNullOrEmpty(directory))
-                {
-                    using (Process p1 = new Process())
-                    {
-                        p1.StartInfo.FileName = @"C:\Celta Business Solutions\" + directory + @"\BSF\Bin\CeltaWare.CBS.CAT.WellknownServiceType.exe";
-                        string argFull = @"C:\Celta Business Solutions\" + directory + @"\BSF\Bin\config.txt";
-                        p1.StartInfo.Arguments = "\"" + argFull + " \"";
-                        p1.StartInfo.CreateNoWindow = true;
-                        p1.StartInfo.UseShellExecute = false;
-                        p1.StartInfo.RedirectStandardOutput = true;
-                        p1.StartInfo.RedirectStandardError = true;
-                        p1.Start();
-                    }
-                }
-            }
-            catch (Exception err)
-            {
-                throw err;
-            }
-        }
-
-        public static void InsertConfigInSection(string directory)
-        {
-            var configPath = @"C:\Celta Business Solutions\" + directory + @"\BSF\Bin\config.txt";
-            var xmlPath = @"C:\Celta Business Solutions\" + directory + @"\BSF\web.config";
-
-            XmlDocument doc = new XmlDocument();
-            doc.Load(xmlPath);
-
-            StringBuilder strb = new StringBuilder();
-
-            using (var fluxoDeArquivo = new FileStream(configPath, FileMode.Open))
-            using (var leitor = new StreamReader(fluxoDeArquivo))
-            {
-                while (!leitor.EndOfStream)
-                {
-                    var linha = leitor.ReadLine();
-                    strb.AppendLine(linha);
-                }
-            }
-
-            doc.SelectSingleNode("//service").InnerXml = strb.ToString();
-            doc.Save(xmlPath);
-        }
-        public static void DeleteConfigSection(string directory)
-        {
-            string xmlPath = @"C:\Celta Business Solutions\" + directory + @"\BSF\web.config";
-            XElement xml = XElement.Load(xmlPath);
-            xml.Element("system.runtime.remoting").Element("application").Element("service").Elements().ToList().Remove();
-            xml.Save(xmlPath);
-        }
-
-        public static void ExecuteCatUpdateVersionPackage(string directory)
-        {
-            try
-            {
-                if (!String.IsNullOrEmpty(directory))
-                {
-                    using (Process p1 = new Process())
-                    {
-                        p1.StartInfo.FileName = @"C:\Celta Business Solutions\" + directory + @"\BSF\Bin\CeltaWare.CBS.CAT.UpdatedVersionPackage.exe";
-                        //string argFull = @"C:\Celta Business Solutions\" + directory + @"\BSF\Bin\config.txt";                        
-                        //p1.StartInfo.Arguments = "\"" + argFull + " \"";             
-                        p1.StartInfo.WorkingDirectory = @"C:\Celta Business Solutions\" + directory + @"\BSF\Bin\";
-                        p1.StartInfo.CreateNoWindow = true;
-                        p1.StartInfo.UseShellExecute = false;
-                        p1.StartInfo.RedirectStandardOutput = true;
-                        p1.StartInfo.RedirectStandardError = true;
-                        p1.Start();
-                    }
-                }
-            }
-            catch (Exception err)
-            {
-                throw err;
-            }
-        }
-
-        public static void UpdateBsfFull(ModelCustomerProduct customerProduct)
-        {
-            GenerateConfig(customerProduct.Customer.RootDirectory);
-            DeleteConfigSection(customerProduct.Customer.RootDirectory);
-            InsertConfigInSection(customerProduct.Customer.RootDirectory);
-            ExecuteCatUpdateVersionPackage(customerProduct.Customer.RootDirectory);
-        }
+        }   
 
         private DateTime VersionFile(ModelCustomerProduct customerProduct)
+        {
+            try
+            {
+                int value = customerProduct.ProductId;
+                FileInfo file = null;
+                switch (value)
+                {
+                    case (1):
+                        file = new FileInfo(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory + @"\bin\CeltaWare.CBS.CIP.BSF.Model.dll");
+                        break;
+                    case (2):
+                        file = new FileInfo(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory + @"\bin\CeltaWare.CBS.CIP.BSF.Model.dll");
+                        break;                    
+                    case (3):
+                        file = new FileInfo(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory + @"\bin\CeltaWare.CBS.CIP.BSF.Model.dll");
+                        break;
+                    case (4):
+                        file = new FileInfo(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory + @"\bin\CeltaWare.CBS.PDV.Concentrator.BLL.dll");
+                        break;
+                    case (5):
+                        file = new FileInfo(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory + @"\CeltaWare.CBS.CIP.BSF.Model.dll");
+                        break;
+                }
+
+                // FileInfo file = new FileInfo(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory + @"\version.txt");
+
+                if (file.Exists)
+                    return file.LastWriteTime;
+                else
+                    return DateTime.MinValue;
+
+            }
+            catch (Exception erro)
+            {
+                return DateTime.MinValue;
+            }
+        }
+
+        private DateTime LastExecution(ModelCustomerProduct customerProduct)
         {
             try
             {

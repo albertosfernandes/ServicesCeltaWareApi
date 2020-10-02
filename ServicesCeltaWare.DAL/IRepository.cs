@@ -13,6 +13,10 @@ namespace ServicesCeltaWare.DAL
 
         void Add(TEntity model);
 
+        void Update(TEntity model);
+
         TEntity Find(int id);
+
+        void Delete(TEntity model);
     }
 }

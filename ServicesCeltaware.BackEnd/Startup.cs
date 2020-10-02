@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using ServicesCeltaWare.DAL;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace ServicesCeltaware.BackEnd
 {
@@ -50,7 +51,7 @@ namespace ServicesCeltaware.BackEnd
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseCors("BasePolicy");
+            app.UseCors("BasePolicy");           
 
             app.UseHttpsRedirection();
             app.UseMvc(routes =>

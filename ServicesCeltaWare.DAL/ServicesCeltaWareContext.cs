@@ -13,7 +13,8 @@ namespace ServicesCeltaWare.DAL
         public DbSet<ModelCustomer> Customer { get; set; }
         public DbSet<ModelProduct> Product { get; set; }
         public DbSet<ModelCustomerProduct> CustomersProducts { get; set; }
-
+        public DbSet<ModelCertificate> Certificates { get; set; }
+        public DbSet<ModelUser> Users { get; set; }
 
         //Terceiro requisito: Configurar o entity, de forma override que vai sobre-escrever o metodo da classe pai com as 
         //minhas opções de projeto, no meu caso estou informando que vou utilizar o provider SqlServer e passando string conexão
@@ -37,6 +38,8 @@ namespace ServicesCeltaWare.DAL
             modelBuilder.Entity<ModelCustomer>().ToTable("customers");
             modelBuilder.Entity<ModelProduct>().ToTable("products");
             modelBuilder.Entity<ModelCustomerProduct>().ToTable("customersproducts");
+            modelBuilder.Entity<ModelCertificate>().ToTable("certificates");
+            modelBuilder.Entity<ModelUser>().ToTable("users");
             //modelBuilder.Entity<User>().HasKey(u => u.UserId);
 
         }

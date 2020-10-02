@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicesCeltaware.BackEnd",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicesCeltaWare.DAL", "ServicesCeltaWare.DAL\ServicesCeltaWare.DAL.csproj", "{B9A73C08-C588-46EC-B159-44A01EF87954}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesCeltaware.ServerAPI", "ServicesCeltaware.ServerAPI\ServicesCeltaware.ServerAPI.csproj", "{0F76A674-58BD-43F3-AC14-9756922F5BB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B9A73C08-C588-46EC-B159-44A01EF87954}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9A73C08-C588-46EC-B159-44A01EF87954}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9A73C08-C588-46EC-B159-44A01EF87954}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F76A674-58BD-43F3-AC14-9756922F5BB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F76A674-58BD-43F3-AC14-9756922F5BB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F76A674-58BD-43F3-AC14-9756922F5BB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F76A674-58BD-43F3-AC14-9756922F5BB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

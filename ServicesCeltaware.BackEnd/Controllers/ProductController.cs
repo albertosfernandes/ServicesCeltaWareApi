@@ -12,7 +12,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [EnableCors("BasePolicy")]
+    //[EnableCors("BasePolicy")]
     public class ProductController : ControllerBase
     {
         private readonly IRepository<ModelProduct> _repository;
