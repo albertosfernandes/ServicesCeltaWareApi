@@ -13,6 +13,8 @@ namespace ServicesCeltaWare.Model
         public ModelCustomer Customer { get; set; }
         public int ProductId { get; set; }
         public ModelProduct Product { get; set; }
+        public int ServersId { get; set; }
+        public ModelServer Server { get; set; }
         public string AddressName { get; set; }
         public string IpAddress { get; set; }
         public string Port { get; set; }

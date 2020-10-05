@@ -29,5 +29,16 @@ namespace ServicesCeltaware.ServerAPI.Controllers
                 Where(x => x.CustomersProductsId == id).
                 First();
         }
+
+        [HttpGet]
+        public List<ModelCustomerProduct> GetAllDatabases()
+        {
+            var teste = _repository.Get();
+            return teste.Include(c => c.Customer)
+                        .Include(p => p.Product)
+                        .Where(x => x.ProductId == 6 && x.IpAddress == "192.168.1.10")
+                        .ToList();
+                    
+        }
     }
 }
