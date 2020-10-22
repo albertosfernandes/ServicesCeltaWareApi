@@ -107,7 +107,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
         }       
 
         [HttpPost]
-        public IActionResult InstallCertificate([FromBody] int certificateIdForInstall)
+        public async Task<IActionResult> InstallCertificate([FromBody] int certificateIdForInstall)
         {
             try
             {
@@ -128,18 +128,18 @@ namespace ServicesCeltaware.BackEnd.Controllers
                 certificate.IsInstalled = true;
                 _repository.Update(certificate);
                 //4- Agora é instalar mesmo!!!
-                var responseInstallCert = CertificateHelpers.InstallCert(certificate);
+                var responseInstallCert = await CertificateHelpers.InstallCert(certificate);
                 if (!String.IsNullOrEmpty(responseInstallCert)) 
                 {
                     //deu erro!
                 }
                 //5- Atribuir permissão todos 
-                var responseChangerPermission = CertificateHelpers.ChangePermissions(certificate);
+                var responseChangerPermission = await CertificateHelpers.ChangePermissions(certificate);
                 if (!String.IsNullOrEmpty(responseChangerPermission))
                 {
-                    //deu erro!!
+                    return BadRequest(responseChangerPermission);//deu erro!!
                 }
-                return Ok();
+                return Ok(responseChangerPermission);
             }
             catch (Exception err)
             {

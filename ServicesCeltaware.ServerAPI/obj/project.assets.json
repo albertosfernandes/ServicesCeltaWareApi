@@ -4823,6 +4823,16 @@
         "runtime": {
           "bin/placeholder/ServicesCeltaWare.Model.dll": {}
         }
+      },
+      "ServicesCeltaWare.Tools/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.1",
+        "compile": {
+          "bin/placeholder/ServicesCeltaWare.Tools.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ServicesCeltaWare.Tools.dll": {}
+        }
       }
     }
   },
@@ -13250,6 +13260,11 @@
       "type": "project",
       "path": "../ServicesCeltaWare.Model/ServicesCeltaWare.Model.csproj",
       "msbuildProject": "../ServicesCeltaWare.Model/ServicesCeltaWare.Model.csproj"
+    },
+    "ServicesCeltaWare.Tools/1.0.0": {
+      "type": "project",
+      "path": "../ServicesCeltaWare.Tools/ServicesCeltaWare.Tools.csproj",
+      "msbuildProject": "../ServicesCeltaWare.Tools/ServicesCeltaWare.Tools.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -13259,7 +13274,8 @@
       "Microsoft.NETCore.App >= 2.2.0",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 2.2.4",
       "ServicesCeltaWare.DAL >= 1.0.0",
-      "ServicesCeltaWare.Model >= 1.0.0"
+      "ServicesCeltaWare.Model >= 1.0.0",
+      "ServicesCeltaWare.Tools >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -13293,6 +13309,9 @@
             },
             "C:\\Alberto\\GitHub\\albertosfernandes\\ServicesCeltaWareApi\\ServicesCeltaWare.Model\\ServicesCeltaWare.Model.csproj": {
               "projectPath": "C:\\Alberto\\GitHub\\albertosfernandes\\ServicesCeltaWareApi\\ServicesCeltaWare.Model\\ServicesCeltaWare.Model.csproj"
+            },
+            "C:\\Alberto\\GitHub\\albertosfernandes\\ServicesCeltaWareApi\\ServicesCeltaWare.Tools\\ServicesCeltaWare.Tools.csproj": {
+              "projectPath": "C:\\Alberto\\GitHub\\albertosfernandes\\ServicesCeltaWareApi\\ServicesCeltaWare.Tools\\ServicesCeltaWare.Tools.csproj"
             }
           }
         }

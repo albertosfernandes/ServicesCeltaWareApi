@@ -138,31 +138,6 @@ namespace ServicesCeltaware.BackEnd.Controllers
                 return NotFound(err.Message);
             }
         }        
-
-        [HttpGet]
-        public IActionResult TesteDatabase(int n)
-        {
-            try
-            {
-                string mensagem = "CorreioTipoFrete_EmpresasOnInsert.TRG"
-                                    + "\br CorreioTipoFrete_EmpresasOnInsteadOfDelete.TRG"
-                                    + "\br CorreioTipoFrete_EmpresasOnUpdate.TRG"
-                                    + "\br CotacoesCompraOnInsert.TRG"
-                                    + "\br DadosEstatisticosProdutosSazonais_EmpresasOnUpdate.TRG"
-                                    + "\br DadosEstatisticosProdutos_Empresas_EmbalagensOnDelete.TRG";
-                                    
-                if(n > 5)
-                {
-                    return NotFound("Error in file: GetCodeOfInternalExitStockJustificationForDevolution.UDF");
-                }
-               
-                return Ok(mensagem);
-            }
-            catch (Exception err)
-            {
-                return NotFound(err.Message);
-            }
-        }       
        
     }    
 }

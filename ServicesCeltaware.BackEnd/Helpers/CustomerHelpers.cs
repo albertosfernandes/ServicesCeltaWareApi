@@ -10,12 +10,11 @@ namespace ServicesCeltaware.BackEnd.Helpers
 {
     public class CustomerHelpers
     {       
-        public static string CreateSite(ModelCustomer customer)
+        public async static Task<string> CreateSite(ModelCustomer customer)
         {
             try
             {
-                string DefaultDir = @"c:\Celta Business Solutions\" + customer.RootDirectory;
-                string _error = null;
+                string DefaultDir = @"c:\Celta Business Solutions\" + customer.RootDirectory;                
                 DirectoryInfo dirSource = new DirectoryInfo(DefaultDir);
                 if (!dirSource.Exists)
                 {
@@ -29,10 +28,9 @@ namespace ServicesCeltaware.BackEnd.Helpers
                         "Não foi possível criar o diretório: " + DefaultDir);
                     }                    
                 }                // 
-                string message = CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\",
+                string message = await CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\",
                                                 "appcmd.exe",
-                            $" add site /name:{customer.RootDirectory + "-CeltaBS"} /physicalPath:" + "\"" + DefaultDir + "\"" + $" /bindings:http/*:{customer.CodeCeltaBs}:",
-                            out _error);
+                            $" add site /name:{customer.RootDirectory + "-CeltaBS"} /physicalPath:" + "\"" + DefaultDir + "\"" + $" /bindings:http/*:{customer.CodeCeltaBs}:");
                 return message;
             }
             catch (Exception err)
@@ -41,18 +39,17 @@ namespace ServicesCeltaware.BackEnd.Helpers
             }
         }
 
-        public static string CreatePool(ModelCustomer customer)
+        public async static Task<string> CreatePool(ModelCustomer customer)
         {
             try
             {
-                string _error = null;
-                string message = CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\",
+                string message = await CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\",
                                                 "appcmd.exe",
-                            $" add apppool /name:{customer.RootDirectory}-CeltaBS", out _error);
+                            $" add apppool /name:{customer.RootDirectory}-CeltaBS");
                 
-                message += CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\",
+                message +=  await CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\",
                                                 "appcmd.exe",
-                            $" set apppool /apppool.name:\"{customer.RootDirectory}-CeltaBS\" /enable32bitapponwin64:true", out _error);
+                            $" set apppool /apppool.name:\"{customer.RootDirectory}-CeltaBS\" /enable32bitapponwin64:true");
 
                 return message;
             }
@@ -62,7 +59,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
             }
         }
 
-        public static string ChangePool(ModelCustomer customer, Enum.ProductName _productName)
+        public async static Task<string> ChangePool(ModelCustomer customer, Enum.ProductName _productName)
         {
             try
             {
@@ -72,23 +69,23 @@ namespace ServicesCeltaware.BackEnd.Helpers
                 {
                     case Enum.ProductName.None:
                         {
-                            message = CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\",
+                            message = await CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\",
                                                             "appcmd.exe",
-                                        $" set site /site.name:{customer.RootDirectory}-CeltaBS /[path='/'].applicationPool:{customer.RootDirectory}-CeltaBS", out _error);
+                                        $" set site /site.name:{customer.RootDirectory}-CeltaBS /[path='/'].applicationPool:{customer.RootDirectory}-CeltaBS");
                             break;
                         }
                     case Enum.ProductName.BSF:
                         { 
-                            message = CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\",
+                            message = await CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\",
                                                             "appcmd.exe",
-                                        $" set site /site.name:{customer.RootDirectory}-CeltaBS /[path='/BSF'].applicationPool:{customer.RootDirectory}-CeltaBS", out _error);
+                                        $" set site /site.name:{customer.RootDirectory}-CeltaBS /[path='/BSF'].applicationPool:{customer.RootDirectory}-CeltaBS");
                             break;
                         }
                     case Enum.ProductName.CCS:
                         {                            
-                            message = CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\",
+                            message = await CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\",
                                                             "appcmd.exe",
-                                        $" set site /site.name:{customer.RootDirectory}-CeltaBS /[path='/CCS'].applicationPool:{customer.RootDirectory}-CeltaBS", out _error);
+                                        $" set site /site.name:{customer.RootDirectory}-CeltaBS /[path='/CCS'].applicationPool:{customer.RootDirectory}-CeltaBS");
                             break;
                         }
                 }

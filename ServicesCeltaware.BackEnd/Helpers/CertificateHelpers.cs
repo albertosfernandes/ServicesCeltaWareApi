@@ -129,7 +129,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
             }
         }
 
-        public static string InstallCert(ModelCertificate _certificate)
+        public async static Task<string> InstallCert(ModelCertificate _certificate)
         {
             try
             {
@@ -142,14 +142,14 @@ namespace ServicesCeltaware.BackEnd.Helpers
 
                 string argument = $"-f -p {_certificate.Password} -importpfx \"c:\\Celta Business Solutions\\{_certificate.Customer.RootDirectory}\\BSF\\certificados\\{_certificate.FileRepositorie}\\{_certificate.FileName}\" NoProtect,FriendlyName=\"{_certificate.FriendlyName}\"";
                 //resultCode = CommandWin32.ExecuteBatch(path, argument, out error);
-                message = CommandWin32.ExecuteSynch(@"c:\windows\system32\", "certutil.exe ", argument, out error);
+                message = await CommandWin32.ExecuteSynch(@"c:\windows\system32\", "certutil.exe ", argument);
 
                 if (!message.Contains("-importPFX : comando concluído com êxito."))
                 {
                     string e = message; //deu erro
                 }
 
-                return error;
+                return message;
             }
             catch(Exception err)
             {
@@ -157,7 +157,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
             }
         }
 
-        public static string Remove(ModelCertificate _certificate)
+        public async static Task<string> Remove(ModelCertificate _certificate)
         {
             try
             {
@@ -166,7 +166,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                 string error = null;
                 int resultCode;
 
-                message = CommandWin32.ExecuteSynch(@"c:\windows\system32\", "certutil.exe ", argument, out error);
+                message = await CommandWin32.ExecuteSynch(@"c:\windows\system32\", "certutil.exe ", argument);
 
                 if (!message.Contains("comando concluÝdo com Ûxito."))
                 {
@@ -185,7 +185,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                 // Excluir o arquivo                
                 string path = $"c:\\Celta Business Solutions\\{_certificate.Customer.RootDirectory}\\bsf\\certificados\\";
                 argument = $"removeCertificateFile.bat \"C:\\Celta Business Solutions\\{_certificate.Customer.RootDirectory}\\BSF\\Certificados\\{_certificate.FileRepositorie}\\{_certificate.FileName}\"";
-                resultCode = CommandWin32.ExecuteBatch(path, argument, out error);
+                resultCode = await CommandWin32.ExecuteBatch(path, argument);
                 return message;
             }
             catch (Exception err)
@@ -196,7 +196,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
 
         // certutil.exe -delstore My 552c782ae9b10ad4d976f555fc7be7c8be1998dd
 
-        public static string ChangePermissions(ModelCertificate _certificate)
+        public async static Task<string> ChangePermissions(ModelCertificate _certificate)
         {
             try
             {             
@@ -205,12 +205,12 @@ namespace ServicesCeltaware.BackEnd.Helpers
                 int resultCode;
                 string error = null;
 
-                resultCode = CommandWin32.ExecuteBatch(path, argument, out error);
+                resultCode = await CommandWin32.ExecuteBatch(path, argument);
 
                 if (!String.IsNullOrEmpty(error))
                     return error;
                 argument = $"changePermissionOwner.bat \"c:\\Celta Business Solutions\\{_certificate.Customer.RootDirectory}\\bsf\\certificados\\changePermissionOwner.ps1\" {_certificate.HashCert}";
-                resultCode = CommandWin32.ExecuteBatch(path, argument, out error);
+                resultCode = await CommandWin32.ExecuteBatch(path, argument);
 
                 return error;
             }

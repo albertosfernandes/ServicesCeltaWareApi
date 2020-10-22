@@ -22,16 +22,15 @@ namespace ServicesCeltaware.BackEnd.Helpers
             GenerateClient(customerProduct);
         }
 
-        private static void GenerateConfig(string directory)
+        private async static void GenerateConfig(string directory)
         {
             try
-            {
-                string _error = null;
+            {                
                 string path = @"C:\Celta Business Solutions\" + directory + @"\BSF\Bin\";
                 string command = "CeltaWare.CBS.CAT.WellknownServiceType.exe ";
                 string argFull = @"C:\Celta Business Solutions\" + directory + @"\BSF\Bin\config.txt";
 
-                CommandWin32.ExecuteTeste(path, command, argFull, out _error);                              
+                await CommandWin32.ExecuteTeste(path, command, argFull);                              
             }
             catch (Exception err)
             {
@@ -39,16 +38,15 @@ namespace ServicesCeltaware.BackEnd.Helpers
             }
         }
 
-        private static void ExecuteCatUpdateVersionPackage(string directory)
+        private async static void ExecuteCatUpdateVersionPackage(string directory)
         {
             try
-            {
-                string _error = null;
+            {                
                 string path = @"C:\Celta Business Solutions\" + directory + @"\BSF\Bin\";
                 string command = "CeltaWare.CBS.CAT.UpdatedVersionPackage.exe ";
                 string argFull = " ";
 
-                CommandWin32.ExecuteTeste(path, command, argFull, out _error);
+                await CommandWin32.ExecuteTeste(path, command, argFull);
                 
             }
             catch (Exception err)

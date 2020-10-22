@@ -9,7 +9,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
 {
     public class DatabaseHelpers
     {
-        public static bool Create(ModelCustomerProduct customerProduct)
+        public async static Task<bool> Create(ModelCustomerProduct customerProduct)
         {
             try
             {
@@ -18,7 +18,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                 string path = $"C:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\BSF\\Bin\\";
                 string command = "CeltaWare.CBS.CAT.GenerateKeys.exe";
                 string args = " ";
-                CommandWin32.ExecuteTeste(path, command, args, out _error);
+                await CommandWin32.ExecuteTeste(path, command, args);
 
                 // 2- Copiar as chaves para diretórios ccs e windowsService e updateVersion
                 string file = $"C:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\BSF\\Bin\\CeltaPublic.csk";
@@ -35,17 +35,17 @@ namespace ServicesCeltaware.BackEnd.Helpers
                 // 3 - Executar ResetPassword.exe <DBSERVERNAME>  <DATABASENAME>  <DBUSERNAME>  <DBUSERPASSWORD>  <PRIVATEKEY>  <PUBLICKEY>
                 command = "CeltaWare.CBS.CAT.ResetPasswords.exe ";
                 args = $" {customerProduct.IpAddress},{customerProduct.Port} {customerProduct.SynchronizerServiceName} {customerProduct.LoginUser} {customerProduct.LoginPassword} CeltaPrivate.csk CeltaPublic.csk";
-                CommandWin32.ExecuteTeste(path, command, args, out _error);
+                await CommandWin32.ExecuteTeste(path, command, args);
 
                 // 4 - Executar ChangeAdminpassword.exe - <DBSERVERNAME>  <DATABASENAME>  <DBUSERNAME>  <DBUSERPASSWORD>  <ADMINNEWPASSWORD>  <PUBLICKEY>
                 command = "CeltaWare.CBS.CAT.ChangeAdminPassword.exe ";
                 args = $" {customerProduct.IpAddress},{customerProduct.Port} {customerProduct.SynchronizerServiceName} {customerProduct.LoginUser} {customerProduct.LoginPassword} CeltaBusinessSolutions+=123 CeltaPublic.csk ";
-                CommandWin32.ExecuteTeste(path, command, args, out _error);
+                await CommandWin32.ExecuteTeste(path, command, args);
 
                 // 5 - Executar GenerateEventLogCategorys.exe
                 command = "CeltaWare.CBS.CAT.GenerateEventLogCategorys.exe";
                 args = " ";
-                CommandWin32.ExecuteTeste(path, command, args, out _error);
+                await CommandWin32.ExecuteTeste(path, command, args);
                                 
                 return true;
             }
@@ -55,14 +55,13 @@ namespace ServicesCeltaware.BackEnd.Helpers
             }
         }
 
-        public static void GenerateConnectionString(ModelCustomerProduct customerProduct, string celtaBSUserPassword)
-        {
-            string _error = null;
+        public async static void GenerateConnectionString(ModelCustomerProduct customerProduct, string celtaBSUserPassword)
+        {            
             string path = $"C:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\BSF\\Bin\\";
             string command = "CeltaWare.CBS.CAT.GenerateConnectionString.exe ";
             string args = $" server={customerProduct.IpAddress},{customerProduct.Port};database={customerProduct.SynchronizerServiceName};uid=CeltaBSUser;pwd={celtaBSUserPassword} server=192.168.1.6,9980;database=CeltaBSCep;uid=sa;pwd=Celta@123 server={customerProduct.IpAddress},{customerProduct.Port};database={customerProduct.SynchronizerServiceName};uid={customerProduct.LoginUser}pwd={customerProduct.LoginPassword}";            
 
-            CommandWin32.ExecuteTeste(path, command, args, out _error);
+            await CommandWin32.ExecuteTeste(path, command, args);
 
             // 2 - Copiar CeltaWare.CBS.Common.dll.config para diretórios ccs e windowsService*/
             string file = $"C:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\BSF\\Bin\\CeltaWare.CBS.Common.dll.config";

@@ -25,7 +25,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
         [HttpGet]
         public IList<ModelUser> GetAll()
         {
-            return _repository.GetAll();
+            return _repository.GetAll().ToList();
         }       
 
         [HttpGet]

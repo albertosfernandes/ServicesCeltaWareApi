@@ -17,6 +17,8 @@ namespace ServicesCeltaWare.DAL
         public DbSet<ModelUser> Users { get; set; }
         public DbSet<ModelSignSat> SignSats { get; set; }
         public DbSet<ModelServer> Servers { get; set; }
+        public DbSet<ModelBackupSchedule> BackupsSchedules { get; set; }
+        public DbSet<ModelDatabase> Databases { get; set; }
 
 
         //Terceiro requisito: Configurar o entity, de forma override que vai sobre-escrever o metodo da classe pai com as 
@@ -45,6 +47,9 @@ namespace ServicesCeltaWare.DAL
             modelBuilder.Entity<ModelUser>().ToTable("users");
             modelBuilder.Entity<ModelSignSat>().ToTable("signsat");
             modelBuilder.Entity<ModelServer>().ToTable("servers");
+            modelBuilder.Entity<ModelBackupSchedule>().ToTable("backupschedule");
+            modelBuilder.Entity<ModelDatabase>().ToTable("databases");
+            //modelBuilder.Entity<ModelCustomerProduct>().HasOne(s => s.Server).WithMany(c => c.CustomerProducts);
             //modelBuilder.Entity<User>().HasKey(u => u.UserId);
 
         }

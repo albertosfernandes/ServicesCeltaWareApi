@@ -19,3 +19,5 @@ C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaware.Serve
 C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaware.ServerAPI\obj\Release\netcoreapp2.2\ServicesCeltaware.ServerAPI.csproj.CopyComplete
 C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaware.ServerAPI\obj\Release\netcoreapp2.2\ServicesCeltaware.ServerAPI.dll
 C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaware.ServerAPI\obj\Release\netcoreapp2.2\ServicesCeltaware.ServerAPI.pdb
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaware.ServerAPI\bin\Release\netcoreapp2.2\ServicesCeltaWare.Tools.dll
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaware.ServerAPI\bin\Release\netcoreapp2.2\ServicesCeltaWare.Tools.pdb

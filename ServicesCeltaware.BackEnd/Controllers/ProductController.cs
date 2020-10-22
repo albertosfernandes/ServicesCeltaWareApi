@@ -25,7 +25,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
         [HttpGet]
         public IList<ModelProduct> GetAll()
         {
-            return _repository.GetAll();
+            return _repository.GetAll().ToList();
         }
 
         [HttpPost]

@@ -12,13 +12,13 @@ namespace ServicesCeltaware.BackEnd.Helpers
 {
     public class CustomerProductHelpers
     {
-        public static string CreateProducts(ProductName productName, ModelCustomerProduct customerProduct, out string error)
+        public async static Task<string> CreateProducts(ProductName productName, ModelCustomerProduct customerProduct)
         {
             try
             {
                 string msgCreateSite = null;
                 string _error = null;
-                error = null;
+                string error = null;
                 string directory = @"C:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory;
                 DirectoryInfo dir = new DirectoryInfo(directory);
                 switch (productName)
@@ -27,9 +27,8 @@ namespace ServicesCeltaware.BackEnd.Helpers
                         {
                             if (!dir.Exists)
                                 CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\BSF", dir.ToString(), true, true);
-                            msgCreateSite = CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\", "appcmd.exe",  // /physicalPath:" + "\"" + DefaultDir + " \"" +                          
-                            $" add app /site.name:{customerProduct.Customer.RootDirectory}-CeltaBS /path:/{customerProduct.InstallDirectory} /physicalPath:"+"\""+dir+"\"",
-                            out _error);
+                            msgCreateSite = await CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\", "appcmd.exe",  // /physicalPath:" + "\"" + DefaultDir + " \"" +                          
+                            $" add app /site.name:{customerProduct.Customer.RootDirectory}-CeltaBS /path:/{customerProduct.InstallDirectory} /physicalPath:"+"\""+dir+"\"");
                             
                             ChangeDefaultHtm(customerProduct.Customer.RootDirectory, customerProduct.Port, Enum.ProductName.BSF);
                             break;
@@ -38,9 +37,8 @@ namespace ServicesCeltaware.BackEnd.Helpers
                         {
                             if (!dir.Exists)
                                 CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\CCS", dir.ToString(), true, true);
-                            msgCreateSite = CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\", "appcmd.exe",
-                            $" add app /site.name:{customerProduct.Customer.RootDirectory}-CeltaBS /path:/{customerProduct.InstallDirectory} /physicalPath:"+"\""+dir+"\"",
-                            out _error);
+                            msgCreateSite = await CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\", "appcmd.exe",
+                            $" add app /site.name:{customerProduct.Customer.RootDirectory}-CeltaBS /path:/{customerProduct.InstallDirectory} /physicalPath:"+"\""+dir+"\"");
                             
                             ChangeDefaultHtm(customerProduct.Customer.RootDirectory, customerProduct.Port, Enum.ProductName.CCS);
                             break;
@@ -49,7 +47,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                         {
                             if (!dir.Exists)
                                 CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\CSS\WebService", dir.ToString(), true, true);
-                            msgCreateSite = CommandWin32.Execute(@"C:\Windows\System32\inetsrv\", "appcmd.exe",
+                            msgCreateSite = await CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\", "appcmd.exe",
                             $" add app /site.name:{customerProduct.Customer.RootDirectory}-CeltaBS /path:/{ValidateNameForPathSite(customerProduct.InstallDirectory)} /physicalPath:" + "\"" + dir +" \"");
                             break;
                         }
@@ -81,8 +79,8 @@ namespace ServicesCeltaware.BackEnd.Helpers
             }
             catch (Exception err)
             {
-                error = err.Message;
-                return error;
+                // error = err.Message;
+                return err.Message;
             }
         }
         
@@ -138,7 +136,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                     }
                     case ProductName.CCS:
                         {
-                            var defaultHtmPath = @"C:\Celta Business Solutions\" + directory + @"\CCS\default.htm";
+                            var defaultHtmPath = @"C:\Celta Business Solutions\" + directory + @"\CCS\CCSDefault.htm";
 
                             StringBuilder strb = new StringBuilder();
 

@@ -14,13 +14,13 @@ namespace ServicesCeltaware.BackEnd.Tools
     public class CommandWin32
     {
         
-        public static string ExecuteTeste(string path, string command, string args, out string error)
+        public async static Task<string> ExecuteTeste(string path, string command, string args)
         {
             try
             {
                 string fileNameFull = Path.Combine(path, command);
                 string message = null;
-                error = null;
+                string error = null;
 
                 using (Process p1 = new Process())
                 {
@@ -99,13 +99,13 @@ namespace ServicesCeltaware.BackEnd.Tools
 
        
 
-        public static string ExecuteSynch(string path, string command, string args, out string _error)
+        public async static Task<string> ExecuteSynch(string path, string command, string args)
         {
             try
             {
                 string filenameFull = Path.Combine(path, command);
                 string message = null;
-                _error = null;
+                string _error = null;
                 if (!String.IsNullOrEmpty(command))
                 {
                     using (Process p1 = new Process())
@@ -118,16 +118,21 @@ namespace ServicesCeltaware.BackEnd.Tools
                         p1.StartInfo.RedirectStandardError = true;
                         p1.StartInfo.WorkingDirectory = path;
 
-                        p1.Start();
+                        var idProcess = p1.Id;
 
-                        //p1.WaitForExit(120000);
-                        if (p1.Start())
-                        {
-                            message = p1.StandardOutput.ReadToEnd();
-                            _error = p1.StandardError.ReadToEnd();
-                        }
+                        message = p1.StandardOutput.ReadToEnd();
+                        _error = p1.StandardError.ReadToEnd();
+                        p1.WaitForExit((1 * 1000) * 60);
+
+
+                        p1.Close();
+
+                        p1.Dispose();
                     }
                 }
+                if (!String.IsNullOrEmpty(_error))
+                    message = _error;
+
                 return message;
             }
             catch (Exception err)
@@ -136,11 +141,11 @@ namespace ServicesCeltaware.BackEnd.Tools
             }
         }
 
-        public static int ExecuteBatch(string batchPath, string arg, out string _error)
+        public async static Task<int> ExecuteBatch(string batchPath, string arg)
         {
             try
             {
-                _error = null;
+                string _error = null;
                 int exitCode;
                 ProcessStartInfo processInfo;
                 Process process;
@@ -208,7 +213,7 @@ namespace ServicesCeltaware.BackEnd.Tools
             }
         }
 
-        public static void Copy(string source, string destination, bool isOverwrite, bool copyWebConfig)
+        public async static void Copy(string source, string destination, bool isOverwrite, bool copyWebConfig)
         {
             try
             {
@@ -261,26 +266,24 @@ namespace ServicesCeltaware.BackEnd.Tools
                     {
                         Copy(subdir.FullName, Path.Combine(destination, subdirName), true, false);
                     }
-                }
-
+                }                
             }
             catch (Exception err)
-            {
+            {                
                 throw err;
             }
         }
 
-        public static void Copy(string file, string fileDestinationName, bool isOverwrite)
+        public async static void Copy(string file, string fileDestinationName, bool isOverwrite)
         {
             try
             {                
                 FileInfo fileFull = new FileInfo(file);
                 
-                fileFull.CopyTo(fileDestinationName, isOverwrite);
-
+                fileFull.CopyTo(fileDestinationName, isOverwrite);                
             }
             catch (Exception err)
-            {
+            {                
                 throw err;
             }
         }
@@ -314,7 +317,46 @@ namespace ServicesCeltaware.BackEnd.Tools
             {
                 throw err;
             }
-        }       
+        }
+
+
+        //public static string ExecuteSynch(string path, string command, string args, out string _error)
+        //{
+        //    try
+        //    {
+        //        string filenameFull = Path.Combine(path, command);
+        //        string message = null;
+        //        _error = null;
+        //        if (!String.IsNullOrEmpty(command))
+        //        {
+        //            using (Process p1 = new Process())
+        //            {
+        //                p1.StartInfo.FileName = "\"" + filenameFull + "\"";
+        //                p1.StartInfo.Arguments = args;
+        //                p1.StartInfo.CreateNoWindow = true;
+        //                p1.StartInfo.UseShellExecute = false;
+        //                p1.StartInfo.RedirectStandardOutput = true;
+        //                p1.StartInfo.RedirectStandardError = true;
+        //                p1.StartInfo.WorkingDirectory = path;
+
+        //                p1.Start();
+
+        //                //p1.WaitForExit(120000);
+        //                if (p1.Start())
+        //                {
+        //                    message = p1.StandardOutput.ReadToEnd();
+        //                    _error = p1.StandardError.ReadToEnd();
+        //                }
+        //            }
+        //        }
+        //        return message;
+        //    }
+        //    catch (Exception err)
+        //    {
+        //        throw err;
+        //    }
+        //}
+
     }
 }
 

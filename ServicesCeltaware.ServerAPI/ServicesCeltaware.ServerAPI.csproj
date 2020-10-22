@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ServicesCeltaWare.DAL\ServicesCeltaWare.DAL.csproj" />
     <ProjectReference Include="..\ServicesCeltaWare.Model\ServicesCeltaWare.Model.csproj" />
+    <ProjectReference Include="..\ServicesCeltaWare.Tools\ServicesCeltaWare.Tools.csproj" />
   </ItemGroup>
 
 </Project>

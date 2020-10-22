@@ -30,6 +30,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
             var teste = _repository.Get();
             return teste.Include(c => c.Customer).                
                 Include(p => p.Product).
+                Include(s => s.Server).
                 Where(x => x.CustomerId == id).
                 ToList();                                    
         }
@@ -40,12 +41,25 @@ namespace ServicesCeltaware.BackEnd.Controllers
             var teste = _repository.Get();
             return teste.Include(c => c.Customer).
                 Include(p => p.Product).
+                Include(s => s.Server).
                 Where(x => x.CustomersProductsId == id).
                 First();
         }
 
+        [HttpGet]
+        public async Task<List<ModelCustomerProduct>> GetAllDatabases(int serverId)
+        {
+            return await _repository.Get()
+                    .Include(c => c.Customer)
+                    .Include(s => s.Server)
+                    .Include(p => p.Product)
+                    .Where(prodId => prodId.ProductId == 6 && prodId.ServersId == serverId)
+                    .OrderBy(cp => cp.Customer.FantasyName)
+                    .ToListAsync();
+        }
+
         [HttpPost]
-        public IActionResult Add(ModelCustomerProduct _customerProduct)
+        public async Task<IActionResult> Add(ModelCustomerProduct _customerProduct)
         {
             try
             {
@@ -60,12 +74,13 @@ namespace ServicesCeltaware.BackEnd.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateCustomerProduct(ModelCustomerProduct _customerProduct)
+        public async Task<IActionResult> CreateCustomerProduct(ModelCustomerProduct _customerProduct)
         {
             try
             {
                 var customerProduct = _repository.Get()
                     .Include(c => c.Customer)
+                    .Include(s => s.Server)
                     .Where(cp => cp.CustomersProductsId == _customerProduct.CustomersProductsId)
                     .First();
 
@@ -81,10 +96,10 @@ namespace ServicesCeltaware.BackEnd.Controllers
                     case 6: product = ProductName.Database; break;
                     case 7: product = ProductName.CertificadoA1; break;
                 }
-                string message = CustomerProductHelpers.CreateProducts(product, customerProduct, out error);
-                if (!String.IsNullOrEmpty(error))
+                string message = await CustomerProductHelpers.CreateProducts(product, customerProduct);
+                if (message.Contains("ERROR"))
                 {
-                    return NotFound(error);
+                    return NotFound(message);
                 }
                 return Ok();
             }

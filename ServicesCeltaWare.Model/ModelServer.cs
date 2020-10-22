@@ -12,6 +12,6 @@ namespace ServicesCeltaWare.Model
         public string IpAddress { get; set; }
         public int Port { get; set; }
         public string Hostname { get; set; }
-
+        //public ICollection<ModelCustomerProduct> CustomerProducts { get; set; }
     }
 }

@@ -26,8 +26,17 @@ namespace ServicesCeltaWare.DAL
 
         public void Add(TEntity model)
         {
-            _context.Add(model);
-            _context.SaveChanges();
+            try
+            {
+                _context.Add(model);
+                _context.SaveChanges();
+            }
+            catch(Exception err)
+            {
+                throw err;
+            }
+
+            
         }
 
         public void Update(TEntity model)

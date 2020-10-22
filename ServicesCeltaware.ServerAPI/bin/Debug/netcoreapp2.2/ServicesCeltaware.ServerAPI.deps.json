@@ -29,7 +29,8 @@
           "Microsoft.NETCore.App": "2.2.0",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "2.2.4",
           "ServicesCeltaWare.DAL": "1.0.0",
-          "ServicesCeltaWare.Model": "1.0.0"
+          "ServicesCeltaWare.Model": "1.0.0",
+          "ServicesCeltaWare.Tools": "1.0.0"
         },
         "runtime": {
           "ServicesCeltaware.ServerAPI.dll": {}
@@ -549,6 +550,14 @@
         },
         "compile": {
           "ServicesCeltaWare.Model.dll": {}
+        }
+      },
+      "ServicesCeltaWare.Tools/1.0.0": {
+        "runtime": {
+          "ServicesCeltaWare.Tools.dll": {}
+        },
+        "compile": {
+          "ServicesCeltaWare.Tools.dll": {}
         }
       },
       "Microsoft.AspNet.WebApi.Client/5.2.6": {
@@ -3909,6 +3918,11 @@
       "sha512": ""
     },
     "ServicesCeltaWare.Model/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ServicesCeltaWare.Tools/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

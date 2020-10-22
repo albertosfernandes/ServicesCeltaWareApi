@@ -98,15 +98,16 @@ namespace ServicesCeltaware.BackEnd.Controllers
         }
 
         [HttpPost]
-        public IActionResult StartCloud(ModelCustomer customer)
+        public async Task<IActionResult> StartCloud(ModelCustomer customer)
         {
             try
             {
                 CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\", @"c:\Celta Business Solutions\" + customer.RootDirectory, true, true);
                 var message = CustomerHelpers.CreateSite(customer);
-                message += CustomerHelpers.CreatePool(customer);
-                message += CustomerHelpers.ChangePool(customer, Enum.ProductName.None);
-                return Ok();
+                string messagePool = await CustomerHelpers.CreatePool(customer);
+                string messageChangePool = await CustomerHelpers.ChangePool(customer, Enum.ProductName.None);
+                
+                return Ok(message);
             }
             catch(Exception err)
             {
