@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ServicesCeltaware.ServerAPI.Helpers;
 using ServicesCeltaWare.DAL;
 using ServicesCeltaWare.Model;
 using ServicesCeltaWare.Tools;
@@ -56,22 +57,26 @@ namespace ServicesCeltaware.ServerAPI.Controllers
         {
             try
             {
-                string commandBackup = $"docker exec -it {_databaseSchedule.Databases.ConteinerName} /opt/mssql-tools/bin/sqlcmd -L localhost -U sa -P {_databaseSchedule.CustomerProduct.LoginPassword} -Q ";
-                commandBackup += $"'BACKUP DATABASE [{_databaseSchedule.Databases.DatabaseName}] TO DISK = N'";
-                if (_databaseSchedule.Type == ServicesCeltaWare.Model.Enum.BackuypType.Full)
-                    commandBackup += $"'/var/opt/mssql/backup/{_databaseSchedule.Databases.DatabaseName}BackupFull.bak'";
+                string scriptBackup = await DatabaseServiceHelper.GenerateScriptBackup(_databaseSchedule);
+                //while (scriptBackup.Contains("back"))
+                //{
+                //    scriptBackup = await DatabaseServiceHelper.GenerateScriptBackup(_databaseSchedule);
+                //}                
+
+                string message = await Helpers.DatabaseServiceHelper.Execute(scriptBackup);
+
+                if(message.Contains("Sqlcmd: Error:") || message.Contains("Incorrect syntax") || message.Contains("Unknown Option"))
+                {
+                    return BadRequest(message + scriptBackup);
+                }
                 else
-                    commandBackup += $"'/var/opt/mssql/backup/{_databaseSchedule.Databases.DatabaseName}BackupDiff{_databaseSchedule.DateHourExecution.ToString()}.bak'";
-
-                commandBackup += $" WITH NOFORMAT, INIT, NAME = N'CeltaBS{_databaseSchedule.Databases.DatabaseName} Banco de Dados Backup', SKIP, NOREWIND, NOUNLOAD, COMPRESSION,  STATS = 10";
-
-                string message = await Helpers.DatabaseServiceHelper.Execute(commandBackup);
-
-                return Ok(message);
+                {
+                    return Ok(message);
+                }
             }
             catch(Exception err)
             {
-                throw err;
+                return BadRequest(err.Message);
             }
         }
 

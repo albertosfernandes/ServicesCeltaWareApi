@@ -18,7 +18,7 @@ namespace ServicesCeltaWare.Tools
                 {
                     p1.StartInfo.FileName = "bash";
                     p1.StartInfo.Arguments = $"-c \"{args}\"";
-                    p1.StartInfo.CreateNoWindow = true;
+                    p1.StartInfo.CreateNoWindow = false;
                     p1.StartInfo.UseShellExecute = false;
                     p1.StartInfo.RedirectStandardOutput = true;
                     p1.StartInfo.RedirectStandardError = true;

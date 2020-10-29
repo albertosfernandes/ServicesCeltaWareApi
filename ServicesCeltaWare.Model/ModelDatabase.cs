@@ -21,6 +21,7 @@ namespace ServicesCeltaWare.Model
         public ModelCustomerProduct CustomerProduct { get; set; }
         public int MemoryRam { get; set; }
         public string Directory { get; set; }
+        public int Storage { get; set; }
         //public int BackupScheduleId { get; set; }
         //public ModelBackupSchedule BackupSchedule { get; set; }
         //public List<ModelBackupSchedule> BackupsSchedules { get; set; }
