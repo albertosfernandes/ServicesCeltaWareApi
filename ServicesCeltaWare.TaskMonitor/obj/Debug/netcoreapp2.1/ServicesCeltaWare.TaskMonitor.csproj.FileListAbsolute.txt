@@ -1,0 +1,12 @@
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\bin\Debug\netcoreapp2.1\appsettings.Development.json
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\bin\Debug\netcoreapp2.1\appsettings.json
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\bin\Debug\netcoreapp2.1\ServicesCeltaWare.TaskMonitor.deps.json
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\bin\Debug\netcoreapp2.1\ServicesCeltaWare.TaskMonitor.runtimeconfig.json
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\bin\Debug\netcoreapp2.1\ServicesCeltaWare.TaskMonitor.runtimeconfig.dev.json
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\bin\Debug\netcoreapp2.1\ServicesCeltaWare.TaskMonitor.dll
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\bin\Debug\netcoreapp2.1\ServicesCeltaWare.TaskMonitor.pdb
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\obj\Debug\netcoreapp2.1\ServicesCeltaWare.TaskMonitor.csprojAssemblyReference.cache
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\obj\Debug\netcoreapp2.1\ServicesCeltaWare.TaskMonitor.AssemblyInfoInputs.cache
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\obj\Debug\netcoreapp2.1\ServicesCeltaWare.TaskMonitor.AssemblyInfo.cs
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\obj\Debug\netcoreapp2.1\ServicesCeltaWare.TaskMonitor.dll
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\obj\Debug\netcoreapp2.1\ServicesCeltaWare.TaskMonitor.pdb

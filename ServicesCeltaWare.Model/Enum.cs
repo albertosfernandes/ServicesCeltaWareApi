@@ -20,5 +20,11 @@ namespace ServicesCeltaWare.Model
             Corrupted = 3,
             None = 4
         }
+
+        public enum ValidateType
+        {
+            LabelOnly = 0,
+            VerifyOnly = 1
+        }
     }
 }

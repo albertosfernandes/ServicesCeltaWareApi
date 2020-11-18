@@ -52,29 +52,65 @@ namespace ServicesCeltaware.ServerAPI.Controllers
         }
       
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> BackupExec(ModelBackupSchedule _databaseSchedule)
         {
             try
             {
                 string scriptBackup = await DatabaseServiceHelper.GenerateScriptBackup(_databaseSchedule);
-                //while (scriptBackup.Contains("back"))
-                //{
-                //    scriptBackup = await DatabaseServiceHelper.GenerateScriptBackup(_databaseSchedule);
-                //}                
 
-                string message = await Helpers.DatabaseServiceHelper.Execute(scriptBackup);
+                if (scriptBackup.Contains("back"))
+                {
+                    scriptBackup = await DatabaseServiceHelper.GenerateScriptBackup(_databaseSchedule);
+                }
 
-                if(message.Contains("Sqlcmd: Error:") || message.Contains("Incorrect syntax") || message.Contains("Unknown Option"))
+                string message = await DatabaseServiceHelper.Execute(scriptBackup);
+
+                if(message.Contains("Sqlcmd: Error:") || message.Contains("Incorrect syntax") || message.Contains("Unknown Option") || message.Contains("Erro") 
+                    && !message.Contains("BACKUP DATABASE successfully") )
                 {
                     return BadRequest(message + scriptBackup);
                 }
                 else
                 {
+                    // 1- testar se backup está integro
+                    // 2- Gravar ultima execução
                     return Ok(message);
                 }
             }
             catch(Exception err)
+            {
+                return BadRequest(err.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ValidateBackupExec(ModelBackupSchedule _databaseSchedule)
+        {
+            try
+            {
+                string scriptValidate = null;
+                scriptValidate = await DatabaseServiceHelper.GenerateScriptValidate(_databaseSchedule, ServicesCeltaWare.Model.Enum.ValidateType.LabelOnly);
+                string message = await DatabaseServiceHelper.Execute(scriptValidate);
+
+                if (message.Contains("Sqlcmd: Error:") || message.Contains("Incorrect syntax") || message.Contains("Unknown Option") || message.Contains("Erro")
+                    /* && !message.Contains("BACKUP DATABASE successfully")*/)
+                {
+                    return BadRequest(message + scriptValidate);
+                }            
+                else
+                {
+                    scriptValidate = await DatabaseServiceHelper.GenerateScriptValidate(_databaseSchedule, ServicesCeltaWare.Model.Enum.ValidateType.VerifyOnly);
+                    message += await DatabaseServiceHelper.Execute(scriptValidate);
+                    if (message.Contains("Sqlcmd: Error:") || message.Contains("Incorrect syntax") || message.Contains("Unknown Option") || message.Contains("Erro")
+                    /* && !message.Contains("BACKUP DATABASE successfully")*/)
+                    {
+                        return BadRequest(message + scriptValidate);
+                    }                    
+                }
+                return Ok(message);
+            }
+            catch (Exception err)
             {
                 return BadRequest(err.Message);
             }

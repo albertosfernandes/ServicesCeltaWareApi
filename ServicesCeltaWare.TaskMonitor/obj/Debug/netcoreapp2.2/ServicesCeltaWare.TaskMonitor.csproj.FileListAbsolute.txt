@@ -1,0 +1,15 @@
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\bin\Debug\netcoreapp2.2\appsettings.Development.json
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\bin\Debug\netcoreapp2.2\appsettings.json
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\bin\Debug\netcoreapp2.2\ServicesCeltaWare.TaskMonitor.deps.json
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\bin\Debug\netcoreapp2.2\ServicesCeltaWare.TaskMonitor.runtimeconfig.json
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\bin\Debug\netcoreapp2.2\ServicesCeltaWare.TaskMonitor.runtimeconfig.dev.json
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\bin\Debug\netcoreapp2.2\ServicesCeltaWare.TaskMonitor.dll
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\bin\Debug\netcoreapp2.2\ServicesCeltaWare.TaskMonitor.pdb
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\bin\Debug\netcoreapp2.2\ServicesCeltaWare.Model.dll
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\bin\Debug\netcoreapp2.2\ServicesCeltaWare.Model.pdb
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\obj\Debug\netcoreapp2.2\ServicesCeltaWare.TaskMonitor.csprojAssemblyReference.cache
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\obj\Debug\netcoreapp2.2\ServicesCeltaWare.TaskMonitor.AssemblyInfoInputs.cache
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\obj\Debug\netcoreapp2.2\ServicesCeltaWare.TaskMonitor.AssemblyInfo.cs
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\obj\Debug\netcoreapp2.2\ServicesCeltaWare.TaskMonitor.csproj.CopyComplete
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\obj\Debug\netcoreapp2.2\ServicesCeltaWare.TaskMonitor.dll
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.TaskMonitor\obj\Debug\netcoreapp2.2\ServicesCeltaWare.TaskMonitor.pdb

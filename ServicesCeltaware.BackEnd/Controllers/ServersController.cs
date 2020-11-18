@@ -34,6 +34,12 @@ namespace ServicesCeltaware.BackEnd.Controllers
             return _repository.GetAll();
         }
 
+        [HttpGet]
+        public ActionResult<List<ModelServer>> GetAllTeste()
+        {
+            return _repository.GetAll();
+        }
+
         [HttpPost]
         public IActionResult Add(ModelServer _database)
         {

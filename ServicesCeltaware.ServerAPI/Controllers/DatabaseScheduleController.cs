@@ -55,6 +55,25 @@ namespace ServicesCeltaware.ServerAPI.Controllers
         }
 
         [HttpGet]
+        public async Task<List<ModelBackupSchedule>> GetAllByTime(int hourSchedule)
+        {
+            try
+            {
+                //TimeSpan result = TimeSpan.FromHours(hourSchedule);
+                
+                return await _repository.Get()
+                        .Include(c => c.CustomerProduct).ThenInclude(cps => cps.Server)
+                        .Include(s => s.Databases)
+                        .Where(t => t.DateHourExecution.Hour == hourSchedule)
+                        .ToListAsync();
+            }
+            catch(Exception err)
+            {
+                throw err;
+            }            
+        }
+
+        [HttpGet]
         public List<ModelBackupSchedule> GetAll(int id)
         {
             try
@@ -100,5 +119,54 @@ namespace ServicesCeltaware.ServerAPI.Controllers
                 return NotFound(err.Message);
             }
         }
+
+        [HttpPut]
+        public IActionResult UpdateStatus(ModelBackupSchedule _databaseSchedule)
+        {
+            try
+            {
+                var bkpSchedule = _repository.Find(_databaseSchedule.BackupScheduleId);
+                bkpSchedule.BackupStatus = _databaseSchedule.BackupStatus;
+                _repository.Update(_databaseSchedule);
+                return Ok();
+            }
+            catch(Exception err)
+            {
+                return BadRequest(err.Message);
+            }
+        }
+
+        [HttpPut]
+        public IActionResult UpdateDateHourLastExecution(ModelBackupSchedule _databaseSchedule)
+        {
+            try
+            {
+                var bkpSchedule = _repository.Find(_databaseSchedule.BackupScheduleId);
+                bkpSchedule.DateHourLastExecution = DateTime.Now;
+                _repository.Update(bkpSchedule);
+                return Ok();
+            }
+            catch (Exception err)
+            {
+                return BadRequest(err.Message);
+            }
+        }
+
+        //[HttpGet]
+        //public async Task<IActionResult> ValidateBackupExec(ModelBackupSchedule _databaseSchedule)
+        //{
+        //    try
+        //    {
+        //        var backupValidate = _repository.Find(_databaseSchedule.BackupScheduleId);
+
+
+        //        return Ok();
+        //    }
+        //    catch(Exception err)
+        //    {
+        //        return BadRequest(err.Message);
+        //    }
+        //}
+
     }
 }

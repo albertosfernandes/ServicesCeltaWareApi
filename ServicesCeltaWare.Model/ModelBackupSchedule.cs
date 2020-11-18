@@ -13,7 +13,8 @@ namespace ServicesCeltaWare.Model
         public int CustomersProductsId { get; set; }
         public ModelCustomerProduct CustomerProduct { get; set; }
         public BackuypType Type { get; set; }
-        public TimeSpan DateHourExecution { get; set; }
+        public DateTime DateHourExecution { get; set; }
+        public DateTime DateHourLastExecution { get; set; }
         public BackupStatus BackupStatus { get; set; }
         public int DatabasesId { get; set; }
         public ModelDatabase Databases { get; set; }

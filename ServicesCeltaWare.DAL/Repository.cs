@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,7 +41,7 @@ namespace ServicesCeltaWare.DAL
         }
 
         public void Update(TEntity model)
-        {            
+        {
             _context.SaveChanges();
         }
 
