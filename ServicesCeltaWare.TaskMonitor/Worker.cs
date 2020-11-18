@@ -27,6 +27,7 @@ namespace ServicesCeltaWare.TaskMonitor
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            UtilitariosInfra.UtilTelegram _utilTelegram = new UtilitariosInfra.UtilTelegram(_configuration.GetSection("Services").GetSection("UidTelegramToken").Value);
             try
             {
                 while (!stoppingToken.IsCancellationRequested)
@@ -37,25 +38,37 @@ namespace ServicesCeltaWare.TaskMonitor
 
                     foreach (var setting in listOfSettings)
                     {
+
                         if (setting.IsActive && setting.Name.Contains("SqlDatabase"))
                         {
                             //executa este setting de backup SQL
                             Adapters.AdapterSqlDatabase sqlDatabase = new Adapters.AdapterSqlDatabase(setting);
                            
-                                var schedules = await sqlDatabase.GetDatabaseBackupSchedule(setting.Url, DateTime.Now.Hour);
-                                int count = 0;
-                                while (count < schedules.Count)
+                            var schedules = await sqlDatabase.GetDatabaseBackupSchedule(setting.Url, DateTime.Now.Hour);
+
+                            while (schedules.Count > 0)
+                            {
+                                for (int i = 0; i <= schedules.Count; i++)
                                 {
-                                    foreach (var schedule in schedules)
+                                    int isExecute = schedules[i].DateHourExecution.Minute.CompareTo(DateTime.Now.Minute);
+                                    int lastExecution = schedules[i].DateHourLastExecution.Date.CompareTo(DateTime.Now.Date);
+                                    if ((isExecute == 0 && lastExecution == -1) || (isExecute == -1 && lastExecution == -1) && !schedules[i].BackupStatus.Equals(Model.Enum.BackupStatus.Runing))
                                     {
-                                        var isExecuted = await Helpers.HelperSqlDatabase.ExecuteDatabaseSchedule(schedule, setting);
+                                        // está dentro do horario então executa!!!
+                                        var isExecuted = await Helpers.HelperSqlDatabase.ExecuteDatabaseSchedule(schedules[i], setting);
                                         if (isExecuted)
                                         {
                                             //backup garantido.. então inicie o upload
-                                            count++;
+                                            var resp = await Helpers.HelperSqlDatabase.UpdateStatusBackup(schedules[i], Model.Enum.BackupStatus.Success, true);
                                         }
+
+                                        schedules.Remove(schedules[i]);
                                     }
                                 }
+                                //foreach (var schedule in schedules)
+                                //{                                    
+                                //}
+                            }
                             await Task.Delay((setting.UpdateInterval * 60) * 1000, stoppingToken);                            
                         }
                     }
@@ -64,6 +77,7 @@ namespace ServicesCeltaWare.TaskMonitor
             }
             catch(Exception err)
             {
+                _utilTelegram.SendMessage($"Falha no serviço TaskManager: {err.Message}", _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
                 WriteLog(err.Message);
             }           
         }

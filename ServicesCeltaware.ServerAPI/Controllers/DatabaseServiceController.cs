@@ -84,7 +84,7 @@ namespace ServicesCeltaware.ServerAPI.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPut]
         public async Task<IActionResult> ValidateBackupExec(ModelBackupSchedule _databaseSchedule)
         {
             try
@@ -94,7 +94,7 @@ namespace ServicesCeltaware.ServerAPI.Controllers
                 string message = await DatabaseServiceHelper.Execute(scriptValidate);
 
                 if (message.Contains("Sqlcmd: Error:") || message.Contains("Incorrect syntax") || message.Contains("Unknown Option") || message.Contains("Erro")
-                    /* && !message.Contains("BACKUP DATABASE successfully")*/)
+                    || message.Contains("is terminating abnormally")/* && !message.Contains("BACKUP DATABASE successfully")*/)
                 {
                     return BadRequest(message + scriptValidate);
                 }            
@@ -103,7 +103,7 @@ namespace ServicesCeltaware.ServerAPI.Controllers
                     scriptValidate = await DatabaseServiceHelper.GenerateScriptValidate(_databaseSchedule, ServicesCeltaWare.Model.Enum.ValidateType.VerifyOnly);
                     message += await DatabaseServiceHelper.Execute(scriptValidate);
                     if (message.Contains("Sqlcmd: Error:") || message.Contains("Incorrect syntax") || message.Contains("Unknown Option") || message.Contains("Erro")
-                    /* && !message.Contains("BACKUP DATABASE successfully")*/)
+                    || message.Contains("is terminating abnormally")/* && !message.Contains("BACKUP DATABASE successfully")*/)
                     {
                         return BadRequest(message + scriptValidate);
                     }                    

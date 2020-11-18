@@ -1,0 +1,18 @@
+18/11/2020 14:15:12: Celta Task Monitor - Serviço iniciado.
+18/11/2020 14:16:28: Celta Task Monitor - Uma tentativa de conexão falhou porque o componente conectado não respondeu
+corretamente após um período de tempo ou a conexão estabelecida falhou
+porque o host conectado não respondeu
+18/11/2020 14:18:08: Celta Task Monitor - Serviço iniciado.
+18/11/2020 14:36:49: Celta Task Monitor - Serviço iniciado.
+18/11/2020 14:50:50: Celta Task Monitor - Serviço iniciado.
+18/11/2020 14:51:31: Celta Task Monitor - Nenhuma conexão pôde ser feita porque a máquina de destino as recusou ativamente
+18/11/2020 15:27:43: Celta Task Monitor - Serviço iniciado.
+18/11/2020 15:39:24: Celta Task Monitor - Serviço iniciado.
+18/11/2020 15:52:42: Celta Task Monitor - Serviço iniciado.
+18/11/2020 17:30:41: Celta Task Monitor - Serviço iniciado.
+18/11/2020 17:32:48: Celta Task Monitor - Serviço iniciado.
+18/11/2020 17:34:14: Celta Task Monitor - Serviço iniciado.
+18/11/2020 17:36:37: Celta Task Monitor - Collection was modified; enumeration operation may not execute.
+18/11/2020 17:38:42: Celta Task Monitor - Serviço iniciado.
+18/11/2020 17:43:12: Celta Task Monitor - Collection was modified; enumeration operation may not execute.
+18/11/2020 17:50:46: Celta Task Monitor - Serviço iniciado.
