@@ -31,9 +31,24 @@ namespace ServicesCeltaware.ServerAPI.Controllers
                     filename += $"{_backupSchedule.Databases.DatabaseName}BackupDiff{ _backupSchedule.DateHourExecution.Hour.ToString() + _backupSchedule.DateHourExecution.Minute.ToString()}.bak";
                     //diff
                 }
-                  
+                //var res = CallManager.ListFolders("teste");  
                 await CallManager.Upload(filename);
                 return Ok();
+            }
+            catch(Exception err)
+            {
+                return BadRequest(err.Message);
+            }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> TesteGetTokenGoogle()
+        {
+            try
+            {
+                var result = await ServicesCeltaWare.Security.GoogleToken.Get();
+                return Ok(result);
             }
             catch(Exception err)
             {

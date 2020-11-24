@@ -11,61 +11,10 @@
           "Microsoft.Extensions.Hosting": "3.1.1",
           "Newtonsoft.Json": "12.0.3",
           "ServicesCeltaWare.Model": "1.0.0",
-          "ServicesCeltaWare.UtilitariosInfra.GoogleApiStandard": "1.0.0",
           "ServicesCeltaWare.UtilitariosInfra.Telegram": "1.0.0"
         },
         "runtime": {
           "ServicesCeltaWare.TaskMonitor.dll": {}
-        }
-      },
-      "Google.Apis/1.49.0": {
-        "dependencies": {
-          "Google.Apis.Core": "1.49.0"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Google.Apis.dll": {
-            "assemblyVersion": "1.49.0.0",
-            "fileVersion": "1.49.0.0"
-          }
-        }
-      },
-      "Google.Apis.Auth/1.49.0": {
-        "dependencies": {
-          "Google.Apis": "1.49.0",
-          "Google.Apis.Core": "1.49.0"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Google.Apis.Auth.PlatformServices.dll": {
-            "assemblyVersion": "1.49.0.0",
-            "fileVersion": "1.49.0.0"
-          },
-          "lib/netstandard2.0/Google.Apis.Auth.dll": {
-            "assemblyVersion": "1.49.0.0",
-            "fileVersion": "1.49.0.0"
-          }
-        }
-      },
-      "Google.Apis.Core/1.49.0": {
-        "dependencies": {
-          "Newtonsoft.Json": "12.0.3"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Google.Apis.Core.dll": {
-            "assemblyVersion": "1.49.0.0",
-            "fileVersion": "1.49.0.0"
-          }
-        }
-      },
-      "Google.Apis.Drive.v3/1.49.0.2138": {
-        "dependencies": {
-          "Google.Apis": "1.49.0",
-          "Google.Apis.Auth": "1.49.0"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Google.Apis.Drive.v3.dll": {
-            "assemblyVersion": "1.49.0.2138",
-            "fileVersion": "1.49.0.2138"
-          }
         }
       },
       "Microsoft.Bcl.AsyncInterfaces/1.1.0": {
@@ -925,16 +874,6 @@
           "ServicesCeltaWare.Model.dll": {}
         }
       },
-      "ServicesCeltaWare.UtilitariosInfra.GoogleApiStandard/1.0.0": {
-        "dependencies": {
-          "Google.Apis": "1.49.0",
-          "Google.Apis.Auth": "1.49.0",
-          "Google.Apis.Drive.v3": "1.49.0.2138"
-        },
-        "runtime": {
-          "ServicesCeltaWare.UtilitariosInfra.GoogleApiStandard.dll": {}
-        }
-      },
       "ServicesCeltaWare.UtilitariosInfra.Telegram/1.0.0": {
         "dependencies": {
           "Telegram.Bot": "15.7.1"
@@ -950,34 +889,6 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
-    },
-    "Google.Apis/1.49.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-fmXQQTxZFOBlnvokvdQMzq0Lt+g2QzpZ4H6U8lMMFHgAR8ZqxQnPN5yHDpoHf7a++hJHb5W3pALxauGsq+afKQ==",
-      "path": "google.apis/1.49.0",
-      "hashPath": "google.apis.1.49.0.nupkg.sha512"
-    },
-    "Google.Apis.Auth/1.49.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-3V9ohvixQtjaEvk7T9Ac7E/KvwEPa7eL4aMNreJDI0CEPzCdQdk2zCvaJPRrNIjhe+UuBeOeom1oAOMFB74JHg==",
-      "path": "google.apis.auth/1.49.0",
-      "hashPath": "google.apis.auth.1.49.0.nupkg.sha512"
-    },
-    "Google.Apis.Core/1.49.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-9DgGdtyzgrCfHWwc/HiDXDbykNMeKQozbEHYEUEcezRuH+YR3fvq7YGVBDmUM8g6qEL3kDk6h5EU4h0IJwue1w==",
-      "path": "google.apis.core/1.49.0",
-      "hashPath": "google.apis.core.1.49.0.nupkg.sha512"
-    },
-    "Google.Apis.Drive.v3/1.49.0.2138": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-TWzVUeI6ffAgwoslkwCk9w9i3jJ8jPoF6C7M2BqSobjdKYsBE+zH0y/Uq8Zb1TWy7m8k6sGLegVtTpH8YTG6aA==",
-      "path": "google.apis.drive.v3/1.49.0.2138",
-      "hashPath": "google.apis.drive.v3.1.49.0.2138.nupkg.sha512"
     },
     "Microsoft.Bcl.AsyncInterfaces/1.1.0": {
       "type": "package",
@@ -1596,11 +1507,6 @@
       "hashPath": "telegram.bot.15.7.1.nupkg.sha512"
     },
     "ServicesCeltaWare.Model/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "ServicesCeltaWare.UtilitariosInfra.GoogleApiStandard/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

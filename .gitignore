@@ -9,3 +9,7 @@
 /ServicesCeltaWare.DAL/obj
 /ServicesCeltaWare.Model/bin/Debug/netcoreapp2.2
 /ServicesCeltaWare.Model/obj
+/ServicesCeltaWare.Security/bin/Debug/netstandard2.0
+/ServicesCeltaWare.Security/obj
+/ServicesCeltaware.ServerAPI/obj
+/ServicesCeltaware.ServerAPI/bin
