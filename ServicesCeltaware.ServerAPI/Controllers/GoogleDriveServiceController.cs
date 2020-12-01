@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using ServicesCeltaWare.Model;
 using ServicesCeltaWare.UtilitariosInfra;
+using ServicesCeltaWare.UtilitariosInfra.GoogleApiStandard;
 
 namespace ServicesCeltaware.ServerAPI.Controllers
 {
@@ -15,24 +17,31 @@ namespace ServicesCeltaware.ServerAPI.Controllers
     [EnableCors("BasePolicy")]
     public class GoogleDriveServiceController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
+        public GoogleDriveServiceController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         [HttpPost]
         public async Task<IActionResult> Upload(ModelBackupSchedule _backupSchedule)
         {
             try
             {
-                string filename = _backupSchedule.Databases.Directory + "\\backup\\";
+                ModelGoogleDrive googleDrive = new ModelGoogleDrive();
+                googleDrive = Helpers.HelperGoogleDrive.LoadSetting(_configuration);
+                string fileName;
+
+                string path = _backupSchedule.Databases.Directory + "\\backup\\";
                 if(_backupSchedule.Type == ServicesCeltaWare.Model.Enum.BackuypType.Full)
                 {
-                    //full
-                    filename += _backupSchedule.Databases.DatabaseName + "BackupFull.bak";
+                    fileName = _backupSchedule.Databases.DatabaseName + "BackupFull.bak";
                 }
                 else
                 {
-                    filename += $"{_backupSchedule.Databases.DatabaseName}BackupDiff{ _backupSchedule.DateHourExecution.Hour.ToString() + _backupSchedule.DateHourExecution.Minute.ToString()}.bak";
-                    //diff
+                    fileName = $"{_backupSchedule.Databases.DatabaseName}BackupDiff{ _backupSchedule.DateHourExecution.Hour.ToString() + _backupSchedule.DateHourExecution.Minute.ToString()}.bak";
                 }
-                //var res = CallManager.ListFolders("teste");  
-                await CallManager.Upload(filename);
+                await CallManager.Upload(fileName, path, googleDrive, googleDrive.FolderId);
                 return Ok();
             }
             catch(Exception err)
@@ -41,13 +50,46 @@ namespace ServicesCeltaware.ServerAPI.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllFolders()
+        {
+            try
+            {
+                ModelGoogleDrive googleDrive = new ModelGoogleDrive();
+                googleDrive = Helpers.HelperGoogleDrive.LoadSetting(_configuration);
+
+                var result = ServicesCeltaWare.UtilitariosInfra.GoogleApiStandard.CallManager.GetAllFoldersService(googleDrive);
+                return Ok(result);
+            }
+            catch(Exception err)
+            {
+                return BadRequest(err.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetFilesInFolder()
+        {
+            try
+            {
+                ModelGoogleDrive googleDrive = new ModelGoogleDrive();
+                googleDrive = Helpers.HelperGoogleDrive.LoadSetting(_configuration);
+
+                var result = ServicesCeltaWare.UtilitariosInfra.GoogleApiStandard.CallManager.ListFilesInFolder(googleDrive);
+                return Ok(result);
+            }
+            catch (Exception err)
+            {
+                return BadRequest(err.Message);
+            }
+        }
 
         [HttpGet]
         public async Task<IActionResult> TesteGetTokenGoogle()
         {
             try
             {
-                var result = await ServicesCeltaWare.Security.GoogleToken.Get();
+                var result = await ServicesCeltaWare.Security.GoogleToken.GetWithRSA256();
                 return Ok(result);
             }
             catch(Exception err)

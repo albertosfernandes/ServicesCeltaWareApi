@@ -59,15 +59,13 @@ namespace ServicesCeltaWare.TaskMonitor
                                         if (isExecuted)
                                         {
                                             //backup garantido.. então inicie o upload
+                                            var respUpload = await Helpers.HelperGoogleDrive.UploadBackup(schedules[i], setting);
                                             var resp = await Helpers.HelperSqlDatabase.UpdateStatusBackup(schedules[i], Model.Enum.BackupStatus.Success, true);
                                         }
 
                                         schedules.Remove(schedules[i]);
                                     }
                                 }
-                                //foreach (var schedule in schedules)
-                                //{                                    
-                                //}
                             }
                             await Task.Delay((setting.UpdateInterval * 60) * 1000, stoppingToken);                            
                         }

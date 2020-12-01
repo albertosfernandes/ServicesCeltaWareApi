@@ -16,8 +16,6 @@ namespace ServicesCeltaWare.TaskMonitor.Helpers
             UtilitariosInfra.UtilTelegram _utilTelegram = new UtilitariosInfra.UtilTelegram(_setting.UidTelegramToken);
             try
             {
-                //TimeSpan T_hours = TimeSpan.FromHours(DateTime.Now.Hour);
-                //TimeSpan t_minutes = TimeSpan.FromMinutes(DateTime.Now.Minute);
 
                 bool response = false;
 
@@ -42,22 +40,6 @@ namespace ServicesCeltaWare.TaskMonitor.Helpers
 
 
                 return false;
-
-                //int isExecute = _backupSchedule.DateHourExecution.CompareTo(DateTime.Now);
-                //int lastExecution = _backupSchedule.DateHourLastExecution.CompareTo(DateTime.Now.Date);
-                //if ((isExecute == 0 && lastExecution == -1) || (isExecute == -1 && lastExecution == -1) && !_backupSchedule.BackupStatus.Equals(Model.Enum.BackupStatus.Runing))
-                //{
-                //    response = await ExecuteBackup(_backupSchedule);
-                //    if (response)
-                //    {                       
-                //        bool res = await ExecuteValidateBackup(_backupSchedule);
-                //        if(!res)
-                //        {                            
-                //            response = false;
-                //        }
-                //    }                       
-                //}
-
 
             }
             catch(Exception err)
@@ -125,6 +107,9 @@ namespace ServicesCeltaWare.TaskMonitor.Helpers
             return true;
         }
 
+   
+
+
         private static async Task<bool> UpdateDateHourLastExecution(Model.ModelBackupSchedule _backupSchedule)
         {
             string url = "http://" + _backupSchedule.CustomerProduct.Server.IpAddress + ":" + _backupSchedule.CustomerProduct.Server.Port;
@@ -166,5 +151,7 @@ namespace ServicesCeltaWare.TaskMonitor.Helpers
                 return false;
             }
         }
+
+
     }
 }

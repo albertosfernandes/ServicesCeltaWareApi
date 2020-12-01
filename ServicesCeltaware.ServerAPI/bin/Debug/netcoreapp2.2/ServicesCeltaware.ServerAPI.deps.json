@@ -41,6 +41,17 @@
           "ServicesCeltaware.ServerAPI.dll": {}
         }
       },
+      "BouncyCastle/1.8.6.1": {
+        "runtime": {
+          "lib/BouncyCastle.Crypto.dll": {
+            "assemblyVersion": "1.8.6.0",
+            "fileVersion": "1.8.20052.1"
+          }
+        },
+        "compile": {
+          "lib/BouncyCastle.Crypto.dll": {}
+        }
+      },
       "Google.Apis/1.49.0": {
         "dependencies": {
           "Google.Apis.Core": "1.49.0"
@@ -117,6 +128,28 @@
         },
         "compile": {
           "lib/netstandard2.0/Google.Apis.Plus.v1.dll": {}
+        }
+      },
+      "jose-jwt/2.6.1": {
+        "dependencies": {
+          "NETStandard.Library": "2.0.3",
+          "Newtonsoft.Json": "12.0.3",
+          "System.IO.Compression": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Runtime.Serialization.Primitives": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Cng": "4.7.0",
+          "System.Security.Cryptography.Csp": "4.3.0",
+          "System.Security.Cryptography.X509Certificates": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.4/jose-jwt.dll": {
+            "assemblyVersion": "2.6.1.0",
+            "fileVersion": "2.6.1.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard1.4/jose-jwt.dll": {}
         }
       },
       "Microsoft.CodeAnalysis.CSharp.Workspaces/2.8.0": {
@@ -475,17 +508,7 @@
           "lib/netstandard2.0/Pomelo.JsonObject.dll": {}
         }
       },
-      "Portable.BouncyCastle/1.8.5": {
-        "runtime": {
-          "lib/netstandard2.0/BouncyCastle.Crypto.dll": {
-            "assemblyVersion": "1.8.5.0",
-            "fileVersion": "1.8.5.50"
-          }
-        },
-        "compile": {
-          "lib/netstandard2.0/BouncyCastle.Crypto.dll": {}
-        }
-      },
+      "Portable.BouncyCastle/1.8.5": {},
       "Remotion.Linq/2.2.0": {
         "dependencies": {
           "System.Collections": "4.3.0",
@@ -701,6 +724,12 @@
         }
       },
       "System.Reflection.TypeExtensions/4.4.0": {},
+      "System.Runtime.Serialization.Primitives/4.3.0": {
+        "dependencies": {
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0"
+        }
+      },
       "System.Security.Cryptography.Cng/4.7.0": {
         "compile": {
           "ref/netcoreapp2.1/System.Security.Cryptography.Cng.dll": {}
@@ -768,8 +797,10 @@
       },
       "ServicesCeltaWare.Security/1.0.0": {
         "dependencies": {
+          "BouncyCastle": "1.8.6.1",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "2.2.0",
-          "System.IdentityModel.Tokens.Jwt": "6.8.0"
+          "System.IdentityModel.Tokens.Jwt": "6.8.0",
+          "jose-jwt": "2.6.1"
         },
         "runtime": {
           "ServicesCeltaWare.Security.dll": {}
@@ -3762,6 +3793,13 @@
       "serviceable": false,
       "sha512": ""
     },
+    "BouncyCastle/1.8.6.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rkqpuKmJkdcfTMBkIj1b5nMdBAWKwAyh+I/BQYeqqSD2jkIlhwc9qBNKmSbnpmmm5c29qHZGLpvBSTNWvDLtQA==",
+      "path": "bouncycastle/1.8.6.1",
+      "hashPath": "bouncycastle.1.8.6.1.nupkg.sha512"
+    },
     "Google.Apis/1.49.0": {
       "type": "package",
       "serviceable": true,
@@ -3796,6 +3834,13 @@
       "sha512": "sha512-dakqOUguAqEs19F1qfQcSpFIxZZFZhkUAieNrFhpPoDXXo03Tw8QbpDplpHoUzESR0UGq/Ho+3W7ltzjf9k1GQ==",
       "path": "google.apis.plus.v1/1.49.0.1627",
       "hashPath": "google.apis.plus.v1.1.49.0.1627.nupkg.sha512"
+    },
+    "jose-jwt/2.6.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-vVMS8UMjiFWFVERiwihXZ/bRkpa1k+Di+15ogTWH6xtU00Lsn+8NYwClfN+WQm8oHL7LWWZSO2aGWRUDOPkrEg==",
+      "path": "jose-jwt/2.6.1",
+      "hashPath": "jose-jwt.2.6.1.nupkg.sha512"
     },
     "Microsoft.CodeAnalysis.CSharp.Workspaces/2.8.0": {
       "type": "package",
@@ -4076,6 +4121,13 @@
       "sha512": "sha512-dkmh/ySlwnXJp/1qYP9uyKkCK1CXR/REFzl7abHcArxBcV91mY2CgrrzSRA5Z/X4MevJWwXsklGRdR3A7K9zbg==",
       "path": "system.reflection.typeextensions/4.4.0",
       "hashPath": "system.reflection.typeextensions.4.4.0.nupkg.sha512"
+    },
+    "System.Runtime.Serialization.Primitives/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Wz+0KOukJGAlXjtKr+5Xpuxf8+c8739RI1C+A2BoQZT+wMCCoMDDdO8/4IRHfaVINqL78GO8dW8G2lW/e45Mcw==",
+      "path": "system.runtime.serialization.primitives/4.3.0",
+      "hashPath": "system.runtime.serialization.primitives.4.3.0.nupkg.sha512"
     },
     "System.Security.Cryptography.Cng/4.7.0": {
       "type": "package",

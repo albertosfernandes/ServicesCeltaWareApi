@@ -12,4 +12,9 @@
 /ServicesCeltaWare.Security/bin/Debug/netstandard2.0
 /ServicesCeltaWare.Security/obj
 /ServicesCeltaware.ServerAPI/obj
-/ServicesCeltaware.ServerAPI/bin
+/ServicesCeltaware.ServerAPI/bin/Debug/netstandard2.2
+/ServicesCeltaware.ServerAPI/Debug/netcoreapp2.2
+/ServicesCeltaware.ServerAPI/Release/netcoreapp2.2\publish
+/ServicesCeltaware.ServerAPI/*.p12
+/ServicesCeltaWare.TaskMonitor/bin/Debug/netcoreapp2.2
+/ServicesCeltaWare.TaskMonitor/obj/Debug/netcoreapp2.2
