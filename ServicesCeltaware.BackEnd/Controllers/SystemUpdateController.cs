@@ -152,11 +152,11 @@ namespace ServicesCeltaware.BackEnd.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateCeltaBS(ModelCustomerProduct customersettings)
-        {
-            string msgError;
+        public async  Task<IActionResult> UpdateCeltaBS(ModelCustomerProduct customersettings)
+        {            
             try
             {
+                string message;
                 var _customerSettings = _repository.Get()
                 .Include(c => c.Customer)
                 .Include(p => p.Product)
@@ -164,31 +164,31 @@ namespace ServicesCeltaware.BackEnd.Controllers
 
                 if (_customerSettings != null)
                 {
-                    if (Update(_customerSettings))
-                    {
-                        return Ok();
-                    }
-                    else
-                    {
-                        return NotFound("Erro ao atualizar");
-                    }
+                    message = await Update(_customerSettings);
+                    return Ok(message);
+                    //if (await Update(_customerSettings))
+                    //{
+                    //    return Ok();
+                    //}
+                    //else
+                    //{
+                    //    return NotFound("Erro ao atualizar");
+                    //}
                 }
                 else
-                {
-                    msgError = "Erro ao acessar cadastro de clientes";
-                    return NotFound(msgError);
+                {                 
+                    return NotFound("Cliente não encontrado");
                 }
             }
             catch (Exception err)
-            {
-                msgError = err.Message;
-                return NotFound(msgError);
+            {                
+                return NotFound(err.Message);
             }
         }        
 
-        public bool Update(ModelCustomerProduct customerProduct)
-        {
-            string msgError;
+        public async  Task<string> Update(ModelCustomerProduct customerProduct)
+        {            
+            string message = " ";
             try
             {
                 if (ValidateFile(customerProduct.Customer.RootDirectory))
@@ -198,7 +198,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
                         case 1:
                             Copy(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\temp\CIP\Release\BSF\", @"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory, true);
                             SystemUpdateHelpers.MarkVersionFile(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory + @"\version.txt");
-                            SystemUpdateHelpers.UpdateBsfFull(customerProduct);
+                            message += await SystemUpdateHelpers.UpdateBsfFull(customerProduct);
                             break;
                         case 2:
                             Copy(@"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\temp\CCS\Release\WebService\", @"c:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory, true);
@@ -221,18 +221,15 @@ namespace ServicesCeltaware.BackEnd.Controllers
                                 StartSynchronizerService(customerProduct.SynchronizerServiceName);
                             }
                             break;
-                    }
-                    msgError = "";
-                    return true;
+                    }                    
+                    return message;
                 }
-                else
-                    msgError = "Erro ao validar Arquivo Deployment.";
-                return false;
+                else                    
+                    return "Erro ao validar Arquivo Deployment.";
             }
             catch (Exception err)
-            {
-                msgError = err.Message;
-                return false;
+            {                
+                return err.Message;
             }
         }
 

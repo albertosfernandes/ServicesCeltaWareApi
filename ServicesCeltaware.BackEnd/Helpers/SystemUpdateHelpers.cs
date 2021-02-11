@@ -13,24 +13,32 @@ namespace ServicesCeltaware.BackEnd.Helpers
 {
     public class SystemUpdateHelpers
     {
-        public static void UpdateBsfFull(ModelCustomerProduct customerProduct)
+        public async static Task<string> UpdateBsfFull(ModelCustomerProduct customerProduct)
         {
-            GenerateConfig(customerProduct.Customer.RootDirectory);
-            DeleteConfigSection(customerProduct.Customer.RootDirectory);
-            InsertConfigInSection(customerProduct.Customer.RootDirectory);
-            ExecuteCatUpdateVersionPackage(customerProduct.Customer.RootDirectory);
-            GenerateClient(customerProduct);
+            try
+            {
+                string message = await GenerateConfig(customerProduct.Customer.RootDirectory);
+                message += await DeleteConfigSection(customerProduct.Customer.RootDirectory);
+                message += await InsertConfigInSection(customerProduct.Customer.RootDirectory);
+                message += await ExecuteCatUpdateVersionPackage(customerProduct.Customer.RootDirectory);
+                message += await GenerateClient(customerProduct);
+                return message;
+            }
+            catch(Exception err)
+            {
+                return err.Message;
+            }            
         }
 
-        private async static void GenerateConfig(string directory)
+        private async static Task<String> GenerateConfig(string directory)
         {
             try
             {                
                 string path = @"C:\Celta Business Solutions\" + directory + @"\BSF\Bin\";
                 string command = "CeltaWare.CBS.CAT.WellknownServiceType.exe ";
-                string argFull = @"C:\Celta Business Solutions\" + directory + @"\BSF\Bin\config.txt";
+                string argFull = " config.txt"; // @"C:\Celta Business Solutions\" + directory + @"\BSF\Bin\config.txt";
 
-                await CommandWin32.ExecuteTeste(path, command, argFull);                              
+                return await ServicesCeltaWare.Tools.CommandWin32.Execute(path, command, argFull);                              
             }
             catch (Exception err)
             {
@@ -38,7 +46,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
             }
         }
 
-        private async static void ExecuteCatUpdateVersionPackage(string directory)
+        private async static Task<string> ExecuteCatUpdateVersionPackage(string directory)
         {
             try
             {                
@@ -46,61 +54,79 @@ namespace ServicesCeltaware.BackEnd.Helpers
                 string command = "CeltaWare.CBS.CAT.UpdatedVersionPackage.exe ";
                 string argFull = " ";
 
-                await CommandWin32.ExecuteTeste(path, command, argFull);
+                return await ServicesCeltaWare.Tools.CommandWin32.Execute(path, command, argFull);
                 
             }
             catch (Exception err)
             {
+                return err.Message;
                 throw err;
             }
         }
 
-        private static void DeleteConfigSection(string directory)
+        private async static Task<string> DeleteConfigSection(string directory)
         {
-            string xmlPath = @"C:\Celta Business Solutions\" + directory + @"\BSF\web.config";
-            XElement xml = XElement.Load(xmlPath);
-            xml.Element("system.runtime.remoting").Element("application").Element("service").Elements().ToList().Remove();
-            xml.Save(xmlPath);
-        }
-
-        private static void InsertConfigInSection(string directory)
-        {
-            var configPath = @"C:\Celta Business Solutions\" + directory + @"\BSF\Bin\config.txt";
-            var xmlPath = @"C:\Celta Business Solutions\" + directory + @"\BSF\web.config";
-
-            XmlDocument doc = new XmlDocument();
-            doc.Load(xmlPath);
-
-            StringBuilder strb = new StringBuilder();
-
-            using (var fluxoDeArquivo = new FileStream(configPath, FileMode.Open))
-            using (var leitor = new StreamReader(fluxoDeArquivo))
+            try
             {
-                while (!leitor.EndOfStream)
-                {
-                    var linha = leitor.ReadLine();
-                    strb.AppendLine(linha);
-                }
+                string xmlPath = @"C:\Celta Business Solutions\" + directory + @"\BSF\web.config";
+                XElement xml = XElement.Load(xmlPath);
+                xml.Element("system.runtime.remoting").Element("application").Element("service").Elements().ToList().Remove();
+                xml.Save(xmlPath);
+                return "Seção webconfig deletado com sucesso";
+            }
+            catch(Exception err) 
+            {
+                return err.Message;
             }
 
-            doc.SelectSingleNode("//service").InnerXml = strb.ToString();
-            doc.Save(xmlPath);
         }
 
-        private static bool GenerateClient(ModelCustomerProduct customerProduct)
+        private async static Task<string> InsertConfigInSection(string directory)
+        {
+            try
+            {
+                var configPath = @"C:\Celta Business Solutions\" + directory + @"\BSF\Bin\config.txt";
+                var xmlPath = @"C:\Celta Business Solutions\" + directory + @"\BSF\web.config";
+
+                XmlDocument doc = new XmlDocument();
+                doc.Load(xmlPath);
+
+                StringBuilder strb = new StringBuilder();
+
+                using (var fluxoDeArquivo = new FileStream(configPath, FileMode.Open))
+                using (var leitor = new StreamReader(fluxoDeArquivo))
+                {
+                    while (!leitor.EndOfStream)
+                    {
+                        var linha = leitor.ReadLine();
+                        strb.AppendLine(linha);
+                    }
+                }
+
+                doc.SelectSingleNode("//service").InnerXml = strb.ToString();
+                doc.Save(xmlPath);
+                return "Seção do webconfig gravada com sucesso";
+            }
+            catch(Exception err)
+            {
+                return err.Message;
+            }            
+        }
+
+        private async static Task<bool> GenerateClient(ModelCustomerProduct customerProduct)
         {
             //copy celtapublic to UpdatedVersion
             string source = $"c:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\BSF\\Bin\\CeltaPublic.csk";
             string destination = $"c:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\BSF\\Bin\\UpdatedVersion\\CeltaPublic.csk";
-            CommandWin32.Copy(source, destination, true);
+            ServicesCeltaWare.Tools.CommandWin32.Copy(source, destination, true);
             //copy updatedVersion to Client
             source = $"c:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\BSF\\Bin\\UpdatedVersion";
             destination = $"c:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\Client";
-            CommandWin32.Copy(source, destination, true, false);
+            ServicesCeltaWare.Tools.CommandWin32.Copy(source, destination, true, false);
             //CompactFile
             source = $"c:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\Client";
             destination = $"c:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\BSF\\ClientFiles\\celtabsclient.zip";
-            CommandWin32.Compress(source, destination);
+            await ServicesCeltaWare.Tools.CommandWin32.Compress(source, destination);
             ////Copy celtabsclient.zip to clientfiles 
             //source = $"c:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\Client\\celtabsclient.zip";
             //destination = $"c:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\BSF\\ClientFiles\\celtabsclient.zip";

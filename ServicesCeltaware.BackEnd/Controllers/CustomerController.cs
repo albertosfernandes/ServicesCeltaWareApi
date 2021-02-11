@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ServicesCeltaware.BackEnd.Helpers;
 using ServicesCeltaware.BackEnd.Tools;
 using ServicesCeltaWare.DAL;
@@ -102,7 +104,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
         {
             try
             {
-                CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\", @"c:\Celta Business Solutions\" + customer.RootDirectory, true, true);
+                ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\", @"c:\Celta Business Solutions\" + customer.RootDirectory, true, true);
                 var message = CustomerHelpers.CreateSite(customer);
                 string messagePool = await CustomerHelpers.CreatePool(customer);
                 string messageChangePool = await CustomerHelpers.ChangePool(customer, Enum.ProductName.None);
@@ -114,6 +116,37 @@ namespace ServicesCeltaware.BackEnd.Controllers
                 throw err;
             }
         }
-       
+
+        [HttpPost]
+        public async Task<IActionResult> Upload(IFormCollection _file)
+        {
+            try
+            {
+                var id = _file.First();
+
+                var customer = _repository.Get()
+                                .Where(x => x.CustomerId == Convert.ToInt32(id.Value[0])).
+                                First();
+                string fullPath = Path.Combine(@"c:\celta business Solutions\" + customer.RootDirectory + @"\Upload\");
+
+                // vai vir um array de objetos um file e um como key text .. validar isso!!
+                foreach (var file in _file.Files)
+                {
+                    if (file.Length <= 0)
+                        return BadRequest("Arquivo não subiu corretamente tente novamente!");
+
+                    var filePath = Path.Combine(fullPath, file.FileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileStream);
+                    }                    
+                }
+                return Ok();
+            }
+            catch (Exception err)
+            {
+                return NotFound(err.Message);
+            }
+        }
     }
 }

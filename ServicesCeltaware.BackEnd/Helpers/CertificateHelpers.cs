@@ -22,11 +22,12 @@ namespace ServicesCeltaware.BackEnd.Helpers
             }
             catch(Exception err)
             {
+                ServicesCeltaWare.Tools.CommandWin32.WriteLog(err.Message);
                 return false;
             }
         }
 
-        public static DateTime GetNotAfter(ModelCertificate _certificate)
+        public async static Task<DateTime> GetNotAfter(ModelCertificate _certificate)
         {
             try
             {
@@ -41,7 +42,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                 if (!File.Exists(fileNameFullPath))
                     return DateTime.MinValue;
 
-                date = CommandWin32.ExecuteBatchWithResponse(path, argument, out error);
+                date = await ServicesCeltaWare.Tools.CommandWin32.ExecuteBatchWithResponse(path, argument);
 
                 if(!String.IsNullOrEmpty(error))
                 return DateTime.MinValue;
@@ -75,11 +76,12 @@ namespace ServicesCeltaware.BackEnd.Helpers
             }
             catch(Exception err)
             {
+                ServicesCeltaWare.Tools.CommandWin32.WriteLog(err.Message);
                 throw err;
             }
         }
 
-        public static string GetHashCert(ModelCertificate _certificate)
+        public async static Task<string> GetHashCert(ModelCertificate _certificate)
         {
             try
             {
@@ -92,7 +94,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                 string messageFormated = null;
                 if (!File.Exists(fileNameFullPath))
                     return "Arquivo inexistente";
-                message = CommandWin32.ExecuteBatchWithResponse(path, argument, out error);
+                message = await ServicesCeltaWare.Tools.CommandWin32.ExecuteBatchWithResponse(path, argument);
 
                 if (!String.IsNullOrEmpty(error))
                     return "Arquivo inexistente";
@@ -125,6 +127,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
             }
             catch (Exception err)
             {
+                ServicesCeltaWare.Tools.CommandWin32.WriteLog(err.Message);
                 throw err;
             }
         }
@@ -136,13 +139,12 @@ namespace ServicesCeltaware.BackEnd.Helpers
                 /*-f -p 1234 -importpfx "c:\Celta Business Solutions\AlbertoTeste\BS\certificadosLoja03\17376877_out.pfx" NoProtect,FriendlyName="Seane Ipelandia""*/
                 //string argument = $"installCertificate.bat {_certificate.Password} \"c:\\Celta Business Solutions\\{_certificate.Customer.RootDirectory}\\bsf\\certificados\\{_certificate.FileRepositorie}\\{_certificate.FileName}\" \"{_certificate.FriendlyName}\"";
                 //string path = $"c:\\Celta Business Solutions\\{_certificate.Customer.RootDirectory}\\bsf\\certificados\\";                
-                string message = null;
-                string error = null;
+                string message = null;                
                 //int resultCode;
 
                 string argument = $"-f -p {_certificate.Password} -importpfx \"c:\\Celta Business Solutions\\{_certificate.Customer.RootDirectory}\\BSF\\certificados\\{_certificate.FileRepositorie}\\{_certificate.FileName}\" NoProtect,FriendlyName=\"{_certificate.FriendlyName}\"";
                 //resultCode = CommandWin32.ExecuteBatch(path, argument, out error);
-                message = await CommandWin32.ExecuteSynch(@"c:\windows\system32\", "certutil.exe ", argument);
+                message = await ServicesCeltaWare.Tools.CommandWin32.Execute(@"c:\windows\system32\", "certutil.exe ", argument);
 
                 if (!message.Contains("-importPFX : comando concluído com êxito."))
                 {
@@ -153,6 +155,8 @@ namespace ServicesCeltaware.BackEnd.Helpers
             }
             catch(Exception err)
             {
+                ServicesCeltaWare.Tools.CommandWin32.WriteLog(err.Message);
+                return "oiErro";
                 throw err;
             }
         }
@@ -166,7 +170,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                 string error = null;
                 int resultCode;
 
-                message = await CommandWin32.ExecuteSynch(@"c:\windows\system32\", "certutil.exe ", argument);
+                message = await ServicesCeltaWare.Tools.CommandWin32.Execute(@"c:\windows\system32\", "certutil.exe ", argument);
 
                 if (!message.Contains("comando concluÝdo com Ûxito."))
                 {
@@ -177,7 +181,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                     return error;
                 //   CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\", @"c:\Celta Business Solutions\" + customer.RootDirectory, true, true);
                 // Salvar uma copia de backup para diretório lixeira
-                CommandWin32.Copy(@"C:\Celta Business Solutions\" + _certificate.Customer.RootDirectory + @"\BSF\Certificados\" + _certificate.FileRepositorie,
+                ServicesCeltaWare.Tools.CommandWin32.Copy(@"C:\Celta Business Solutions\" + _certificate.Customer.RootDirectory + @"\BSF\Certificados\" + _certificate.FileRepositorie,
                                   @"C:\Celta Business Solutions\" + _certificate.Customer.RootDirectory + @"\BSF\Certificados\Lixeira",
                                   true,
                                   true);
@@ -185,11 +189,12 @@ namespace ServicesCeltaware.BackEnd.Helpers
                 // Excluir o arquivo                
                 string path = $"c:\\Celta Business Solutions\\{_certificate.Customer.RootDirectory}\\bsf\\certificados\\";
                 argument = $"removeCertificateFile.bat \"C:\\Celta Business Solutions\\{_certificate.Customer.RootDirectory}\\BSF\\Certificados\\{_certificate.FileRepositorie}\\{_certificate.FileName}\"";
-                resultCode = await CommandWin32.ExecuteBatch(path, argument);
+                resultCode = await ServicesCeltaWare.Tools.CommandWin32.ExecuteBatch(path, argument);
                 return message;
             }
             catch (Exception err)
             {
+                ServicesCeltaWare.Tools.CommandWin32.WriteLog(err.Message);
                 throw err;
             }
         }
@@ -203,19 +208,18 @@ namespace ServicesCeltaware.BackEnd.Helpers
                 string argument = $"changePermissionCert.bat \"c:\\Celta Business Solutions\\{_certificate.Customer.RootDirectory}\\bsf\\certificados\\AddUsertToCertificate.ps1\" {_certificate.HashCert}";
                 string path = $"c:\\Celta Business Solutions\\{_certificate.Customer.RootDirectory}\\bsf\\certificados\\";
                 int resultCode;
-                string error = null;
+                
+                resultCode = await ServicesCeltaWare.Tools.CommandWin32.ExecuteBatch(path, argument);
 
-                resultCode = await CommandWin32.ExecuteBatch(path, argument);
-
-                if (!String.IsNullOrEmpty(error))
-                    return error;
                 argument = $"changePermissionOwner.bat \"c:\\Celta Business Solutions\\{_certificate.Customer.RootDirectory}\\bsf\\certificados\\changePermissionOwner.ps1\" {_certificate.HashCert}";
-                resultCode = await CommandWin32.ExecuteBatch(path, argument);
+                resultCode = await ServicesCeltaWare.Tools.CommandWin32.ExecuteBatch(path, argument);
 
-                return error;
+                return resultCode.ToString();
             }
             catch(Exception err)
             {
+                ServicesCeltaWare.Tools.CommandWin32.WriteLog(err.Message);
+                return "oiErro";
                 throw err;
             }
         }        

@@ -18,7 +18,8 @@ namespace ServicesCeltaWare.Model
             Failed = 1,
             Runing = 2,
             Corrupted = 3,
-            None = 4
+            None = 4,
+            OutOfDate = 5
         }
 
         public enum ValidateType

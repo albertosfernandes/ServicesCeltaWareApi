@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "ServicesCeltaWare.TaskService": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

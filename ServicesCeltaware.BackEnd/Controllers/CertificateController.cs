@@ -119,31 +119,39 @@ namespace ServicesCeltaware.BackEnd.Controllers
                 //string fullpath = @"C:\Celta Business Solutions\" + certificate.Customer.RootDirectory + @"\bsf\certificados\" + certificate.FileRepositorie;
 
                 //1- Pegar data de Expiração, NotAfter:
-                var dateOfExpiration = CertificateHelpers.GetNotAfter(certificate);
+                var dateOfExpiration = await CertificateHelpers.GetNotAfter(certificate);
                 //2- Pegar Impressão Digital Thumbprint HashCert
-                var certHash = CertificateHelpers.GetHashCert(certificate);
+                var certHash = await CertificateHelpers.GetHashCert(certificate);
                 //3- Atualizar o model
                 certificate.DateHourExpiration = dateOfExpiration;
                 certificate.HashCert = certHash;
                 certificate.IsInstalled = true;
                 _repository.Update(certificate);
+                
                 //4- Agora é instalar mesmo!!!
                 var responseInstallCert = await CertificateHelpers.InstallCert(certificate);
-                if (!String.IsNullOrEmpty(responseInstallCert)) 
+                if (responseInstallCert == "oiErro") 
                 {
-                    //deu erro!
+                    return BadRequest("Erro ao instalar certificado: " + responseInstallCert);
                 }
                 //5- Atribuir permissão todos 
                 var responseChangerPermission = await CertificateHelpers.ChangePermissions(certificate);
-                if (!String.IsNullOrEmpty(responseChangerPermission))
+                if (responseInstallCert == "oiErro")
                 {
-                    return BadRequest(responseChangerPermission);//deu erro!!
+                    return BadRequest("Erro ao configurar permissão de certificado: " + responseChangerPermission);
                 }
-                return Ok(responseChangerPermission);
+                
+                return Ok("Certificado: " +  certificate.FriendlyName + " instalado com sucesso");
             }
             catch (Exception err)
             {
-                return NotFound(err.Message);
+                var certificate = _repository.Get()
+                           .Include(c => c.Customer).
+                               Where(x => x.CertificateId == certificateIdForInstall).
+                               First();
+                certificate.IsInstalled = false;
+                _repository.Update(certificate);
+                return BadRequest(err.Message);
             }
         }        
 

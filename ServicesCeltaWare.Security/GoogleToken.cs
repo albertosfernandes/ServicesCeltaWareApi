@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
@@ -15,6 +16,7 @@ using System.Linq;
 using System.Numerics;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,15 +26,15 @@ namespace ServicesCeltaWare.Security
     {
         public static async Task<string> Get()
         {
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Iss, "teste-868@servicesceltainfra.iam.gserviceaccount.com"), //The email address of the service account.
-                //new Claim(ClaimTypes.Name, "", "scope"), 
-                new Claim(type:"scope", value: "https://www.googleapis.com/auth/drive"), //A space-delimited list of the permissions that the application requests.
-                new Claim(JwtRegisteredClaimNames.Aud, "https://oauth2.googleapis.com/token."), //When making an access token request this value is always
-                new Claim(JwtRegisteredClaimNames.Exp, DateTime.Now.AddMinutes(50).ToString()), // The expiration time of the assertion, specified as seconds since 00:00:00 UTC, January 1, 1970. This value has a maximum of 1 hour after the issued time.
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.AddMinutes(50).ToString())
-            };
+            //var claims = new[]
+            //{
+            //    //new Claim(JwtRegisteredClaimNames.Iss, "teste-868@servicesceltainfra.iam.gserviceaccount.com"), //The email address of the service account.
+            //    ////new Claim(ClaimTypes.Name, "", "scope"), 
+            //    //new Claim(type:"scope", value: "https://www.googleapis.com/auth/drive"), //A space-delimited list of the permissions that the application requests.
+            //    //new Claim(JwtRegisteredClaimNames.Aud, "https://oauth2.googleapis.com/token."), //When making an access token request this value is always
+            //    //new Claim(JwtRegisteredClaimNames.Exp, DateTime.Now.AddMinutes(50).ToString()), // The expiration time of the assertion, specified as seconds since 00:00:00 UTC, January 1, 1970. This value has a maximum of 1 hour after the issued time.
+            //    //new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.AddMinutes(50).ToString())
+            //};
 
             var servicesCeltaWareKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("keyservicesCeltaWare"));
             var credentials = new SigningCredentials(servicesCeltaWareKey, SecurityAlgorithms.HmacSha256);
@@ -40,7 +42,7 @@ namespace ServicesCeltaWare.Security
             var token = new JwtSecurityToken(
                 // issuer: "ServicesCeltaWare",
                 audience: "clientGoogle",
-                claims: claims,
+                //claims: claims,
                 signingCredentials: credentials,
                 expires: DateTime.Now.AddMinutes(30)
                 );
@@ -50,31 +52,28 @@ namespace ServicesCeltaWare.Security
             return tokenString;
         }
 
-        public static async Task<string> GetWithRSA256()
+        public static async Task<string> GetWithRSA256(string certificateFileName)
         {
             try
             {
-                string startTime = DateTime.Now.ToString();
-                string endTime = DateTime.Now.AddMinutes(60).ToString();
 
-                TimeSpan elapsed = DateTime.Parse(endTime).Subtract(DateTime.Parse(startTime));
-                DateTimeOffset issued = new DateTimeOffset(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, TimeSpan.Zero);
-                DateTimeOffset expire = new DateTimeOffset(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, TimeSpan.FromMinutes(45)).AddMinutes(45);
+                var utc0 = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+                var issueTime = DateTime.UtcNow;
+
+                var iat = (int)issueTime.Subtract(utc0).TotalSeconds;
+                var exp1 = (int)issueTime.AddMinutes(55).Subtract(utc0).TotalSeconds;
 
 
-                var claims = new List<Claim>();
-                claims.Add(new Claim(JwtRegisteredClaimNames.Iss, "teste-868@servicesceltainfra.iam.gserviceaccount.com"));
-                claims.Add(new Claim(type: "scope", value: "https://www.googleapis.com/auth/drive"));
-                claims.Add(new Claim(JwtRegisteredClaimNames.Aud, "https://oauth2.googleapis.com/token"));
-                claims.Add(new Claim(type: "exp", value: expire.ToUnixTimeSeconds().ToString()));
-                claims.Add(new Claim(type:"iat", value: issued.ToUnixTimeSeconds().ToString()));
+                var meupayload = new
+                {
+                    iss = "teste-868@servicesceltainfra.iam.gserviceaccount.com",
+                    scope = "https://www.googleapis.com/auth/drive",
+                    aud = "https://accounts.google.com/o/oauth2/token",
+                    exp = exp1,
+                    iat
+                };
 
-                AsymmetricCipherKeyPair keys = GenerateKeys();
-
-                var publicKey = GetPublicKey(keys);
-                var privateKey = GetPrivateKey(keys);              
-
-                var newToken = CreateToken(claims, privateKey);
+                var newToken = Create(meupayload, certificateFileName);
 
                 return newToken;
             }
@@ -82,6 +81,13 @@ namespace ServicesCeltaWare.Security
             {
                 throw err;
             }
+        }
+
+        public static long ConvertToUnixTime(DateTime datetime)
+        {
+            DateTime sTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+            return (long)(datetime - sTime).TotalSeconds;
         }
 
         private static AsymmetricCipherKeyPair GenerateKeys()
@@ -112,7 +118,8 @@ namespace ServicesCeltaWare.Security
             return textWriter.ToString();
         }
 
-        private static string CreateToken(List<Claim> claims, string privateRsaKey)
+        // private static string CreateToken(List<Claim> claims, string privateRsaKey)  meupayload
+        private static string CreateToken(object meupay, string privateRsaKey)
         {
             RSAParameters rsaParams;
             using (var tr = new StringReader(privateRsaKey))
@@ -129,11 +136,20 @@ namespace ServicesCeltaWare.Security
             using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
             {
                 rsa.ImportParameters(rsaParams);                
-                Dictionary<string, object> payload = claims.ToDictionary(k => k.Type, v => (object)v.Value);
-                return Jose.JWT.Encode(payload, rsa, Jose.JwsAlgorithm.RS256);
+               // Dictionary<string, object> payload = claims.ToDictionary(k => k.Type, v => (object)v.Value);
+                return Jose.JWT.Encode(meupay, rsa, Jose.JwsAlgorithm.RS256);
             }
 
 
+        }
+
+        private static string Create(object meupay, string certificateFileName)
+        {
+            var certificate = new X509Certificate2(certificateFileName, "notasecret").GetRSAPrivateKey();
+
+            //var privateKey = certificate.Export(X509ContentType.Cert);            
+
+           return Jose.JWT.Encode(meupay, certificate, Jose.JwsAlgorithm.RS256);
         }
 
 

@@ -20,7 +20,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                 {
                     try
                     {
-                        CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\", @"c:\Celta Business Solutions\" + customer.RootDirectory, true, true);
+                        ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\", @"c:\Celta Business Solutions\" + customer.RootDirectory, true, true);
                     }
                     catch(Exception err)
                     {
@@ -28,7 +28,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                         "Não foi possível criar o diretório: " + DefaultDir);
                     }                    
                 }                // 
-                string message = await CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\",
+                string message = await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\",
                                                 "appcmd.exe",
                             $" add site /name:{customer.RootDirectory + "-CeltaBS"} /physicalPath:" + "\"" + DefaultDir + "\"" + $" /bindings:http/*:{customer.CodeCeltaBs}:");
                 return message;
@@ -43,11 +43,11 @@ namespace ServicesCeltaware.BackEnd.Helpers
         {
             try
             {
-                string message = await CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\",
+                string message = await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\",
                                                 "appcmd.exe",
                             $" add apppool /name:{customer.RootDirectory}-CeltaBS");
                 
-                message +=  await CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\",
+                message +=  await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\",
                                                 "appcmd.exe",
                             $" set apppool /apppool.name:\"{customer.RootDirectory}-CeltaBS\" /enable32bitapponwin64:true");
 
@@ -69,21 +69,21 @@ namespace ServicesCeltaware.BackEnd.Helpers
                 {
                     case Enum.ProductName.None:
                         {
-                            message = await CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\",
+                            message = await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\",
                                                             "appcmd.exe",
                                         $" set site /site.name:{customer.RootDirectory}-CeltaBS /[path='/'].applicationPool:{customer.RootDirectory}-CeltaBS");
                             break;
                         }
                     case Enum.ProductName.BSF:
                         { 
-                            message = await CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\",
+                            message = await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\",
                                                             "appcmd.exe",
                                         $" set site /site.name:{customer.RootDirectory}-CeltaBS /[path='/BSF'].applicationPool:{customer.RootDirectory}-CeltaBS");
                             break;
                         }
                     case Enum.ProductName.CCS:
                         {                            
-                            message = await CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\",
+                            message = await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\",
                                                             "appcmd.exe",
                                         $" set site /site.name:{customer.RootDirectory}-CeltaBS /[path='/CCS'].applicationPool:{customer.RootDirectory}-CeltaBS");
                             break;
@@ -111,6 +111,6 @@ namespace ServicesCeltaware.BackEnd.Helpers
                 return true;
             else
                 return false;
-        }
+        }      
     }
 }

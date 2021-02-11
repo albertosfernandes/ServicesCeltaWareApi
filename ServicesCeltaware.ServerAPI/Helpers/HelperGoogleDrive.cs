@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using ServicesCeltaWare.Tools;
 using ServicesCeltaWare.UtilitariosInfra;
 using System;
 using System.Collections.Generic;
@@ -19,8 +20,26 @@ namespace ServicesCeltaware.ServerAPI.Helpers
             settings.GoogleDriveAccountMail = configuration.GetSection("Settings").GetSection("GoogleDriveAccountMail").Value;
             settings.FolderId = configuration.GetSection("Settings").GetSection("FolderId").Value;
             settings.CredentialFileName = configuration.GetSection("Settings").GetSection("CredentialFileName").Value;
-            
+            settings.GoogleAccountId = configuration.GetSection("Settings").GetSection("GoogleAccountId").Value;
+            settings.ApiKey = configuration.GetSection("Settings").GetSection("ApiKey").Value;
+
             return settings;
+        }
+
+        public async static Task<string> UploadFromLinux(string credentialFileName, string backupFileName, string path, string folderId)
+        {
+            try
+            {              
+                string script = $"/servicesCeltaWare/consolegoogle/ServicesCeltaWare.UtilitariosInfra.ConsoleGoogleApi 1 {credentialFileName} {backupFileName} {path} {folderId}";
+
+                string msg = await CommandBash.Execute(script);
+                return msg;
+            }
+            catch (Exception err)
+            {
+                return err.Message;
+            }
+
         }
 
    

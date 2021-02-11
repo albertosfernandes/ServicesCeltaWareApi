@@ -16,7 +16,7 @@ namespace ServicesCeltaware.ServerAPI.Helpers
                 string _error = "iniciando";
                 string msg = null;
 
-                msg = CommandBash.Execute(_command, out _error);
+                msg = await CommandBash.Execute(_command);
 
                 if (_error != "iniciando")
                     return _error;
@@ -32,14 +32,10 @@ namespace ServicesCeltaware.ServerAPI.Helpers
         public static async Task<string> Execute(string _command)
         {
             try
-            {
-                string _error = "iniciando";
-                string msg = null;
-                
-                msg = CommandBash.Execute(_command, out _error);
+            {             
+                string msg = await CommandBash.Execute(_command);
 
                 return msg;
-
             }
             catch (Exception err)
             {
@@ -62,8 +58,23 @@ namespace ServicesCeltaware.ServerAPI.Helpers
 
 
                 string commandBackup = $"docker exec -i {_databaseSchedule.Databases.ConteinerName} /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P {_databaseSchedule.CustomerProduct.LoginPassword}  -i /var/opt/mssql/backup/{_databaseSchedule.Databases.DatabaseName + _databaseSchedule.DateHourExecution.ToShortTimeString()}.sql";
-                string scriptBackup = $"BACKUP DATABASE [{_databaseSchedule.Databases.DatabaseName}] TO  DISK = N\'/var/opt/mssql/backup/{backupName}\'";
-                scriptBackup += $" WITH NOFORMAT, INIT,  NAME = N'{backupName}-Banco de Dados Backup', SKIP, NOREWIND, NOUNLOAD, COMPRESSION,  STATS = 10";
+
+                string scriptBackup; 
+                if (_databaseSchedule.Type == ServicesCeltaWare.Model.Enum.BackuypType.Full)
+                {
+                    scriptBackup = $"BACKUP DATABASE [{_databaseSchedule.Databases.DatabaseName}] TO  DISK = N\'/var/opt/mssql/backup/{backupName}\'";
+                    scriptBackup += $" WITH NOFORMAT, INIT,  NAME = N'{backupName}-Banco de Dados Backup', SKIP, NOREWIND, NOUNLOAD, COMPRESSION,  STATS = 10";
+                }
+
+                else
+                {                  
+                    scriptBackup = $"BACKUP DATABASE [{_databaseSchedule.Databases.DatabaseName}] TO  DISK = N\'/var/opt/mssql/backup/{backupName}\'";
+                    scriptBackup += $" WITH DIFFERENTIAL, NOFORMAT, INIT,  NAME = N'{backupName}-Banco de Dados Backup', SKIP, NOREWIND, NOUNLOAD, COMPRESSION,  STATS = 10";
+                }
+                    
+
+
+                
                 
                 if (await SystemFileHelps.FileExist(fileNameFullScript))
                 { 
@@ -121,7 +132,7 @@ namespace ServicesCeltaware.ServerAPI.Helpers
             }
         }
 
-        private static string ReturnBackupName(ModelBackupSchedule _databaseSchedule)
+        public static string ReturnBackupName(ModelBackupSchedule _databaseSchedule)
         {
             string backupName;
             if (_databaseSchedule.Type == ServicesCeltaWare.Model.Enum.BackuypType.Full)
@@ -129,7 +140,7 @@ namespace ServicesCeltaware.ServerAPI.Helpers
             else
                 backupName = $"{_databaseSchedule.Databases.DatabaseName}BackupDiff{_databaseSchedule.DateHourExecution.Hour.ToString() + _databaseSchedule.DateHourExecution.Minute.ToString()}.bak";
             return backupName;
-        }
+        }   
 
         private static string ReturnScriptName(ModelBackupSchedule _databaseSchedule, bool isValidType)
         {

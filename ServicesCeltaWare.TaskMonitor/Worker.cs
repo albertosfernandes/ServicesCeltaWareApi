@@ -19,6 +19,9 @@ namespace ServicesCeltaWare.TaskMonitor
         private List<ModelTaskMonitorSettings> listOfSettings = new List<ModelTaskMonitorSettings>();
         private List<ModelBackupSchedule> backupSchedules = new List<ModelBackupSchedule>();
 
+        private Helpers.HelperSqlDatabase _helperSqlDatabase = new Helpers.HelperSqlDatabase();
+        private Helpers.HelperGoogleDrive _helperGoogleDrive = new Helpers.HelperGoogleDrive();
+
         public Worker(ILogger<Worker> logger, IConfiguration configuration)
         {
             _logger = logger;
@@ -48,24 +51,40 @@ namespace ServicesCeltaWare.TaskMonitor
 
                             while (schedules.Count > 0)
                             {
-                                for (int i = 0; i <= schedules.Count; i++)
+                                for (int i = 0; i < schedules.Count; i++)
                                 {
                                     int isExecute = schedules[i].DateHourExecution.Minute.CompareTo(DateTime.Now.Minute);
                                     int lastExecution = schedules[i].DateHourLastExecution.Date.CompareTo(DateTime.Now.Date);
                                     if ((isExecute == 0 && lastExecution == -1) || (isExecute == -1 && lastExecution == -1) && !schedules[i].BackupStatus.Equals(Model.Enum.BackupStatus.Runing))
                                     {
                                         // está dentro do horario então executa!!!
-                                        var isExecuted = await Helpers.HelperSqlDatabase.ExecuteDatabaseSchedule(schedules[i], setting);
+                                        var isExecuted = await _helperSqlDatabase.ExecuteDatabaseSchedule(schedules[i], setting);
                                         if (isExecuted)
                                         {
                                             //backup garantido.. então inicie o upload
-                                            var respUpload = await Helpers.HelperGoogleDrive.UploadBackup(schedules[i], setting);
-                                            var resp = await Helpers.HelperSqlDatabase.UpdateStatusBackup(schedules[i], Model.Enum.BackupStatus.Success, true);
+                                            var googleDriveFileId = await _helperGoogleDrive.UploadBackup(schedules[i], setting);
+                                            if(googleDriveFileId.Contains("ERRO:"))
+                                            {
+                                                var resp = await _helperSqlDatabase.UpdateStatusBackup(schedules[i], Model.Enum.BackupStatus.OutOfDate, true);
+                                                _utilTelegram.SendMessage($"Falha no Upload do Backup: {googleDriveFileId}", _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
+                                                new Exception(googleDriveFileId);
+                                            }
+                                            else
+                                            {
+                                                schedules[i].GoogleDriveFileId = googleDriveFileId;
+                                                var resp = await _helperSqlDatabase.UpdateStatusBackup(schedules[i], Model.Enum.BackupStatus.Success, true);
+                                                if (!resp)
+                                                {
+                                                    _utilTelegram.SendMessage($"Falha no serviço TaskManager: Erro ao atualizar status do backup, GoogleFileId e Status", _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
+                                                }                                                
+                                            }
+                                            
                                         }
 
-                                        schedules.Remove(schedules[i]);
                                     }
                                 }
+                                // schedules.Remove(schedules[i]);
+                                schedules = await sqlDatabase.GetDatabaseBackupSchedule(setting.Url, DateTime.Now.Hour);
                             }
                             await Task.Delay((setting.UpdateInterval * 60) * 1000, stoppingToken);                            
                         }

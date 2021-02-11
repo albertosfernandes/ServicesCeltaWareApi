@@ -10,7 +10,7 @@ namespace ServicesCeltaWare.Model
         public ModelDatabase()
         {
             //List<ModelBackupSchedule> BackupsSchedules = new List<ModelBackupSchedule>();
-            //ModelCustomerProduct CustomerProduct = new ModelCustomerProduct();
+            ModelCustomerProduct CustomerProduct = new ModelCustomerProduct();
             //ModelBackupSchedule BackupSchedule = new ModelBackupSchedule();
         }
         [Key]

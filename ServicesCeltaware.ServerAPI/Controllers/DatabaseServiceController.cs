@@ -93,21 +93,39 @@ namespace ServicesCeltaware.ServerAPI.Controllers
                 scriptValidate = await DatabaseServiceHelper.GenerateScriptValidate(_databaseSchedule, ServicesCeltaWare.Model.Enum.ValidateType.LabelOnly);
                 string message = await DatabaseServiceHelper.Execute(scriptValidate);
 
+
+
+                //if (message.Contains("Sqlcmd: Error:") || message.Contains("Incorrect syntax") || message.Contains("Unknown Option") || message.Contains("Erro")
+                //    || message.Contains("is terminating abnormally")/* && !message.Contains("BACKUP DATABASE successfully")*/)
+                //{
+                //    return BadRequest(message + scriptValidate);
+                //}            
+                //else
+                //{
+                //    scriptValidate = await DatabaseServiceHelper.GenerateScriptValidate(_databaseSchedule, ServicesCeltaWare.Model.Enum.ValidateType.VerifyOnly);
+                //    message += await DatabaseServiceHelper.Execute(scriptValidate);
+                //    if (message.Contains("Sqlcmd: Error:") || message.Contains("Incorrect syntax") || message.Contains("Unknown Option") || message.Contains("Erro")
+                //    || message.Contains("is terminating abnormally")/* && !message.Contains("BACKUP DATABASE successfully")*/)
+                //    {
+                //        return BadRequest(message + scriptValidate);
+                //    }                    
+                //}
+
                 if (message.Contains("Sqlcmd: Error:") || message.Contains("Incorrect syntax") || message.Contains("Unknown Option") || message.Contains("Erro")
-                    || message.Contains("is terminating abnormally")/* && !message.Contains("BACKUP DATABASE successfully")*/)
+                   || message.Contains("is terminating abnormally")/* && !message.Contains("BACKUP DATABASE successfully")*/)
                 {
                     return BadRequest(message + scriptValidate);
-                }            
-                else
-                {
-                    scriptValidate = await DatabaseServiceHelper.GenerateScriptValidate(_databaseSchedule, ServicesCeltaWare.Model.Enum.ValidateType.VerifyOnly);
-                    message += await DatabaseServiceHelper.Execute(scriptValidate);
-                    if (message.Contains("Sqlcmd: Error:") || message.Contains("Incorrect syntax") || message.Contains("Unknown Option") || message.Contains("Erro")
-                    || message.Contains("is terminating abnormally")/* && !message.Contains("BACKUP DATABASE successfully")*/)
-                    {
-                        return BadRequest(message + scriptValidate);
-                    }                    
                 }
+
+                scriptValidate = await DatabaseServiceHelper.GenerateScriptValidate(_databaseSchedule, ServicesCeltaWare.Model.Enum.ValidateType.VerifyOnly);
+                message += await DatabaseServiceHelper.Execute(scriptValidate);
+
+                if (message.Contains("Sqlcmd: Error:") || message.Contains("Incorrect syntax") || message.Contains("Unknown Option") || message.Contains("Erro")
+                   || message.Contains("is terminating abnormally")/* && !message.Contains("BACKUP DATABASE successfully")*/)
+                {
+                    return BadRequest(message + scriptValidate);
+                }
+
                 return Ok(message);
             }
             catch (Exception err)
@@ -119,24 +137,24 @@ namespace ServicesCeltaware.ServerAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Restart(ModelDatabase _database)
         {
-            string command = $"docker restart {_database.ConteinerName}";
-            string message = " ";
-            message = await Helpers.DatabaseServiceHelper.Execute(command);
+            string command = $"docker restart {_database.ConteinerName}";            
+            string message = await Helpers.DatabaseServiceHelper.Execute(command);
 
             return Ok(message);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(ModelDatabase _database)
+        public async Task<IActionResult> Add([FromBody]ModelDatabase _database)
         {
-            //List<ModelBackupSchedule> lstbkp = new List<ModelBackupSchedule>();
-            //ModelBackupSchedule bkpSchedule = new ModelBackupSchedule();
-            //ModelCustomerProduct cp = new ModelCustomerProduct();
-            //_database.BackupSchedule = bkpSchedule;
-            //_database.CustomerProduct = cp;
-            //_database.BackupsSchedules = lstbkp;
-            _repository.Add(_database);
-            return Ok();
+            try
+            {
+                _repository.Add(_database);
+                return Ok();
+            }
+            catch(Exception err)
+            {
+                return BadRequest(err.Message);
+            }
         }
     }
 }

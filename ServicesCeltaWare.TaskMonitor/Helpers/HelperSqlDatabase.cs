@@ -9,9 +9,14 @@ namespace ServicesCeltaWare.TaskMonitor.Helpers
 {
     public class HelperSqlDatabase
     {
-        private static readonly HttpClient client = new HttpClient();
+        private static HttpClient client = new HttpClient();
 
-        public static async Task<bool> ExecuteDatabaseSchedule(Model.ModelBackupSchedule _backupSchedule, ModelTaskMonitorSettings _setting)
+        public HelperSqlDatabase()
+        {
+            client.Timeout = TimeSpan.FromHours(4);
+        }
+
+        public async Task<bool> ExecuteDatabaseSchedule(Model.ModelBackupSchedule _backupSchedule, ModelTaskMonitorSettings _setting)
         {
             UtilitariosInfra.UtilTelegram _utilTelegram = new UtilitariosInfra.UtilTelegram(_setting.UidTelegramToken);
             try
@@ -37,19 +42,20 @@ namespace ServicesCeltaWare.TaskMonitor.Helpers
                     }
                     return true;
                 }
-
-
+                _utilTelegram.SendMessage($"Falha ao validar arquivo backup: {_backupSchedule.Databases.DatabaseName}:{_backupSchedule.DateHourExecution.ToShortTimeString()}\brTipo: {_backupSchedule.Type}", _setting.UidTelegramDestino);
+                var resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Corrupted, true);
                 return false;
 
             }
             catch(Exception err)
             {
+                var resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Failed, true);
                 _utilTelegram.SendMessage($"Falha no sistema de backup: {_backupSchedule.Databases.DatabaseName}:{_backupSchedule.DateHourExecution.ToString()} - { err.Message}", _setting.UidTelegramDestino);
                 throw err;
             }
         }
 
-        public static async Task<bool> ExecuteBackup(Model.ModelBackupSchedule _backupSchedule, ModelTaskMonitorSettings _setting)
+        public async Task<bool> ExecuteBackup(Model.ModelBackupSchedule _backupSchedule, ModelTaskMonitorSettings _setting)
         {
             UtilitariosInfra.UtilTelegram _utilTelegram = new UtilitariosInfra.UtilTelegram(_setting.UidTelegramToken);
             try
@@ -61,6 +67,7 @@ namespace ServicesCeltaWare.TaskMonitor.Helpers
                 string url = "http://" + _backupSchedule.CustomerProduct.Server.IpAddress + ":" + _backupSchedule.CustomerProduct.Server.Port;
                 var json = JsonConvert.SerializeObject(_backupSchedule);
                 var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+                
 
                 var streamResult = await client.PostAsync(url + "/api/DatabaseService/BackupExec", stringContent);
 
@@ -72,8 +79,8 @@ namespace ServicesCeltaWare.TaskMonitor.Helpers
 
                 
                 resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Failed, true);
-                _backupSchedule.DateHourLastExecution = DateTime.Now;
-                await UpdateDateHourLastExecution(_backupSchedule);
+                //_backupSchedule.DateHourLastExecution = DateTime.Now;
+                //await UpdateDateHourLastExecution(_backupSchedule);
                 _utilTelegram.SendMessage($"Falha na execução de Backup: {_backupSchedule.Databases.DatabaseName}:{_backupSchedule.DateHourExecution.ToShortTimeString()}", _setting.UidTelegramDestino);
                 return false;
             }
@@ -83,26 +90,18 @@ namespace ServicesCeltaWare.TaskMonitor.Helpers
             }
         }
 
-        public static async Task<bool> UpdateStatusBackup(Model.ModelBackupSchedule _backupSchedule, Model.Enum.BackupStatus bkpStatus, bool bkpIsRunning)
+        public async Task<bool> UpdateStatusBackup(Model.ModelBackupSchedule _backupSchedule, Model.Enum.BackupStatus bkpStatus, bool bkpIsRunning)
         {
             string url = "http://" + _backupSchedule.CustomerProduct.Server.IpAddress + ":" + _backupSchedule.CustomerProduct.Server.Port;
             _backupSchedule.BackupStatus = bkpStatus;
 
             var json = JsonConvert.SerializeObject(_backupSchedule);
-            var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+            var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");            
 
             var streamResult = await client.PutAsync(url + "/api/DatabaseSchedule/UpdateStatus", stringContent);
 
             if (!streamResult.IsSuccessStatusCode)
-                return false;
-
-
-            if (_backupSchedule.BackupStatus.Equals(Model.Enum.BackupStatus.Success) && bkpIsRunning)
-            {
-                var resul = await UpdateDateHourLastExecution(_backupSchedule);
-                if (!resul)
-                    return false;
-            }
+                return false;            
 
             return true;
         }
@@ -110,7 +109,7 @@ namespace ServicesCeltaWare.TaskMonitor.Helpers
    
 
 
-        private static async Task<bool> UpdateDateHourLastExecution(Model.ModelBackupSchedule _backupSchedule)
+        private async Task<bool> UpdateDateHourLastExecution(Model.ModelBackupSchedule _backupSchedule)
         {
             string url = "http://" + _backupSchedule.CustomerProduct.Server.IpAddress + ":" + _backupSchedule.CustomerProduct.Server.Port;
 
@@ -125,7 +124,7 @@ namespace ServicesCeltaWare.TaskMonitor.Helpers
                 return false;
         }
 
-        private static async Task<bool> ExecuteValidateBackup(Model.ModelBackupSchedule _backupSchedule, ModelTaskMonitorSettings _setting)
+        private async Task<bool> ExecuteValidateBackup(Model.ModelBackupSchedule _backupSchedule, ModelTaskMonitorSettings _setting)
         {
             UtilitariosInfra.UtilTelegram _utilTelegram = new UtilitariosInfra.UtilTelegram(_setting.UidTelegramToken);
             try
@@ -134,6 +133,8 @@ namespace ServicesCeltaWare.TaskMonitor.Helpers
 
                 var json = JsonConvert.SerializeObject(_backupSchedule);
                 var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+                //TimeSpan t = new TimeSpan(4, 00, 00);
+                //client.Timeout = t;
 
                 var streamResult = await client.PutAsync(url + "/api/DatabaseService/ValidateBackupExec", stringContent);
 

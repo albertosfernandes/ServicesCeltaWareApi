@@ -26,12 +26,19 @@ namespace ServicesCeltaware.ServerAPI.Controllers
         [HttpGet]
         public ModelBackupSchedule Get(int id)
         {
-            var teste = _repository.Get();
-            return teste.
-                Include(c => c.CustomerProduct).
-                ThenInclude(s => s.Server).
-                Where(x => x.CustomersProductsId == id).
-                First();
+            try
+            {
+                var teste = _repository.Get();
+                return teste.
+                    Include(c => c.CustomerProduct).
+                    ThenInclude(s => s.Server).
+                    Where(x => x.CustomersProductsId == id).
+                    First();
+            }
+            catch(Exception err)
+            {
+                throw err;
+            }            
         }
 
         [HttpGet]
@@ -48,7 +55,7 @@ namespace ServicesCeltaware.ServerAPI.Controllers
         public async Task<List<ModelBackupSchedule>> GetAllByCustomerProduct(int customerProductId)
         {
             return await _repository.Get()
-                .Include(c => c.CustomerProduct)
+                .Include(c => c.CustomerProduct).ThenInclude(cps => cps.Server)
                 .Include(s => s.Databases)
                 .Where(b => b.CustomersProductsId == customerProductId)
                 .ToListAsync();
@@ -58,13 +65,11 @@ namespace ServicesCeltaware.ServerAPI.Controllers
         public async Task<List<ModelBackupSchedule>> GetAllByTime(int hourSchedule)
         {
             try
-            {
-                //TimeSpan result = TimeSpan.FromHours(hourSchedule);
-                
+            {                
                 return await _repository.Get()
                         .Include(c => c.CustomerProduct).ThenInclude(cps => cps.Server)
                         .Include(s => s.Databases)
-                        .Where(t => t.DateHourExecution.Hour == hourSchedule)
+                        .Where(t => t.DateHourExecution.Hour == hourSchedule && t.DateHourLastExecution.Date != DateTime.Now.Date)
                         .ToListAsync();
             }
             catch(Exception err)
@@ -107,7 +112,7 @@ namespace ServicesCeltaware.ServerAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(ModelBackupSchedule backupSchedule)
+        public ActionResult Add([FromBody]ModelBackupSchedule backupSchedule)
         {
             try
             {
@@ -127,12 +132,14 @@ namespace ServicesCeltaware.ServerAPI.Controllers
             {
                 var bkpSchedule = _repository.Find(_databaseSchedule.BackupScheduleId);
                 bkpSchedule.BackupStatus = _databaseSchedule.BackupStatus;
-                _repository.Update(_databaseSchedule);
+                bkpSchedule.GoogleDriveFileId = _databaseSchedule.GoogleDriveFileId;
+                bkpSchedule.DateHourLastExecution = DateTime.Now;
+                _repository.Update(bkpSchedule);
                 return Ok();
             }
             catch(Exception err)
             {
-                return BadRequest(err.Message);
+                return BadRequest(err.Message + "\n" + err.InnerException.Message);
             }
         }
 

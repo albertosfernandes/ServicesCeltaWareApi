@@ -13,13 +13,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicesCeltaware.ServerAPI
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicesCeltaWare.Tools", "ServicesCeltaWare.Tools\ServicesCeltaWare.Tools.csproj", "{012EB8E0-FE9C-4AE7-AE6B-7D6569AE46F8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicesCeltaWare.TaskMonitor", "ServicesCeltaWare.TaskMonitor\ServicesCeltaWare.TaskMonitor.csproj", "{3F10BF52-8359-40DB-A319-6062B7278649}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicesCeltaWare.UtilitariosInfra.Telegram", "..\ServicesCeltaWare.UtilitariosInfra\ServicesCeltaWare.UtilitariosInfra.Telegram\ServicesCeltaWare.UtilitariosInfra.Telegram.csproj", "{3ABEF9CC-07DB-4B2A-8632-9CF39E96B2A6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicesCeltaWare.UtilitariosInfra.GoogleApiStandard", "..\ServicesCeltaWare.UtilitariosInfra\ServicesCeltaWare.UtilitariosInfra.GoogleApiStandard\ServicesCeltaWare.UtilitariosInfra.GoogleApiStandard.csproj", "{7B7447F6-3121-446B-9BED-ACD7256380AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesCeltaWare.Security", "ServicesCeltaWare.Security\ServicesCeltaWare.Security.csproj", "{6F2928FD-CF58-4E4A-B077-C7F911B1F14D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicesCeltaWare.Security", "ServicesCeltaWare.Security\ServicesCeltaWare.Security.csproj", "{6F2928FD-CF58-4E4A-B077-C7F911B1F14D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicesCeltaWare.TaskService", "ServicesCeltaWare.TaskService\ServicesCeltaWare.TaskService.csproj", "{66C73B9D-9317-4E18-8383-E454DDA427B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +47,6 @@ Global
 		{012EB8E0-FE9C-4AE7-AE6B-7D6569AE46F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{012EB8E0-FE9C-4AE7-AE6B-7D6569AE46F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{012EB8E0-FE9C-4AE7-AE6B-7D6569AE46F8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3F10BF52-8359-40DB-A319-6062B7278649}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3F10BF52-8359-40DB-A319-6062B7278649}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3F10BF52-8359-40DB-A319-6062B7278649}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3F10BF52-8359-40DB-A319-6062B7278649}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3ABEF9CC-07DB-4B2A-8632-9CF39E96B2A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3ABEF9CC-07DB-4B2A-8632-9CF39E96B2A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3ABEF9CC-07DB-4B2A-8632-9CF39E96B2A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -63,6 +59,10 @@ Global
 		{6F2928FD-CF58-4E4A-B077-C7F911B1F14D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F2928FD-CF58-4E4A-B077-C7F911B1F14D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F2928FD-CF58-4E4A-B077-C7F911B1F14D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66C73B9D-9317-4E18-8383-E454DDA427B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66C73B9D-9317-4E18-8383-E454DDA427B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66C73B9D-9317-4E18-8383-E454DDA427B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66C73B9D-9317-4E18-8383-E454DDA427B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

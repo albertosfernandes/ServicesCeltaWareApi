@@ -18,14 +18,14 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "netstandard1.3"
+          "netstandard2.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "netstandard1.3": {
+          "netstandard2.0": {
             "projectReferences": {}
           }
         },
@@ -36,7 +36,7 @@
         }
       },
       "frameworks": {
-        "netstandard1.3": {
+        "netstandard2.0": {
           "dependencies": {
             "Google.Apis": {
               "target": "Package",
@@ -63,12 +63,27 @@
               "version": "[1.0.8, )"
             },
             "NETStandard.Library": {
+              "suppressParent": "All",
               "target": "Package",
-              "version": "[1.6.1, )",
+              "version": "[2.0.3, )",
               "autoReferenced": true
+            },
+            "RestSharp": {
+              "target": "Package",
+              "version": "[106.11.7, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.112\\RuntimeIdentifierGraph.json"
         }
       }
     },
@@ -145,7 +160,7 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.112\\RuntimeIdentifierGraph.json"
         }
       }
     },
@@ -200,7 +215,7 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.112\\RuntimeIdentifierGraph.json"
         }
       }
     },
@@ -271,7 +286,7 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.112\\RuntimeIdentifierGraph.json"
         }
       }
     },
@@ -289,14 +304,14 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "netcoreapp2.2"
+          "netcoreapp3.1"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "netcoreapp2.2": {
+          "netcoreapp3.1": {
             "projectReferences": {
               "C:\\Alberto\\GitHub\\albertosfernandes\\ServicesCeltaWare.UtilitariosInfra\\ServicesCeltaWare.UtilitariosInfra.GoogleApiStandard\\ServicesCeltaWare.UtilitariosInfra.GoogleApiStandard.csproj": {
                 "projectPath": "C:\\Alberto\\GitHub\\albertosfernandes\\ServicesCeltaWare.UtilitariosInfra\\ServicesCeltaWare.UtilitariosInfra.GoogleApiStandard\\ServicesCeltaWare.UtilitariosInfra.GoogleApiStandard.csproj"
@@ -323,24 +338,20 @@
         }
       },
       "frameworks": {
-        "netcoreapp2.2": {
+        "netcoreapp3.1": {
           "dependencies": {
-            "Microsoft.AspNetCore.App": {
-              "suppressParent": "All",
+            "Google.Apis.Auth.AspNetCore3": {
               "target": "Package",
-              "version": "[2.2.0, )",
-              "autoReferenced": true
+              "version": "[1.49.0, )"
+            },
+            "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
+              "target": "Package",
+              "version": "[3.0.0, )"
             },
             "Microsoft.AspNetCore.Razor.Design": {
               "suppressParent": "All",
               "target": "Package",
               "version": "[2.2.0, )"
-            },
-            "Microsoft.NETCore.App": {
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[2.2.0, )",
-              "autoReferenced": true
             },
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
@@ -357,7 +368,15 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.112\\RuntimeIdentifierGraph.json"
         }
       }
     },
@@ -412,7 +431,7 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.112\\RuntimeIdentifierGraph.json"
         }
       }
     }

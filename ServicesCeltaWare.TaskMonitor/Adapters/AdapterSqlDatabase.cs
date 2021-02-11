@@ -53,9 +53,7 @@ namespace ServicesCeltaWare.TaskMonitor.Adapters
                 var options = new JsonSerializerOptions()
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                };
-                //string ip = _database.CustomerProduct.Server.IpAddress;
-                //string port = _database.CustomerProduct.Server.Port.ToString();
+                };                
 
                 var streamBackupSchedule = client.GetStreamAsync($"{_url}/api/DatabaseSchedule/GetAllByTime?hourSchedule={hourNow}");
                 backupSchedules = await JsonSerializer.DeserializeAsync<List<ModelBackupSchedule>>(await streamBackupSchedule, options);

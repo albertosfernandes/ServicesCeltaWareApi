@@ -18,5 +18,6 @@ namespace ServicesCeltaWare.Model
         public BackupStatus BackupStatus { get; set; }
         public int DatabasesId { get; set; }
         public ModelDatabase Databases { get; set; }
+        public string GoogleDriveFileId { get; set; }
     }
 }

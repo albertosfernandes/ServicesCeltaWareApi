@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ServicesCeltaWare.Tools
 {
     public class CommandBash
     {
-        public static string Execute(string args, out string error)
+        public async static Task<string> Execute(string args)
         {
             try
             {
                 string message = null;
-                error = null;
+                string error = null;
 
                 using (Process p1 = new Process())
                 {
@@ -27,11 +28,13 @@ namespace ServicesCeltaWare.Tools
                     p1.Start();
 
                     var idProcess = p1.Id;
-
+                    p1.WaitForExit();
+                   
                     message = p1.StandardOutput.ReadToEnd();
                     error = p1.StandardError.ReadToEnd();
-                    p1.WaitForExit((1 * 1000) * 60);
-
+                    Console.WriteLine(message);
+                    Console.WriteLine(error);
+                   
 
                     p1.Close();
 

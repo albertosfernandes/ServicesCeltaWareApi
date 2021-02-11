@@ -14,7 +14,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
     {
         public async static Task<string> CreateProducts(ProductName productName, ModelCustomerProduct customerProduct)
         {
-            try
+            try //ServicesCeltaWare.Tools.CommandWin32.WriteLog(err.Message);
             {
                 string msgCreateSite = null;
                 string _error = null;
@@ -26,8 +26,8 @@ namespace ServicesCeltaware.BackEnd.Helpers
                     case ProductName.BSF:
                         {
                             if (!dir.Exists)
-                                CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\BSF", dir.ToString(), true, true);
-                            msgCreateSite = await CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\", "appcmd.exe",  // /physicalPath:" + "\"" + DefaultDir + " \"" +                          
+                                ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\BSF", dir.ToString(), true, true);
+                            msgCreateSite = await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\", "appcmd.exe",  // /physicalPath:" + "\"" + DefaultDir + " \"" +                          
                             $" add app /site.name:{customerProduct.Customer.RootDirectory}-CeltaBS /path:/{customerProduct.InstallDirectory} /physicalPath:"+"\""+dir+"\"");
                             
                             ChangeDefaultHtm(customerProduct.Customer.RootDirectory, customerProduct.Port, Enum.ProductName.BSF);
@@ -36,8 +36,8 @@ namespace ServicesCeltaware.BackEnd.Helpers
                     case ProductName.CCS:
                         {
                             if (!dir.Exists)
-                                CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\CCS", dir.ToString(), true, true);
-                            msgCreateSite = await CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\", "appcmd.exe",
+                                ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\CCS", dir.ToString(), true, true);
+                            msgCreateSite = await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\", "appcmd.exe",
                             $" add app /site.name:{customerProduct.Customer.RootDirectory}-CeltaBS /path:/{customerProduct.InstallDirectory} /physicalPath:"+"\""+dir+"\"");
                             
                             ChangeDefaultHtm(customerProduct.Customer.RootDirectory, customerProduct.Port, Enum.ProductName.CCS);
@@ -46,8 +46,8 @@ namespace ServicesCeltaware.BackEnd.Helpers
                     case ProductName.CSS:
                         {
                             if (!dir.Exists)
-                                CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\CSS\WebService", dir.ToString(), true, true);
-                            msgCreateSite = await CommandWin32.ExecuteTeste(@"C:\Windows\System32\inetsrv\", "appcmd.exe",
+                                ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\CSS\WebService", dir.ToString(), true, true);
+                            msgCreateSite = await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\", "appcmd.exe",
                             $" add app /site.name:{customerProduct.Customer.RootDirectory}-CeltaBS /path:/{ValidateNameForPathSite(customerProduct.InstallDirectory)} /physicalPath:" + "\"" + dir +" \"");
                             break;
                         }
@@ -69,7 +69,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                             {
                                 dir.Create();
                             }
-                            CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\bsf\certificados", dir.ToString(), true, true);
+                            ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\bsf\certificados", dir.ToString(), true, true);
                             break;
                         }
                     default: break;
