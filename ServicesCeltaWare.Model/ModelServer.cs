@@ -8,7 +8,7 @@ namespace ServicesCeltaWare.Model
     public class ModelServer
     {
         [Key]
-        public int ServersId { get; set; }
+        public int ServersId { get; set; }        
         public string IpAddress { get; set; }
         public int Port { get; set; }
         public string Hostname { get; set; }

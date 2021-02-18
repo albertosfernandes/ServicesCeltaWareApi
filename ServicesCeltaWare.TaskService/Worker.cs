@@ -54,36 +54,42 @@ namespace ServicesCeltaWare.TaskService
                                 WriteLog("Nenhum backup agendado para este horario!");
                             while (schedules.Count > 0)
                             {
+                                foreach (var sch in schedules)
+                                {
+                                    WriteLog("Iniciando processo backup de: " + sch.Databases.DatabaseName + " " + sch.DateHourExecution.Hour);
+                                }
                                 for (int i = 0; i < schedules.Count; i++)
                                 {                                    
                                     int isExecute = schedules[i].DateHourExecution.Minute.CompareTo(DateTime.Now.Minute);
                                     int lastExecution = schedules[i].DateHourLastExecution.Date.CompareTo(DateTime.Now.Date);
                                     if ((isExecute == 0 && lastExecution == -1) || (isExecute == -1 && lastExecution == -1) && !schedules[i].BackupStatus.Equals(Model.Enum.BackupStatus.Runing))
                                     {
-                                        WriteLog("Iniciando processo backup de: " + schedules[i].Databases.DatabaseName + " " + schedules[i].DateHourExecution.Hour);
+                                        
+                                        var resp = _helperSqlDatabase.BackupRun(schedules[i], setting);
+                                        
                                         // está dentro do horario então executa!!!
-                                        var isExecuted = await _helperSqlDatabase.ExecuteDatabaseSchedule(schedules[i], setting);
-                                        if (isExecuted)
-                                        {
-                                            //backup garantido.. então inicie o upload
-                                            var googleDriveFileId = await _helperGoogleDrive.UploadBackup(schedules[i], setting);
-                                            if (googleDriveFileId.Contains("ERRO"))
-                                            {
-                                                var resp = await _helperSqlDatabase.UpdateStatusBackup(schedules[i], Model.Enum.BackupStatus.OutOfDate, true, setting);
-                                                _utilTelegram.SendMessage($"Falha no Upload do Backup: {googleDriveFileId}", _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
-                                                new Exception(googleDriveFileId);
-                                            }
-                                            else
-                                            {
-                                                schedules[i].GoogleDriveFileId = googleDriveFileId;
-                                                var resp = await _helperSqlDatabase.UpdateStatusBackup(schedules[i], Model.Enum.BackupStatus.Success, true, setting);
-                                                if (!resp.Equals("sucess"))
-                                                {
-                                                    _utilTelegram.SendMessage($"Falha no serviço TaskManager: Erro ao atualizar status do backup, GoogleFileId e Status. " + resp, _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
-                                                }
-                                            }
+                                        //var isExecuted = await _helperSqlDatabase.ExecuteDatabaseSchedule(schedules[i], setting);
+                                        //if (isExecuted)
+                                        //{
+                                        //    //backup garantido.. então inicie o upload
+                                        //    var googleDriveFileId = await _helperGoogleDrive.UploadBackup(schedules[i], setting);
+                                        //    if (googleDriveFileId.Contains("ERRO"))
+                                        //    {
+                                        //        var resp = await _helperSqlDatabase.UpdateStatusBackup(schedules[i], Model.Enum.BackupStatus.OutOfDate, true, setting);
+                                        //        _utilTelegram.SendMessage($"Falha no Upload do Backup: {googleDriveFileId}", _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
+                                        //        new Exception(googleDriveFileId);
+                                        //    }
+                                        //    else
+                                        //    {
+                                        //        schedules[i].GoogleDriveFileId = googleDriveFileId;
+                                        //        var resp = await _helperSqlDatabase.UpdateStatusBackup(schedules[i], Model.Enum.BackupStatus.Success, true, setting);
+                                        //        if (!resp.Equals("sucess"))
+                                        //        {
+                                        //            _utilTelegram.SendMessage($"Falha no serviço TaskManager: Erro ao atualizar status do backup, GoogleFileId e Status. " + resp, _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
+                                        //        }
+                                        //    }
 
-                                        }
+                                        //}
 
                                     }
                                 }

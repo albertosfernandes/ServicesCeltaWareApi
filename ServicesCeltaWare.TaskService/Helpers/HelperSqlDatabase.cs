@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -10,11 +11,50 @@ namespace ServicesCeltaWare.TaskService.Helpers
     public class HelperSqlDatabase
     {
         private static HttpClient client = new HttpClient();
+        private HelperGoogleDrive _helperGoogleDrive = new Helpers.HelperGoogleDrive();
+        private readonly IConfiguration _configuration;
 
         public HelperSqlDatabase()
         {
             client.Timeout = TimeSpan.FromHours(4);
         }
+
+        public async Task<string> BackupRun(Model.ModelBackupSchedule _backupSchedule, ModelTaskServiceSettings _setting)
+        {
+            try
+            {
+                UtilitariosInfra.UtilTelegram _utilTelegram = new UtilitariosInfra.UtilTelegram(_setting.UidTelegramToken);
+                string resp = null;
+
+                var isExecuted = await ExecuteDatabaseSchedule(_backupSchedule, _setting);
+                if (isExecuted)
+                {
+                    //backup garantido.. então inicie o upload
+                    var googleDriveFileId = await _helperGoogleDrive.UploadBackup(_backupSchedule, _setting);
+                    if (googleDriveFileId.Contains("ERRO"))
+                    {
+                        resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.OutOfDate, true, _setting);
+                        _utilTelegram.SendMessage($"Falha no Upload do Backup: {googleDriveFileId}", _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
+                        new Exception(googleDriveFileId);
+                    }
+                    else
+                    {
+                        _backupSchedule.GoogleDriveFileId = googleDriveFileId;
+                        resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Success, true, _setting);
+                        if (!resp.Equals("sucess"))
+                        {
+                            _utilTelegram.SendMessage($"Falha no serviço TaskManager: Erro ao atualizar status do backup, GoogleFileId e Status. " + resp, _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
+                        }
+                    }
+                }
+                return resp;
+            }
+            catch (Exception err)
+            {
+                return err.Message;
+            }
+        }
+            
 
         public async Task<bool> ExecuteDatabaseSchedule(Model.ModelBackupSchedule _backupSchedule, ModelTaskServiceSettings _setting)
         {

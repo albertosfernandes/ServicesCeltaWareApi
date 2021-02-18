@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ServicesCeltaWare.DAL
 {
     public interface IRepository<TEntity>
     {
         List<TEntity> GetAll();
+        Task<List<TEntity>> GetAllAsynch();
 
         IQueryable<TEntity> Get();
 

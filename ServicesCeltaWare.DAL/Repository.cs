@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ServicesCeltaWare.DAL
 {
@@ -18,6 +19,11 @@ namespace ServicesCeltaWare.DAL
         public List<TEntity> GetAll()
         {
             return _context.Set<TEntity>().ToList();
+        }
+
+        public async Task<List<TEntity>> GetAllAsynch()
+        {
+            return await _context.Set<TEntity>().ToListAsync();
         }
 
         public IQueryable<TEntity> Get()

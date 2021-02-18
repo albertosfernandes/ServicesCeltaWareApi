@@ -54,7 +54,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
                 else
                     return DateTime.MinValue;
             }
-            catch (Exception err)
+            catch (Exception)
             {
                 return DateTime.MinValue;
             }

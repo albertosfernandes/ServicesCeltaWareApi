@@ -44,8 +44,8 @@ namespace ServicesCeltaware.BackEnd.Controllers
         }
 
         [HttpGet]
-        public ModelCustomer Find(string valueSearch)
-        {
+        public async Task<List<ModelCustomer>> Find(string valueSearch)
+        {            
             try
             {
                 int codeBS = 0;
@@ -57,17 +57,25 @@ namespace ServicesCeltaware.BackEnd.Controllers
                 {
                     codeBS = Convert.ToInt32(valueSearch);
                 }
-            
-                return _repository.Get()
-                    .Where(x => x.CodeCeltaBs == codeBS ||
-                                x.Cnpj == valueSearch ||
-                                x.FantasyName.Contains(valueSearch) )                
-                    .First();            
+
+                var _customers = await  _repository.GetAllAsynch();
+
+                if (valueSearch.Equals("all") || String.IsNullOrEmpty(valueSearch))
+                {
+                    return _customers.OrderBy(s => s.FantasyName).ToList();   
+                }
+
+                return (from customer in _customers
+                            where customer.FantasyName.ToUpperInvariant().Contains(valueSearch.ToUpperInvariant()) ||
+                           customer.Cnpj.Contains(valueSearch) ||
+                           customer.CodeCeltaBs == codeBS
+                           orderby customer.FantasyName
+                           select customer).ToList();
+
             }
             catch(Exception err)
             {
-                ModelCustomer customerError = new ModelCustomer();
-                return customerError;
+                throw err;
             }
         }
 
