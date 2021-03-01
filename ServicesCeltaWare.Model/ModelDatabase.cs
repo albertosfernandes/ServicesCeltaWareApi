@@ -9,21 +9,19 @@ namespace ServicesCeltaWare.Model
     {
         public ModelDatabase()
         {
-            //List<ModelBackupSchedule> BackupsSchedules = new List<ModelBackupSchedule>();
             ModelCustomerProduct CustomerProduct = new ModelCustomerProduct();
-            //ModelBackupSchedule BackupSchedule = new ModelBackupSchedule();
         }
         [Key]
         public int DatabasesId { get; set; }
+        public int StorageServerId { get; set; }
+        public ModelStorageServer StorageServer { get; set; }
         public string  ConteinerName { get; set; }
         public string DatabaseName { get; set; }
         public int CustomersProductsId { get; set; }
         public ModelCustomerProduct CustomerProduct { get; set; }
         public int MemoryRam { get; set; }
         public string Directory { get; set; }
-        public int Storage { get; set; }
-        //public int BackupScheduleId { get; set; }
-        //public ModelBackupSchedule BackupSchedule { get; set; }
-        //public List<ModelBackupSchedule> BackupsSchedules { get; set; }
+        public string MapperName { get; set; }
+        public int StorageLenght { get; set; }
     }
 }

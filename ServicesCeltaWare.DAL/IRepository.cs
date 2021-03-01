@@ -14,9 +14,11 @@ namespace ServicesCeltaWare.DAL
         IQueryable<TEntity> Get();
 
         void Add(TEntity model);
+        Task<int> AddAsynch(TEntity model);
 
         void Update(TEntity model);
 
+        Task<TEntity> FindAsynch(int id);
         TEntity Find(int id);
 
         void Delete(TEntity model);

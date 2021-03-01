@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static ServicesCeltaware.BackEnd.Enum;
+using static ServicesCeltaWare.Model.Enum;
 
 namespace ServicesCeltaware.BackEnd.Helpers
 {
@@ -17,8 +17,6 @@ namespace ServicesCeltaware.BackEnd.Helpers
             try //ServicesCeltaWare.Tools.CommandWin32.WriteLog(err.Message);
             {
                 string msgCreateSite = null;
-                string _error = null;
-                string error = null;
                 string directory = @"C:\Celta Business Solutions\" + customerProduct.Customer.RootDirectory + @"\" + customerProduct.InstallDirectory;
                 DirectoryInfo dir = new DirectoryInfo(directory);
                 switch (productName)
@@ -30,7 +28,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                             msgCreateSite = await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\", "appcmd.exe",  // /physicalPath:" + "\"" + DefaultDir + " \"" +                          
                             $" add app /site.name:{customerProduct.Customer.RootDirectory}-CeltaBS /path:/{customerProduct.InstallDirectory} /physicalPath:"+"\""+dir+"\"");
                             
-                            ChangeDefaultHtm(customerProduct.Customer.RootDirectory, customerProduct.Port, Enum.ProductName.BSF);
+                            ChangeDefaultHtm(customerProduct.Customer.RootDirectory, customerProduct.Port, ServicesCeltaWare.Model.Enum.ProductName.BSF);
                             break;
                         }
                     case ProductName.CCS:
@@ -40,7 +38,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                             msgCreateSite = await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\", "appcmd.exe",
                             $" add app /site.name:{customerProduct.Customer.RootDirectory}-CeltaBS /path:/{customerProduct.InstallDirectory} /physicalPath:"+"\""+dir+"\"");
                             
-                            ChangeDefaultHtm(customerProduct.Customer.RootDirectory, customerProduct.Port, Enum.ProductName.CCS);
+                            ChangeDefaultHtm(customerProduct.Customer.RootDirectory, customerProduct.Port, ProductName.CCS);
                             break;
                         }
                     case ProductName.CSS:
@@ -99,13 +97,13 @@ namespace ServicesCeltaware.BackEnd.Helpers
             }
         }
 
-        private static void ChangeDefaultHtm(string directory, string portNumberBSF, Enum.ProductName _productName)
+        private static void ChangeDefaultHtm(string directory, string portNumberBSF, ServicesCeltaWare.Model.Enum.ProductName _productName)
         {
             try
             {
                 switch (_productName)
                 {
-                    case Enum.ProductName.BSF:
+                    case ProductName.BSF:
                     {
                             var defaultHtmPath = @"C:\Celta Business Solutions\" + directory + @"\BSF\default.htm";
 

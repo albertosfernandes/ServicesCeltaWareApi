@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using ServicesCeltaware.BackEnd.Helpers;
 using ServicesCeltaWare.DAL;
 using ServicesCeltaWare.Model;
-using static ServicesCeltaware.BackEnd.Enum;
+using static ServicesCeltaWare.Model.Enum;
 
 namespace ServicesCeltaware.BackEnd.Controllers
 {
@@ -69,7 +69,11 @@ namespace ServicesCeltaware.BackEnd.Controllers
             }
             catch(Exception err)
             {
-                return Ok(err.Message);
+                if (err.InnerException != null)
+                {
+                    return BadRequest(err.Message + "\n" + err.InnerException.Message);
+                }
+                return BadRequest(err.Message);
             }
         }
 
@@ -84,7 +88,6 @@ namespace ServicesCeltaware.BackEnd.Controllers
                     .Where(cp => cp.CustomersProductsId == _customerProduct.CustomersProductsId)
                     .First();
 
-                string error;
                 ProductName product = ProductName.BSF;
                 switch (_customerProduct.ProductId)
                 {

@@ -72,7 +72,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
 
                 return VersionFile(_customerSettings);
             }
-            catch (Exception err)
+            catch (Exception)
             {
                 return DateTime.MinValue;
             }
@@ -90,7 +90,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
 
                 return LastExecution(_customerSettings);
             }
-            catch (Exception err)
+            catch (Exception)
             {
                 return DateTime.MinValue;
             }
@@ -279,7 +279,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
                 }
                 return false;
             }
-            catch (Exception err)
+            catch (Exception)
             {
                 return false;
             }
@@ -439,7 +439,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
                     return DateTime.MinValue;
 
             }
-            catch (Exception erro)
+            catch (Exception)
             {
                 return DateTime.MinValue;
             }
@@ -457,7 +457,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
                     return DateTime.MinValue;
 
             }
-            catch (Exception erro)
+            catch (Exception)
             {
                 return DateTime.MinValue;
             }

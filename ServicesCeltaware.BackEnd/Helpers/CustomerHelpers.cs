@@ -22,7 +22,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                     {
                         ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\", @"c:\Celta Business Solutions\" + customer.RootDirectory, true, true);
                     }
-                    catch(Exception err)
+                    catch(Exception)
                     {
                         throw new DirectoryNotFoundException(
                         "Não foi possível criar o diretório: " + DefaultDir);
@@ -59,29 +59,28 @@ namespace ServicesCeltaware.BackEnd.Helpers
             }
         }
 
-        public async static Task<string> ChangePool(ModelCustomer customer, Enum.ProductName _productName)
+        public async static Task<string> ChangePool(ModelCustomer customer, ServicesCeltaWare.Model.Enum.ProductName _productName)
         {
             try
             {
                 string message = null;
-                string _error = null;
                 switch (_productName)
                 {
-                    case Enum.ProductName.None:
+                    case ServicesCeltaWare.Model.Enum.ProductName.None:
                         {
                             message = await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\",
                                                             "appcmd.exe",
                                         $" set site /site.name:{customer.RootDirectory}-CeltaBS /[path='/'].applicationPool:{customer.RootDirectory}-CeltaBS");
                             break;
                         }
-                    case Enum.ProductName.BSF:
+                    case ServicesCeltaWare.Model.Enum.ProductName.BSF:
                         { 
                             message = await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\",
                                                             "appcmd.exe",
                                         $" set site /site.name:{customer.RootDirectory}-CeltaBS /[path='/BSF'].applicationPool:{customer.RootDirectory}-CeltaBS");
                             break;
                         }
-                    case Enum.ProductName.CCS:
+                    case ServicesCeltaWare.Model.Enum.ProductName.CCS:
                         {                            
                             message = await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\",
                                                             "appcmd.exe",

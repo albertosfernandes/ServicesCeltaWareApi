@@ -13,8 +13,7 @@ namespace ServicesCeltaWare.TaskService.Helpers
     public class HelperGoogleDrive
     {
         private static readonly HttpClient client = new HttpClient();
-        private Helpers.HelperSqlDatabase _helperSqlDatabase = new HelperSqlDatabase();
-
+        // private static HelperSqlDatabase _helperSqlDatabase = new HelperSqlDatabase();
         public HelperGoogleDrive()
         {
             client.Timeout = TimeSpan.FromHours(4);
@@ -23,16 +22,16 @@ namespace ServicesCeltaWare.TaskService.Helpers
         public async Task<string> UploadBackup(Model.ModelBackupSchedule _backupSchedule, ModelTaskServiceSettings _setting)
         {
             UtilitariosInfra.UtilTelegram _utilTelegram = new UtilitariosInfra.UtilTelegram(_setting.UidTelegramToken);
+            
             try
-            {
-              
+            {              
                 string url = "http://" + _backupSchedule.CustomerProduct.Server.IpAddress + ":" + _backupSchedule.CustomerProduct.Server.Port;
                 var json = JsonConvert.SerializeObject(_backupSchedule);
                 var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
 
-                Worker.WriteLog("Iniciando Upload de:" + _backupSchedule.Databases.DatabaseName + " as " + DateTime.Now);
+                await Worker.WriteLog("Iniciando Upload de:" + _backupSchedule.Databases.DatabaseName + " as " + DateTime.Now);
                 var streamResult = await client.PostAsync(url + "/api/GoogleDriveService/Upload", stringContent);
-                Worker.WriteLog("Upload finalizado:" + streamResult.Content.ReadAsStringAsync());
+                await Worker.WriteLog("Upload finalizado:" + streamResult.Content.ReadAsStringAsync());
 
                 if (!streamResult.IsSuccessStatusCode)
                 {
@@ -52,7 +51,7 @@ namespace ServicesCeltaWare.TaskService.Helpers
             }
             catch (Exception err)
             {
-                var resp = await _helperSqlDatabase.UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.OutOfDate, true, _setting);
+                // var resp = await _helperSqlDatabase.UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.OutOfDate, true, _setting);
                 _utilTelegram.SendMessage($"Falha durante armazenamento no GDrive: {_backupSchedule.Databases.DatabaseName}:{_backupSchedule.DateHourExecution.ToString()} \rMensagem: { err.Message}", _setting.UidTelegramDestino);
                 throw err;
             }
@@ -93,7 +92,7 @@ namespace ServicesCeltaWare.TaskService.Helpers
                     }
                 }                
             }
-            catch (Exception err)
+            catch (Exception)
             {
                 return false;
             }

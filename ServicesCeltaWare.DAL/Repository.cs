@@ -45,10 +45,29 @@ namespace ServicesCeltaWare.DAL
 
             
         }
+        public Task<int> AddAsynch(TEntity model)
+        {
+            try
+            {
+                _context.AddAsync(model);
+                return _context.SaveChangesAsync();
+            }
+            catch (Exception err)
+            {
+                throw err;
+            }
+
+
+        }
 
         public void Update(TEntity model)
         {
             _context.SaveChanges();
+        }
+
+        public Task<TEntity> FindAsynch(int id)
+        {
+            return _context.FindAsync<TEntity>(id);
         }
 
         public TEntity Find(int id)

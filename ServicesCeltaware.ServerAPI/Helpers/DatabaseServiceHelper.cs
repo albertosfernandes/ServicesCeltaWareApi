@@ -53,8 +53,10 @@ namespace ServicesCeltaware.ServerAPI.Helpers
                 string backupName;
                 if (_databaseSchedule.Type == ServicesCeltaWare.Model.Enum.BackuypType.Full)
                     backupName = $"{_databaseSchedule.Databases.DatabaseName}BackupFull.bak";
-                else
+                else if (_databaseSchedule.Type == ServicesCeltaWare.Model.Enum.BackuypType.Diferential)
                     backupName = $"{_databaseSchedule.Databases.DatabaseName}BackupDiff{_databaseSchedule.DateHourExecution.Hour.ToString()+ _databaseSchedule.DateHourExecution.Minute.ToString()}.bak";
+                else
+                    backupName = $"{_databaseSchedule.Databases.DatabaseName}BackupIncremetalLog{_databaseSchedule.DateHourExecution.Hour.ToString() + _databaseSchedule.DateHourExecution.Minute.ToString()}.bak";
 
 
                 string commandBackup = $"docker exec -i {_databaseSchedule.Databases.ConteinerName} /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P {_databaseSchedule.CustomerProduct.LoginPassword}  -i /var/opt/mssql/backup/{_databaseSchedule.Databases.DatabaseName + _databaseSchedule.DateHourExecution.ToShortTimeString()}.sql";
@@ -62,19 +64,21 @@ namespace ServicesCeltaware.ServerAPI.Helpers
                 string scriptBackup; 
                 if (_databaseSchedule.Type == ServicesCeltaWare.Model.Enum.BackuypType.Full)
                 {
-                    scriptBackup = $"BACKUP DATABASE [{_databaseSchedule.Databases.DatabaseName}] TO  DISK = N\'/var/opt/mssql/backup/{backupName}\'";
+                    scriptBackup = $"BACKUP DATABASE [{_databaseSchedule.Databases.DatabaseName}] TO  DISK = N\'{_databaseSchedule.Directory}/{backupName}\'";
                     scriptBackup += $" WITH NOFORMAT, INIT,  NAME = N'{backupName}-Banco de Dados Backup', SKIP, NOREWIND, NOUNLOAD, COMPRESSION,  STATS = 10";
                 }
 
-                else
+                else if(_databaseSchedule.Type == ServicesCeltaWare.Model.Enum.BackuypType.Diferential)
                 {                  
-                    scriptBackup = $"BACKUP DATABASE [{_databaseSchedule.Databases.DatabaseName}] TO  DISK = N\'/var/opt/mssql/backup/{backupName}\'";
+                    scriptBackup = $"BACKUP DATABASE [{_databaseSchedule.Databases.DatabaseName}] TO  DISK = N\'{_databaseSchedule.Directory}/{backupName}\'";
                     scriptBackup += $" WITH DIFFERENTIAL, NOFORMAT, INIT,  NAME = N'{backupName}-Banco de Dados Backup', SKIP, NOREWIND, NOUNLOAD, COMPRESSION,  STATS = 10";
                 }
-                    
 
-
-                
+                else
+                {
+                    scriptBackup = $"BACKUP DATABASE [{_databaseSchedule.Databases.DatabaseName}] TO  DISK = N\'{_databaseSchedule.Directory}/{backupName}\'";
+                    scriptBackup += $" WITH ??????, NOFORMAT, INIT,  NAME = N'{backupName}-Banco de Dados Backup', SKIP, NOREWIND, NOUNLOAD, COMPRESSION,  STATS = 10";
+                }
                 
                 if (await SystemFileHelps.FileExist(fileNameFullScript))
                 { 

@@ -54,11 +54,18 @@ namespace ServicesCeltaware.ServerAPI.Controllers
         [HttpGet]
         public async Task<List<ModelBackupSchedule>> GetAllByCustomerProduct(int customerProductId)
         {
-            return await _repository.Get()
-                .Include(c => c.CustomerProduct).ThenInclude(cps => cps.Server)
-                .Include(s => s.Databases)
-                .Where(b => b.CustomersProductsId == customerProductId)
-                .ToListAsync();
+            try
+            {
+                return await _repository.Get()
+               .Include(c => c.CustomerProduct).ThenInclude(cps => cps.Server)
+               .Include(s => s.Databases)
+               .Where(b => b.CustomersProductsId == customerProductId)
+               .ToListAsync();
+            }
+            catch(Exception err)
+            {
+                throw err;
+            }           
         }
 
         [HttpGet]

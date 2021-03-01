@@ -82,7 +82,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
                 X509Store store = new X509Store(StoreLocation.LocalMachine);
 
                 string keyCripted = null;
-                RSA _rsa = null;
+                // RSA _rsa = null;
 
 
                 store.Open(OpenFlags.ReadOnly);

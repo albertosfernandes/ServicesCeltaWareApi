@@ -14,6 +14,7 @@ namespace ServicesCeltaWare.Model
         public string Cnpj { get; set; }
         public int CodeCeltaBs { get; set; }
         public string RootDirectory { get; set; }
+        public bool IsCloud { get; set; }
         //public string CustomersProducts { get; set; }
 
         //public  virtual IList<ModelCustomerProduct> CustomersProducts { get; set; }

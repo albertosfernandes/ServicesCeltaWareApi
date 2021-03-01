@@ -1,0 +1,11 @@
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.Tools\bin\Debug\netcoreapp3.1\ServicesCeltaWare.Tools.deps.json
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.Tools\bin\Debug\netcoreapp3.1\ServicesCeltaWare.Tools.dll
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.Tools\bin\Debug\netcoreapp3.1\ServicesCeltaWare.Tools.pdb
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.Tools\bin\Debug\netcoreapp3.1\ServicesCeltaWare.Model.dll
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.Tools\bin\Debug\netcoreapp3.1\ServicesCeltaWare.Model.pdb
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.Tools\obj\Debug\netcoreapp3.1\ServicesCeltaWare.Tools.csprojAssemblyReference.cache
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.Tools\obj\Debug\netcoreapp3.1\ServicesCeltaWare.Tools.AssemblyInfoInputs.cache
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.Tools\obj\Debug\netcoreapp3.1\ServicesCeltaWare.Tools.AssemblyInfo.cs
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.Tools\obj\Debug\netcoreapp3.1\ServicesCeltaWare.Tools.csproj.CopyComplete
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.Tools\obj\Debug\netcoreapp3.1\ServicesCeltaWare.Tools.dll
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.Tools\obj\Debug\netcoreapp3.1\ServicesCeltaWare.Tools.pdb

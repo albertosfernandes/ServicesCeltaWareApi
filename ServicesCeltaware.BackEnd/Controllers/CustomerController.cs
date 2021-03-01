@@ -115,13 +115,17 @@ namespace ServicesCeltaware.BackEnd.Controllers
                 ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\", @"c:\Celta Business Solutions\" + customer.RootDirectory, true, true);
                 var message = CustomerHelpers.CreateSite(customer);
                 string messagePool = await CustomerHelpers.CreatePool(customer);
-                string messageChangePool = await CustomerHelpers.ChangePool(customer, Enum.ProductName.None);
+                string messageChangePool = await CustomerHelpers.ChangePool(customer, ServicesCeltaWare.Model.Enum.ProductName.None);
                 
                 return Ok(message);
             }
             catch(Exception err)
             {
-                throw err;
+                if(err.InnerException == null)
+                {
+                    return BadRequest(err.Message + "\n" + err.InnerException.Message);
+                }
+                return BadRequest(err.Message);
             }
         }
 

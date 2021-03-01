@@ -20,7 +20,7 @@ namespace ServicesCeltaWare.TaskService
         private List<ModelBackupSchedule> backupSchedules = new List<ModelBackupSchedule>();
 
         private Helpers.HelperSqlDatabase _helperSqlDatabase = new Helpers.HelperSqlDatabase();
-        private Helpers.HelperGoogleDrive _helperGoogleDrive = new Helpers.HelperGoogleDrive();
+        // private Helpers.HelperGoogleDrive _helperGoogleDrive = new Helpers.HelperGoogleDrive();
 
         public Worker(ILogger<Worker> logger, IConfiguration configuration)
         {
@@ -33,7 +33,7 @@ namespace ServicesCeltaWare.TaskService
             UtilitariosInfra.UtilTelegram _utilTelegram = new UtilitariosInfra.UtilTelegram(_configuration.GetSection("Services").GetSection("UidTelegramToken").Value);
             try
             {
-               WriteLog("Serviço iniciado.");
+               await WriteLog("Serviço iniciado.");
                 while (!stoppingToken.IsCancellationRequested)
                 {
                     // _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
@@ -47,16 +47,16 @@ namespace ServicesCeltaWare.TaskService
                         {
                             //executa este setting de backup SQL
                             Adapters.AdapterSqlDatabase sqlDatabase = new Adapters.AdapterSqlDatabase(setting);
-                            WriteLog("Consultando lote das:" + DateTime.Now.ToShortTimeString());
+                            await WriteLog("Consultando lote das:" + DateTime.Now.ToShortTimeString());
                             var schedules = await sqlDatabase.GetDatabaseBackupSchedule(setting.Url, DateTime.Now.Hour);
 
                             if (schedules.Count < 1)
-                                WriteLog("Nenhum backup agendado para este horario!");
+                                await WriteLog("Nenhum backup agendado para este horario!");
                             while (schedules.Count > 0)
                             {
                                 foreach (var sch in schedules)
                                 {
-                                    WriteLog("Iniciando processo backup de: " + sch.Databases.DatabaseName + " " + sch.DateHourExecution.Hour);
+                                    await WriteLog("Iniciando processo backup de: " + sch.Databases.DatabaseName + " " + sch.DateHourExecution.Hour);
                                 }
                                 for (int i = 0; i < schedules.Count; i++)
                                 {                                    
@@ -93,11 +93,11 @@ namespace ServicesCeltaWare.TaskService
 
                                     }
                                 }
-                                WriteLog("Todos do lote foram finalizados. Procurando novos nesse intervalo de tempo: " + DateTime.Now.Hour);
+                                await WriteLog("Todos do lote foram finalizados. Procurando novos nesse intervalo de tempo: " + DateTime.Now.Hour);
                                 await Task.Delay((setting.UpdateInterval * 60) * 1000, stoppingToken);
                                 schedules = await sqlDatabase.GetDatabaseBackupSchedule(setting.Url, DateTime.Now.Hour);
                                 if(schedules.Count < 0)
-                                    WriteLog("Nenhum backup encontrado, saindo do loop.");
+                                    await WriteLog("Nenhum backup encontrado, saindo do loop.");
                             }
                             await Task.Delay((setting.UpdateInterval * 60) * 1000, stoppingToken);
                         }
@@ -108,23 +108,24 @@ namespace ServicesCeltaWare.TaskService
             catch(Exception err)
             {
                 _utilTelegram.SendMessage($"Falha no serviço TaskManager: {err.Message}", _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
-                WriteLog(err.Message);
+                await WriteLog(err.Message);
             }            
         }
 
         public override async Task StopAsync(CancellationToken stoppingToken)
         {
-            WriteLog("Serviço parado.");
+            await WriteLog("Serviço parado.");
             await base.StopAsync(stoppingToken);
         }
 
-        public async static void WriteLog(string _msg)
+        public async static Task<bool> WriteLog(string _msg)
         {
             StreamWriter sw = null;
             sw = new StreamWriter(AppDomain.CurrentDomain.BaseDirectory + "\\LogFileCeltaTaskService.txt", true);
-            sw.WriteLine(DateTime.Now.ToString() + ": Celta Task Service - " + _msg);
+            await sw.WriteAsync(DateTime.Now.ToString() + ": Celta Task Service - " + _msg);
             sw.Flush();
             sw.Close();
+            return true;
         }
     }
 }

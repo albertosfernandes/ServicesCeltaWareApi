@@ -11,7 +11,7 @@ namespace ServicesCeltaWare.TaskService.Helpers
     public class HelperSqlDatabase
     {
         private static HttpClient client = new HttpClient();
-        private HelperGoogleDrive _helperGoogleDrive = new Helpers.HelperGoogleDrive();
+        private HelperGoogleDrive _helperGoogleDrive = new HelperGoogleDrive();
         private readonly IConfiguration _configuration;
 
         public HelperSqlDatabase()
@@ -21,9 +21,9 @@ namespace ServicesCeltaWare.TaskService.Helpers
 
         public async Task<string> BackupRun(Model.ModelBackupSchedule _backupSchedule, ModelTaskServiceSettings _setting)
         {
+            UtilitariosInfra.UtilTelegram _utilTelegram = new UtilitariosInfra.UtilTelegram(_setting.UidTelegramToken);
             try
             {
-                UtilitariosInfra.UtilTelegram _utilTelegram = new UtilitariosInfra.UtilTelegram(_setting.UidTelegramToken);
                 string resp = null;
 
                 var isExecuted = await ExecuteDatabaseSchedule(_backupSchedule, _setting);
@@ -51,6 +51,7 @@ namespace ServicesCeltaWare.TaskService.Helpers
             }
             catch (Exception err)
             {
+                _utilTelegram.SendMessage($"Falha no serviço TaskManager: " + err.Message + "\n" + err.StackTrace , _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
                 return err.Message;
             }
         }
@@ -206,7 +207,7 @@ namespace ServicesCeltaWare.TaskService.Helpers
 
                 return true;
             }
-            catch (Exception err)
+            catch (Exception)
             {
                 return false;
             }

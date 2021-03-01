@@ -16,6 +16,7 @@ namespace ServicesCeltaWare.Model
         public DateTime DateHourExecution { get; set; }
         public DateTime DateHourLastExecution { get; set; }
         public BackupStatus BackupStatus { get; set; }
+        public string Directory { get; set; }
         public int DatabasesId { get; set; }
         public ModelDatabase Databases { get; set; }
         public string GoogleDriveFileId { get; set; }

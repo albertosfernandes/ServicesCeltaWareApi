@@ -24,7 +24,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                 else
                     return false;
             }
-            catch(Exception err)
+            catch(Exception)
             {
                 return false;
             }

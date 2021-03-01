@@ -4,6 +4,58 @@
     "C:\\Alberto\\GitHub\\albertosfernandes\\ServicesCeltaWareApi\\ServicesCeltaWare.Tools\\ServicesCeltaWare.Tools.csproj": {}
   },
   "projects": {
+    "C:\\Alberto\\GitHub\\albertosfernandes\\ServicesCeltaWareApi\\ServicesCeltaWare.Model\\ServicesCeltaWare.Model.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Alberto\\GitHub\\albertosfernandes\\ServicesCeltaWareApi\\ServicesCeltaWare.Model\\ServicesCeltaWare.Model.csproj",
+        "projectName": "ServicesCeltaWare.Model",
+        "projectPath": "C:\\Alberto\\GitHub\\albertosfernandes\\ServicesCeltaWareApi\\ServicesCeltaWare.Model\\ServicesCeltaWare.Model.csproj",
+        "packagesPath": "C:\\Users\\Alberto\\.nuget\\packages\\",
+        "outputPath": "C:\\Alberto\\GitHub\\albertosfernandes\\ServicesCeltaWareApi\\ServicesCeltaWare.Model\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Alberto\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.112\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
     "C:\\Alberto\\GitHub\\albertosfernandes\\ServicesCeltaWareApi\\ServicesCeltaWare.Tools\\ServicesCeltaWare.Tools.csproj": {
       "version": "1.0.0",
       "restore": {
@@ -18,15 +70,19 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "netcoreapp2.1"
+          "netcoreapp3.1"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "netcoreapp2.1": {
-            "projectReferences": {}
+          "netcoreapp3.1": {
+            "projectReferences": {
+              "C:\\Alberto\\GitHub\\albertosfernandes\\ServicesCeltaWareApi\\ServicesCeltaWare.Model\\ServicesCeltaWare.Model.csproj": {
+                "projectPath": "C:\\Alberto\\GitHub\\albertosfernandes\\ServicesCeltaWareApi\\ServicesCeltaWare.Model\\ServicesCeltaWare.Model.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -36,15 +92,7 @@
         }
       },
       "frameworks": {
-        "netcoreapp2.1": {
-          "dependencies": {
-            "Microsoft.NETCore.App": {
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[2.1.0, )",
-              "autoReferenced": true
-            }
-          },
+        "netcoreapp3.1": {
           "imports": [
             "net461",
             "net462",
@@ -55,6 +103,11 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.112\\RuntimeIdentifierGraph.json"
         }
       }
