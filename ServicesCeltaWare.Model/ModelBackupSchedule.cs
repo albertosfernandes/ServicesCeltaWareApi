@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using static ServicesCeltaWare.Model.Enum;
 
@@ -20,5 +21,7 @@ namespace ServicesCeltaWare.Model
         public int DatabasesId { get; set; }
         public ModelDatabase Databases { get; set; }
         public string GoogleDriveFileId { get; set; }
+        [NotMapped]
+        public virtual int RecoveryTypeModel { get; set; }
     }
 }

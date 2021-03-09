@@ -55,7 +55,7 @@ namespace ServicesCeltaware.ServerAPI.Controllers
             {
                 ModelGoogleDrive googleDrive = new ModelGoogleDrive();
                 googleDrive = Helpers.HelperGoogleDrive.LoadSetting(_configuration);
-                string path = _databaseSchedule.Databases.Directory + "/backup/";
+                string path = _databaseSchedule.Databases.Directory + "/" + _databaseSchedule.Directory + "/";
                 string backupFileName = Helpers.DatabaseServiceHelper.ReturnBackupName(_databaseSchedule);
 
                 var resp = await Helpers.HelperGoogleDrive.UploadFromLinux(googleDrive.CredentialFileName, backupFileName, path, googleDrive.FolderId);

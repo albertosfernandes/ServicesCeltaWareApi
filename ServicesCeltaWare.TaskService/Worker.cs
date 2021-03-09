@@ -67,30 +67,6 @@ namespace ServicesCeltaWare.TaskService
                                         
                                         var resp = _helperSqlDatabase.BackupRun(schedules[i], setting);
                                         
-                                        // está dentro do horario então executa!!!
-                                        //var isExecuted = await _helperSqlDatabase.ExecuteDatabaseSchedule(schedules[i], setting);
-                                        //if (isExecuted)
-                                        //{
-                                        //    //backup garantido.. então inicie o upload
-                                        //    var googleDriveFileId = await _helperGoogleDrive.UploadBackup(schedules[i], setting);
-                                        //    if (googleDriveFileId.Contains("ERRO"))
-                                        //    {
-                                        //        var resp = await _helperSqlDatabase.UpdateStatusBackup(schedules[i], Model.Enum.BackupStatus.OutOfDate, true, setting);
-                                        //        _utilTelegram.SendMessage($"Falha no Upload do Backup: {googleDriveFileId}", _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
-                                        //        new Exception(googleDriveFileId);
-                                        //    }
-                                        //    else
-                                        //    {
-                                        //        schedules[i].GoogleDriveFileId = googleDriveFileId;
-                                        //        var resp = await _helperSqlDatabase.UpdateStatusBackup(schedules[i], Model.Enum.BackupStatus.Success, true, setting);
-                                        //        if (!resp.Equals("sucess"))
-                                        //        {
-                                        //            _utilTelegram.SendMessage($"Falha no serviço TaskManager: Erro ao atualizar status do backup, GoogleFileId e Status. " + resp, _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
-                                        //        }
-                                        //    }
-
-                                        //}
-
                                     }
                                 }
                                 await WriteLog("Todos do lote foram finalizados. Procurando novos nesse intervalo de tempo: " + DateTime.Now.Hour);

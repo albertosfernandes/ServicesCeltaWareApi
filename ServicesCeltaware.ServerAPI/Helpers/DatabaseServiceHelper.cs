@@ -47,7 +47,8 @@ namespace ServicesCeltaware.ServerAPI.Helpers
         {
             try
             {
-                string fileNameFullScript = _databaseSchedule.Databases.Directory + @"/backup/" + _databaseSchedule.Databases.DatabaseName + _databaseSchedule.DateHourExecution.ToShortTimeString() + ".sql";
+                string fileNameFullScript = _databaseSchedule.Databases.Directory + @"/" +_databaseSchedule.Directory +@"/"
+                + _databaseSchedule.Databases.DatabaseName + _databaseSchedule.DateHourExecution.ToShortTimeString() + ".sql";
                 
                 
                 string backupName;
@@ -59,25 +60,25 @@ namespace ServicesCeltaware.ServerAPI.Helpers
                     backupName = $"{_databaseSchedule.Databases.DatabaseName}BackupIncremetalLog{_databaseSchedule.DateHourExecution.Hour.ToString() + _databaseSchedule.DateHourExecution.Minute.ToString()}.bak";
 
 
-                string commandBackup = $"docker exec -i {_databaseSchedule.Databases.ConteinerName} /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P {_databaseSchedule.CustomerProduct.LoginPassword}  -i /var/opt/mssql/backup/{_databaseSchedule.Databases.DatabaseName + _databaseSchedule.DateHourExecution.ToShortTimeString()}.sql";
+                string commandBackup = $"docker exec -i {_databaseSchedule.Databases.ConteinerName} /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P {_databaseSchedule.CustomerProduct.LoginPassword}  -i /var/opt/mssql/{_databaseSchedule.Directory}/{_databaseSchedule.Databases.DatabaseName + _databaseSchedule.DateHourExecution.ToShortTimeString()}.sql";
 
                 string scriptBackup; 
                 if (_databaseSchedule.Type == ServicesCeltaWare.Model.Enum.BackuypType.Full)
                 {
-                    scriptBackup = $"BACKUP DATABASE [{_databaseSchedule.Databases.DatabaseName}] TO  DISK = N\'{_databaseSchedule.Directory}/{backupName}\'";
+                    scriptBackup = $"BACKUP DATABASE [{_databaseSchedule.Databases.DatabaseName}] TO  DISK = N\'/var/opt/mssql/{_databaseSchedule.Directory}/{backupName}\'";
                     scriptBackup += $" WITH NOFORMAT, INIT,  NAME = N'{backupName}-Banco de Dados Backup', SKIP, NOREWIND, NOUNLOAD, COMPRESSION,  STATS = 10";
                 }
 
                 else if(_databaseSchedule.Type == ServicesCeltaWare.Model.Enum.BackuypType.Diferential)
                 {                  
-                    scriptBackup = $"BACKUP DATABASE [{_databaseSchedule.Databases.DatabaseName}] TO  DISK = N\'{_databaseSchedule.Directory}/{backupName}\'";
+                    scriptBackup = $"BACKUP DATABASE [{_databaseSchedule.Databases.DatabaseName}] TO  DISK = N\'/var/opt/mssql/{_databaseSchedule.Directory}/{backupName}\'";
                     scriptBackup += $" WITH DIFFERENTIAL, NOFORMAT, INIT,  NAME = N'{backupName}-Banco de Dados Backup', SKIP, NOREWIND, NOUNLOAD, COMPRESSION,  STATS = 10";
                 }
 
                 else
                 {
-                    scriptBackup = $"BACKUP DATABASE [{_databaseSchedule.Databases.DatabaseName}] TO  DISK = N\'{_databaseSchedule.Directory}/{backupName}\'";
-                    scriptBackup += $" WITH ??????, NOFORMAT, INIT,  NAME = N'{backupName}-Banco de Dados Backup', SKIP, NOREWIND, NOUNLOAD, COMPRESSION,  STATS = 10";
+                    scriptBackup = $"BACKUP LOG [{_databaseSchedule.Databases.DatabaseName}] TO  DISK = N\'/var/opt/mssql/{_databaseSchedule.Directory}/{backupName}\'";
+                    scriptBackup += $" WITH NOFORMAT, INIT,  NAME = N'{backupName}-Banco de Dados Backup', SKIP, NOREWIND, NOUNLOAD, COMPRESSION,  STATS = 10";
                 }
                 
                 if (await SystemFileHelps.FileExist(fileNameFullScript))
@@ -101,38 +102,53 @@ namespace ServicesCeltaware.ServerAPI.Helpers
         public async static Task<string> GenerateScriptValidate(ModelBackupSchedule _databaseSchedule, ServicesCeltaWare.Model.Enum.ValidateType _validateType)
         {
             try
-            {
-
-                //string fileNameFullScript = _databaseSchedule.Databases.Directory + @"/backup/Validate" + _databaseSchedule.Databases.DatabaseName + _databaseSchedule.DateHourExecution.ToShortTimeString() + ".sql";
+            {                
                 string ScriptFileNameFull = ReturnScriptName(_databaseSchedule, true);
 
                 string backupName = ReturnBackupName(_databaseSchedule);
 
-                string commandValidate = $"docker exec -i {_databaseSchedule.Databases.ConteinerName} /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P {_databaseSchedule.CustomerProduct.LoginPassword}  -i /var/opt/mssql/backup/Validate{_databaseSchedule.Databases.DatabaseName + _databaseSchedule.DateHourExecution.ToShortTimeString()}.sql";
+                string commandValidate = $"docker exec -i {_databaseSchedule.Databases.ConteinerName} /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P {_databaseSchedule.CustomerProduct.LoginPassword}  -i /var/opt/mssql/{_databaseSchedule.Directory}/Validate{_databaseSchedule.Databases.DatabaseName + _databaseSchedule.DateHourExecution.ToShortTimeString()}.sql";
 
 
 
-                bool res = await CreateFile(_validateType, backupName, ScriptFileNameFull);
+                bool res = await CreateFile(_validateType, backupName, ScriptFileNameFull, _databaseSchedule);
                 while (!res)
                 {
-                    res = await CreateFile(_validateType, backupName, ScriptFileNameFull);
+                    res = await CreateFile(_validateType, backupName, ScriptFileNameFull, _databaseSchedule);
                 }
 
                 return commandValidate;
 
-                //if (await SystemFileHelps.FileExist(fileNameFullScript))
-                //{
-                //    return commandValidate;
-                //}
-                //else
-                //{
-                //    await SystemFileHelps.CreateFile(fileNameFullScript, scriptBackup, false);
-                //    return commandValidate;
-                //}
             }
             catch (Exception err)
             {
-                return "Error" + err.Message;
+                return "Error: " + err.Message;
+            }
+        }
+
+        public async static Task<string> GenerateScriptShrink(ModelBackupSchedule _databaseSchedule)
+        {
+            try
+            {
+                string _fileNameFullScript = null;
+                _fileNameFullScript = _databaseSchedule.Databases.Directory + @"/" + _databaseSchedule.Directory + @"/" + "Shrink" + _databaseSchedule.Databases.DatabaseName + ".sql";
+                string script = $"USE [{_databaseSchedule.Databases.DatabaseName}]" + "\n";
+                script += $"DBCC SHRINKFILE (CeltaBSYoguty_log, 0, TRUNCATEONLY);";
+
+                if (await SystemFileHelps.FileExist(_fileNameFullScript))
+                {
+                    return _fileNameFullScript;
+                }
+                else
+                {
+                    if(await SystemFileHelps.CreateFile(_fileNameFullScript, script, false))
+                        return _fileNameFullScript;
+                }
+                return _fileNameFullScript;
+            }
+            catch (Exception err)
+            {
+                return "Error: " + err.Message;
             }
         }
 
@@ -141,9 +157,13 @@ namespace ServicesCeltaware.ServerAPI.Helpers
             string backupName;
             if (_databaseSchedule.Type == ServicesCeltaWare.Model.Enum.BackuypType.Full)
                 backupName = $"{_databaseSchedule.Databases.DatabaseName}BackupFull.bak";
+            else if(_databaseSchedule.Type == ServicesCeltaWare.Model.Enum.BackuypType.Incremental)
+                backupName = $"{_databaseSchedule.Databases.DatabaseName}BackupIncremetalLog{_databaseSchedule.DateHourExecution.Hour.ToString() + _databaseSchedule.DateHourExecution.Minute.ToString()}.bak";
             else
+            {
                 backupName = $"{_databaseSchedule.Databases.DatabaseName}BackupDiff{_databaseSchedule.DateHourExecution.Hour.ToString() + _databaseSchedule.DateHourExecution.Minute.ToString()}.bak";
-            return backupName;
+            }
+            return backupName; 
         }   
 
         private static string ReturnScriptName(ModelBackupSchedule _databaseSchedule, bool isValidType)
@@ -152,23 +172,83 @@ namespace ServicesCeltaware.ServerAPI.Helpers
 
             if (isValidType)
             {
-                fileNameFullScript = _databaseSchedule.Databases.Directory + @"/backup/Validate" + _databaseSchedule.Databases.DatabaseName + _databaseSchedule.DateHourExecution.ToShortTimeString() + ".sql";
+                fileNameFullScript = _databaseSchedule.Databases.Directory + @"/" + _databaseSchedule.Directory + @"/Validate" + _databaseSchedule.Databases.DatabaseName + _databaseSchedule.DateHourExecution.ToShortTimeString() + ".sql";
             }
             return fileNameFullScript;
         }
 
-        private static async Task<bool> CreateFile(ServicesCeltaWare.Model.Enum.ValidateType _validateType, string backupName, string _fileNameFullScript)
+        public static async Task<string> ReturnRecoveryModelType(ModelBackupSchedule _databaseSchedule)
+        {
+            try
+            {
+                string _command = $"docker exec -i {_databaseSchedule.Databases.ConteinerName} /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P {_databaseSchedule.Databases.CustomerProduct.LoginPassword} -Q \"SELECT recovery_model_desc FROM sys.databases WHERE name = '{_databaseSchedule.Databases.DatabaseName}'\"; ";
+                string msg = await CommandBash.Execute(_command);
+
+                if (msg.Contains("FULL"))
+                    return "1";
+                else if (msg.Contains("SIMPLE"))
+                    return "3";
+                else if(msg.Contains("(0 rows affected)"))
+                {
+                    return "0 rows affected";
+                }
+                else
+                    return msg;
+            }
+            catch (Exception err)
+            {
+                if (!String.IsNullOrEmpty(err.InnerException.Message))
+                {
+                    return err.Message + "\n" + err.InnerException.Message;
+                }
+                return err.Message;
+            }
+        }
+
+        public static async Task<string> ChangeRecoveryModelType(ModelBackupSchedule _databaseSchedule, string recoveryModeValue)
+        {
+            try
+            {
+                string _command = null;
+                string script = null;
+                if (recoveryModeValue == "1")
+                {
+                    script = $"ALTER DATABASE { _databaseSchedule.Databases.DatabaseName} SET RECOVERY FULL WITH NO_WAIT";
+                    await SystemFileHelps.CreateFile($"{_databaseSchedule.Databases.Directory}/{_databaseSchedule.Directory}/setRecoveryFull{_databaseSchedule.Databases.DatabaseName}.sql", script, false);
+                    _command = $"docker exec -i {_databaseSchedule.Databases.ConteinerName} /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P {_databaseSchedule.Databases.CustomerProduct.LoginPassword} -i /var/opt/mssql/{_databaseSchedule.Directory}/setRecoveryFull{_databaseSchedule.Databases.DatabaseName}.sql";
+                }
+                else if (recoveryModeValue == "3")
+                {
+                    script = $"ALTER DATABASE {_databaseSchedule.Databases.DatabaseName} SET RECOVERY SIMPLE WITH NO_WAIT";
+                    await SystemFileHelps.CreateFile($"{_databaseSchedule.Databases.Directory}/{_databaseSchedule.Directory}/setRecoverySimple{_databaseSchedule.Databases.DatabaseName}.sql", script, false);
+                    _command = $"docker exec -i {_databaseSchedule.Databases.ConteinerName} /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P {_databaseSchedule.Databases.CustomerProduct.LoginPassword} -i /var/opt/mssql/{_databaseSchedule.Directory}/setRecoverySimple{_databaseSchedule.Databases.DatabaseName}.sql";
+                }
+                else
+                    return $"Opção inválida{recoveryModeValue}(DatabaseServiceHelper/ChangeRecoveryModelType). 1 para FULL e 3 para SIMPLE.";
+
+                return await CommandBash.Execute(_command);
+                
+            }
+            catch(Exception err)
+            {
+                if (!String.IsNullOrEmpty(err.InnerException.Message))
+                {
+                    return err.Message + "\n" + err.InnerException.Message;
+                }
+                return err.Message;
+            }
+        }
+
+        private static async Task<bool> CreateFile(ServicesCeltaWare.Model.Enum.ValidateType _validateType, string backupName, string _fileNameFullScript, ModelBackupSchedule _backupSchedule)
         {
             string scriptBackup = null;
             if (_validateType == ServicesCeltaWare.Model.Enum.ValidateType.LabelOnly)
             {
-                // Restore LabelOnly from Disk = 'C:\Backup\Backup-Simples-Criptografia.bak'
-                scriptBackup = $"Restore LabelOnly from Disk =  \'/var/opt/mssql/backup/{backupName}\'";
+                scriptBackup = $"Restore LabelOnly from Disk =  \'/var/opt/mssql/{_backupSchedule.Directory}/{backupName}\'";
             }
             else if (_validateType == ServicesCeltaWare.Model.Enum.ValidateType.VerifyOnly)
             {
-                // Restore VerifyOnly from Disk = 'C:\Backup\Backup-Simples-Criptografia.bak'
-                scriptBackup = $"Restore VerifyOnly from Disk =  \'/var/opt/mssql/backup/{backupName}\'";
+                scriptBackup = $"Restore VerifyOnly from Disk =  \'/var/opt/mssql/{_backupSchedule.Directory}/{backupName}\'";
             }
 
 
@@ -181,9 +261,6 @@ namespace ServicesCeltaware.ServerAPI.Helpers
                 await SystemFileHelps.CreateFile(_fileNameFullScript, scriptBackup, false);
                 return false;
             }
-
-
-            //return scriptBackup;
         }
     }
 }

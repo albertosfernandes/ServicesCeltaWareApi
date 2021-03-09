@@ -73,6 +73,30 @@ namespace ServicesCeltaware.BackEnd.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetByCustomersProducts(int customersProductsId)
+        {
+            try
+            {
+                var result = await _repository.Get()
+                                .Include(cp => cp.CustomerProduct).ThenInclude(s => s.Server)
+                                .Include(cp => cp.CustomerProduct).ThenInclude(c => c.Customer)
+                                .Include(cp => cp.CustomerProduct).ThenInclude(p => p.Product)
+                                .Where(cp => cp.CustomerProduct.CustomersProductsId == customersProductsId)
+                                .FirstOrDefaultAsync();
+
+                return Ok(result);
+            }
+            catch (Exception err)
+            {
+                if (err.InnerException != null)
+                {
+                    return BadRequest(err.Message + "\n" + err.InnerException.Message);
+                }
+                return BadRequest(err.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> Add(ModelAppBsf _appBsf)
         {
@@ -80,6 +104,44 @@ namespace ServicesCeltaware.BackEnd.Controllers
             {
                 await _repository.AddAsynch(_appBsf);
                 return Ok(_appBsf.AppBsfsId);
+            }
+            catch (Exception err)
+            {
+                if (err.InnerException != null)
+                {
+                    return BadRequest(err.Message + "\n" + err.InnerException.Message);
+                }
+                return BadRequest(err.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddUpdate(ModelAppBsf _appBsf)
+        {
+            try
+            {
+                ModelAppBsf newAppBsf = await _repository.FindAsynch(_appBsf.AppBsfsId);
+
+                if (newAppBsf == null)
+                {
+                    await _repository.AddAsynch(_appBsf);
+                    return Ok(_appBsf.AppBsfsId);
+                }
+                else
+                {
+                    newAppBsf.AddressName = _appBsf.AddressName;
+                    newAppBsf.AppBsfsId = _appBsf.AppBsfsId;
+                    newAppBsf.CustomersProductsId = _appBsf.CustomersProductsId;
+                    newAppBsf.InstallDirectory = _appBsf.InstallDirectory;
+                    newAppBsf.IpAddress = _appBsf.IpAddress;
+                    newAppBsf.IsCreated = _appBsf.IsCreated;
+                    newAppBsf.Password = _appBsf.Password;
+                    newAppBsf.Port = _appBsf.Port;
+                    newAppBsf.UserName = _appBsf.UserName;                    
+
+                    await _repository.UpdateAsynch(newAppBsf);
+                    return Ok(newAppBsf.AppBsfsId);
+                }
             }
             catch (Exception err)
             {

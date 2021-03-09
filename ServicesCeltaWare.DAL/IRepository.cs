@@ -17,6 +17,7 @@ namespace ServicesCeltaWare.DAL
         Task<int> AddAsynch(TEntity model);
 
         void Update(TEntity model);
+        Task UpdateAsynch(TEntity model);
 
         Task<TEntity> FindAsynch(int id);
         TEntity Find(int id);

@@ -30,8 +30,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
 
         [HttpGet]
         public IList<ModelCustomer> GetAll()
-        {
-            System.Threading.Thread.Sleep(5 * 1000);
+        {            
             var list = _repository.GetAll();
             var studentsInDescOrder = list.OrderBy(s => s.FantasyName);
             return studentsInDescOrder.ToList();

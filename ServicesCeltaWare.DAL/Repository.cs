@@ -65,6 +65,12 @@ namespace ServicesCeltaWare.DAL
             _context.SaveChanges();
         }
 
+        public Task UpdateAsynch(TEntity model)
+        {
+            _context.Entry(model).State = EntityState.Modified;
+            return _context.SaveChangesAsync();
+        }
+
         public Task<TEntity> FindAsynch(int id)
         {
             return _context.FindAsync<TEntity>(id);
