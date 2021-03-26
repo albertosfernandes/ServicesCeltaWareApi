@@ -35,9 +35,11 @@ namespace ServicesCeltaware.BackEnd.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<ModelServer>> GetAllTeste()
+        public ActionResult<List<ModelServer>> GetStorages()
         {
-            return _repository.GetAll();
+            return _repository.Get()
+                    .Where(t => t.Port == 3260)
+                    .ToList();
         }
 
         [HttpPost]

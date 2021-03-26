@@ -14,7 +14,6 @@ namespace ServicesCeltaware.BackEnd.Helpers
             try
             {
                 // 1- Executar GenerateKeys.exe
-                string _error = null;
                 string path = $"C:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\BSF\\Bin\\";
                 string command = "CeltaWare.CBS.CAT.GenerateKeys.exe";
                 string args = " ";

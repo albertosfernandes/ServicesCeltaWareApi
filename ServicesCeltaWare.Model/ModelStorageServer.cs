@@ -7,6 +7,11 @@ namespace ServicesCeltaWare.Model
 {
     public class ModelStorageServer
     {
+        public ModelStorageServer()
+        {
+            ModelServer Server = new ModelServer();
+        }
+
         [Key]
         public int StorageServerId { get; set; }
         public string TargetName { get; set; }

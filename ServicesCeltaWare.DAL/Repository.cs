@@ -31,6 +31,7 @@ namespace ServicesCeltaWare.DAL
             return _context.Set<TEntity>();
         }
 
+
         public void Add(TEntity model)
         {
             try

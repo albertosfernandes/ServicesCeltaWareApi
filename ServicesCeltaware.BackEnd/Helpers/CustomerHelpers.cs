@@ -47,9 +47,9 @@ namespace ServicesCeltaware.BackEnd.Helpers
                                                 "appcmd.exe",
                             $" add apppool /name:{customer.RootDirectory}-CeltaBS");
                 
-                message +=  await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\",
-                                                "appcmd.exe",
-                            $" set apppool /apppool.name:\"{customer.RootDirectory}-CeltaBS\" /enable32bitapponwin64:true");
+                //message +=  await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\",
+                //                                "appcmd.exe",
+                //            $" set apppool /apppool.name:\"{customer.RootDirectory}-CeltaBS\" /enable32bitapponwin64:true");
 
                 return message;
             }

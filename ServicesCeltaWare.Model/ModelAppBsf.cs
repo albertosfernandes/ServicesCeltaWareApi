@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ServicesCeltaWare.Model
 {
-    public class ModelAppBsf
+    public class ModelAppBsf: IApps
     {
         [Key]
         public int AppBsfsId { get; set; }

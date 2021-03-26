@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace ServicesCeltaWare.Model
 {
-    public  class ModelAppSincService
+    public  class ModelAppSincService : IApps
     {
         [Key]
         public int AppSincServicesId { get; set; }
@@ -17,5 +18,10 @@ namespace ServicesCeltaWare.Model
         public string InstallDirectory { get; set; }
         public string SynchronizerServiceName { get; set; }
         public bool IsCreated { get; set; }
+
+        [NotMapped]
+        public string UserName { get; set; }
+        [NotMapped]
+        public string Password { get; set; }
     }
 }

@@ -27,11 +27,18 @@ namespace ServicesCeltaware.ServerAPI.Controllers
         [HttpGet]
         public async Task<ModelDatabase> GetByCustomerId(int id)
         {
-            var teste = _repository.Get();
-            return await teste.
-                Include(c => c.CustomerProduct).
-                Where(x => x.CustomersProductsId == id).
-                FirstOrDefaultAsync();
+            try
+            {
+                var teste = _repository.Get();
+                return await teste.
+                    Include(c => c.CustomerProduct).
+                    Where(x => x.CustomersProductsId == id).
+                    FirstOrDefaultAsync();
+            }
+            catch(Exception err)
+            {
+                throw err;
+            }
         }
 
         [HttpGet]
@@ -217,11 +224,57 @@ namespace ServicesCeltaware.ServerAPI.Controllers
         {
             try
             {
-                _repository.Add(_database);
+                int databasesId = await _repository.AddAsynch(_database);
+                foreach (var d in _database.DatabaseUsers)
+                {
+
+                    d.DatabasesId = databasesId;
+                }
+                await _repository.UpdateAsynch(_database);
+
                 return Ok();
             }
             catch(Exception err)
             {
+                if (err.InnerException != null)
+                {
+                    return BadRequest(err.Message + "\n" + err.InnerException.Message);
+                }
+                return BadRequest(err.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddUpdate([FromBody]ModelDatabase _database)
+        {
+            try
+            {
+                ModelDatabase data = await _repository.FindAsynch(_database.DatabasesId);
+                int databasesId = 0;
+
+                if (data == null)
+                {
+                    databasesId = await _repository.AddAsynch(_database);
+                    //foreach (var d in _database.DatabaseUsers)
+                    //{
+
+                    //    d.DatabasesId = databasesId;
+                    //}
+                    //await _repository.UpdateAsynch(_database);
+                }
+                else
+                {
+                    await _repository.AddAsynch(_database);
+                }
+               
+                return Ok(databasesId);
+            }
+            catch (Exception err)
+            {
+                if (err.InnerException != null)
+                {
+                    return BadRequest(err.Message + "\n" + err.InnerException.Message);
+                }
                 return BadRequest(err.Message);
             }
         }

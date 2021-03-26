@@ -25,7 +25,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreateConfigs(int id)
+        public async Task<IActionResult> CreateConfigs(int id)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
                                         .Where(x => x.CustomersProductsId == id)
                                         .First();
 
-                DatabaseHelpers.Create(customerProduct);
+                await DatabaseHelpers.Create(customerProduct);
                 return Ok();
             }
             catch(Exception err)

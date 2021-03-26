@@ -3,16 +3,20 @@
 ################################################################################
 
 /.vs
-/ServicesCeltaware.BackEnd/bin/Debug/netcoreapp2.2
+bin
+obj
+/ServicesCeltaware.BackEnd/bin/Debug/netcoreapp3.1
 /ServicesCeltaware.BackEnd/obj
-/ServicesCeltaWare.DAL/bin/Debug/netcoreapp2.2
+/ServicesCeltaWare.DAL/bin/Debug/netcoreapp3.1
+/ServicesCeltaWare.DAL/bin/Release/netcoreapp3.1
+/ServicesCeltaWare.DAL/bin
 /ServicesCeltaWare.DAL/obj
-/ServicesCeltaWare.Model/bin/Debug/netcoreapp2.2
+/ServicesCeltaWare.Model/bin/Debug/netcoreapp3.1
 /ServicesCeltaWare.Model/obj
-/ServicesCeltaWare.Security/bin/Debug/netstandard2.0
+/ServicesCeltaWare.Security/bin/Debug/netstandard3.1
 /ServicesCeltaWare.Security/obj
 /ServicesCeltaware.ServerAPI/obj
-/ServicesCeltaware.ServerAPI/bin/Debug/netstandard2.2
+/ServicesCeltaware.ServerAPI/bin/Debug/netstandard3.1
 /ServicesCeltaware.ServerAPI/Debug/netcoreapp2.2
 /ServicesCeltaware.ServerAPI/Release/netcoreapp2.2\publish
 /ServicesCeltaware.ServerAPI/*.p12
@@ -43,3 +47,11 @@
 /ServicesCeltaWare.TaskTeste
 /ServicesCeltaWareUtilitariosInfraConsoleGoogle.json
 /ServicesCeltaWare.TasksMonitor
+/ServicesCeltaWare.Tools/bin/Release/netcoreapp3.1
+/ServicesCeltaWare.Tools/bin/Debug/netcoreapp3.1
+
+/ServicesCeltaWare.Security/bin/Debug/netstandard2.0
+
+/ServicesCeltaWare.DAL/bin/*
+
+/ServicesCeltaWare.DAL/obj/*

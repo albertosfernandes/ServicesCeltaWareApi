@@ -26,13 +26,22 @@ namespace ServicesCeltaware.BackEnd.Controllers
         }
 
         public IList<ModelCustomerProduct> GetAll(int id)
-        {            
-            var teste = _repository.Get();
-            return teste.Include(c => c.Customer).                
-                Include(p => p.Product).
-                Include(s => s.Server).
-                Where(x => x.CustomerId == id).
-                ToList();                                    
+        {
+            try
+            {
+                var teste = _repository.Get();
+                var resp =  teste.Include(c => c.Customer).
+                    Include(p => p.Product).
+                    Include(s => s.Server).
+                    Where(x => x.CustomerId == id).
+                    ToList();
+
+                return resp;
+            }
+            catch(Exception err)
+            {
+                throw err;
+            }
         }
 
         [HttpGet]

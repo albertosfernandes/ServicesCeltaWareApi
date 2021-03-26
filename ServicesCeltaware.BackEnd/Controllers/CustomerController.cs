@@ -115,6 +115,9 @@ namespace ServicesCeltaware.BackEnd.Controllers
                 var message = CustomerHelpers.CreateSite(customer);
                 string messagePool = await CustomerHelpers.CreatePool(customer);
                 string messageChangePool = await CustomerHelpers.ChangePool(customer, ServicesCeltaWare.Model.Enum.ProductName.None);
+
+                customer.IsCloud = true;
+                await _repository.UpdateAsynch(customer);
                 
                 return Ok(message);
             }

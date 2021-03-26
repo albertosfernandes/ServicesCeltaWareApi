@@ -34,43 +34,43 @@ namespace ServicesCeltaWare.TaskService.Helpers
                     return respUpd;
 
                 //Antes de efetuar BackupFULL, tem que realizar Shrink
-                if (_backupSchedule.Type == Model.Enum.BackuypType.Full)
-                {
-                    resp = await ExecChangeRecoveyModelType(_backupSchedule, _setting, 3);
-                    if(resp == "sucess")
-                    {
-                        // blz deu certo faz o shrink agora!!
-                        resp = await ExecShrink(_backupSchedule, Model.Enum.BackupStatus.Runing, true, _setting);
-                        if(resp == "sucess")
-                        {
-                            //ok .. tudo certo volte para modelType FULL
-                            resp = await ExecChangeRecoveyModelType(_backupSchedule, _setting, 1);
-                            if(resp == "sucess")
-                            {
-                                //ok .. tudo certo pode fazer backup
-                            }
-                            else
-                            {
-                                _utilTelegram.SendMessage($"Falha ao alterar mode recovery para Completo: " + resp, _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
-                                return resp;
-                            }
-                        }
-                        else
-                        {
-                            _utilTelegram.SendMessage($"Falha no Shrink: " + resp, _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
-                            return resp;
-                        }
-                    }
-                    else
-                    {
-                        var respUpdate = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Failed, false, _setting);
-                        if (respUpdate != "sucess")
-                            return respUpdate;
+                //if (_backupSchedule.Type == Model.Enum.BackuypType.Full)
+                //{
+                //    resp = await ExecChangeRecoveyModelType(_backupSchedule, _setting, 3);
+                //    if(resp == "sucess")
+                //    {
+                //        // blz deu certo faz o shrink agora!!
+                //        resp = await ExecShrink(_backupSchedule, Model.Enum.BackupStatus.Runing, true, _setting);
+                //        if(resp == "sucess")
+                //        {
+                //            //ok .. tudo certo volte para modelType FULL
+                //            resp = await ExecChangeRecoveyModelType(_backupSchedule, _setting, 1);
+                //            if(resp == "sucess")
+                //            {
+                //                //ok .. tudo certo pode fazer backup
+                //            }
+                //            else
+                //            {
+                //                _utilTelegram.SendMessage($"Falha ao alterar mode recovery para Completo: " + resp, _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
+                //                return resp;
+                //            }
+                //        }
+                //        else
+                //        {
+                //            _utilTelegram.SendMessage($"Falha no Shrink: " + resp, _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
+                //            return resp;
+                //        }
+                //    }
+                //    else
+                //    {
+                //        var respUpdate = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Failed, false, _setting);
+                //        if (respUpdate != "sucess")
+                //            return respUpdate;
 
-                        _utilTelegram.SendMessage($"Falha ao alterar mode recovery para Simples: " + resp, _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
-                        return resp;
-                    }
-                }                
+                //        _utilTelegram.SendMessage($"Falha ao alterar mode recovery para Simples: " + resp, _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
+                //        return resp;
+                //    }
+                //}                
 
                 var isExecuted = await ExecuteDatabaseSchedule(_backupSchedule, _setting);
                 if (isExecuted)

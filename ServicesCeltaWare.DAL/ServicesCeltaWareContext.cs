@@ -25,6 +25,7 @@ namespace ServicesCeltaWare.DAL
         public DbSet<ModelAppSincService> AppSincServices { get; set; }
         public DbSet<ModelAppSincWeb> AppSincWebs { get; set; }        
         public DbSet<ModelStorageServer> StorageServer { get; set; }
+        public DbSet<ModelDatabaseUser> DatabaseUser { get; set; }
 
 
 
@@ -63,9 +64,8 @@ namespace ServicesCeltaWare.DAL
             modelBuilder.Entity<ModelAppSincService>().ToTable("appsincservices");
             modelBuilder.Entity<ModelAppSincWeb>().ToTable("appsincwebs");
             modelBuilder.Entity<ModelStorageServer>().ToTable("storages");
-            //modelBuilder.Entity<ModelCustomerProduct>().HasOne(s => s.Server).WithMany(c => c.CustomerProducts);
-            //modelBuilder.Entity<User>().HasKey(u => u.UserId);
-
+            modelBuilder.Entity<ModelDatabaseUser>().ToTable("databasesusers");
+            modelBuilder.Entity<ModelDatabase>().HasMany(u => u.DatabaseUsers).WithOne();
         }
     }
 }

@@ -16,11 +16,11 @@ namespace ServicesCeltaware.ServerAPI.Controllers
     [Route("api/[controller]/[action]")]
     [ApiController]
     [EnableCors("BasePolicy")]
-    public class AppBsfController : ControllerBase
+    public class AppCrossController : ControllerBase
     {
-        private readonly IRepository<ModelAppBsf> _repository;
+        private readonly IRepository<ModelAppCross> _repository;
 
-        public AppBsfController(IRepository<ModelAppBsf> repository)
+        public AppCrossController(IRepository<ModelAppCross> repository)
         {
             _repository = repository;
         }
@@ -34,7 +34,7 @@ namespace ServicesCeltaware.ServerAPI.Controllers
                                 .Include(cp => cp.CustomerProduct).ThenInclude(s => s.Server)
                                 .Include(cp => cp.CustomerProduct).ThenInclude(c => c.Customer)
                                 .Include(cp => cp.CustomerProduct).ThenInclude(p => p.Product)
-                                .Where(bsf => bsf.AppBsfsId == id)
+                                .Where(ccs => ccs.AppCrossId == id)
                                 .FirstAsync();
 
                 return Ok(result);
@@ -98,59 +98,12 @@ namespace ServicesCeltaware.ServerAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(ModelAppBsf _appBsf)
+        public async Task<IActionResult> CreateInCloud(ModelAppBsf _appCCS)
         {
             try
             {
-                await _repository.AddAsynch(_appBsf);
-                return Ok(_appBsf.AppBsfsId);
-            }
-            catch (Exception err)
-            {
-                if (err.InnerException != null)
-                {
-                    return BadRequest(err.Message + "\n" + err.InnerException.Message);
-                }
-                return BadRequest(err.Message);
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddUpdate(ModelAppBsf _appBsf)
-        {
-            try
-            {
-                ModelAppBsf newAppBsf = await _repository.FindAsynch(_appBsf.AppBsfsId);
-
-                if(newAppBsf == null)
-                {
-                    await _repository.AddAsynch(_appBsf);
-                    return Ok(_appBsf.AppBsfsId);
-                }
-                else
-                {
-                    newAppBsf = _appBsf;
-                    _repository.Update(newAppBsf);
-                    return Ok(newAppBsf.AppBsfsId);
-                }
-            }
-            catch (Exception err)
-            {
-                if (err.InnerException != null)
-                {
-                    return BadRequest(err.Message + "\n" + err.InnerException.Message);
-                }
-                return BadRequest(err.Message);
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateInCloud(ModelAppBsf _appBsf)
-        {
-            try
-            {
-                ProductName product = ProductName.BSF;
-                string message = await CustomerProductHelpers.CreateProducts(product, _appBsf);
+                ProductName product = ProductName.CCS;
+                string message = await CustomerProductHelpers.CreateProducts(product, _appCCS);
                 if (message.Contains("ERROR"))
                 {
                     return BadRequest(message);

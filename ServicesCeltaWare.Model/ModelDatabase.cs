@@ -10,6 +10,7 @@ namespace ServicesCeltaWare.Model
         public ModelDatabase()
         {
             ModelCustomerProduct CustomerProduct = new ModelCustomerProduct();
+            List<ModelDatabaseUser> DatabaseUsers = new List<ModelDatabaseUser>();
         }
         [Key]
         public int DatabasesId { get; set; }
@@ -23,5 +24,6 @@ namespace ServicesCeltaWare.Model
         public string Directory { get; set; }
         public string MapperName { get; set; }
         public int StorageLenght { get; set; }
+        public IList<ModelDatabaseUser> DatabaseUsers { get; set; }
     }
 }
