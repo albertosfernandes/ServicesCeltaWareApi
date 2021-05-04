@@ -118,19 +118,16 @@ namespace ServicesCeltaware.BackEnd.Helpers
             //copy celtapublic to UpdatedVersion
             string source = $"c:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\BSF\\Bin\\CeltaPublic.csk";
             string destination = $"c:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\BSF\\Bin\\UpdatedVersion\\CeltaPublic.csk";
-            ServicesCeltaWare.Tools.CommandWin32.Copy(source, destination, true);
+            await ServicesCeltaWare.Tools.CommandWin32.Copy(source, destination, true);
             //copy updatedVersion to Client
             source = $"c:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\BSF\\Bin\\UpdatedVersion";
             destination = $"c:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\Client";
-            ServicesCeltaWare.Tools.CommandWin32.Copy(source, destination, true, false);
+            await ServicesCeltaWare.Tools.CommandWin32.Copy(source, destination, true, false);
             //CompactFile
             source = $"c:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\Client";
             destination = $"c:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\BSF\\ClientFiles\\celtabsclient.zip";
             await ServicesCeltaWare.Tools.CommandWin32.Compress(source, destination);
             ////Copy celtabsclient.zip to clientfiles 
-            //source = $"c:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\Client\\celtabsclient.zip";
-            //destination = $"c:\\Celta Business Solutions\\{customerProduct.Customer.RootDirectory}\\BSF\\ClientFiles\\celtabsclient.zip";
-            //CommandWin32.Copy(source, destination, true);
 
             return true;
         }

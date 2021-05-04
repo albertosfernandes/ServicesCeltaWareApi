@@ -18,100 +18,107 @@ namespace ServicesCeltaWare.TaskService.Helpers
 
         public HelperSqlDatabase()
         {
-            client.Timeout = TimeSpan.FromHours(4);
+            client.Timeout = TimeSpan.FromHours(12);
         }
 
         public async Task<string> BackupRun(Model.ModelBackupSchedule _backupSchedule, ModelTaskServiceSettings _setting)
         {
             UtilitariosInfra.UtilTelegram _utilTelegram = new UtilitariosInfra.UtilTelegram(_setting.UidTelegramToken);
+            
             try
             {
-                string resp = null;
-                // backup is run!! 
-                // Marcar como backup status 2 Runing
-                var respUpd = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Runing, false, _setting);
-                if (respUpd != "sucess")
-                    return respUpd;
-
-                //Antes de efetuar BackupFULL, tem que realizar Shrink
-                //if (_backupSchedule.Type == Model.Enum.BackuypType.Full)
-                //{
-                //    resp = await ExecChangeRecoveyModelType(_backupSchedule, _setting, 3);
-                //    if(resp == "sucess")
-                //    {
-                //        // blz deu certo faz o shrink agora!!
-                //        resp = await ExecShrink(_backupSchedule, Model.Enum.BackupStatus.Runing, true, _setting);
-                //        if(resp == "sucess")
-                //        {
-                //            //ok .. tudo certo volte para modelType FULL
-                //            resp = await ExecChangeRecoveyModelType(_backupSchedule, _setting, 1);
-                //            if(resp == "sucess")
-                //            {
-                //                //ok .. tudo certo pode fazer backup
-                //            }
-                //            else
-                //            {
-                //                _utilTelegram.SendMessage($"Falha ao alterar mode recovery para Completo: " + resp, _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
-                //                return resp;
-                //            }
-                //        }
-                //        else
-                //        {
-                //            _utilTelegram.SendMessage($"Falha no Shrink: " + resp, _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
-                //            return resp;
-                //        }
-                //    }
-                //    else
-                //    {
-                //        var respUpdate = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Failed, false, _setting);
-                //        if (respUpdate != "sucess")
-                //            return respUpdate;
-
-                //        _utilTelegram.SendMessage($"Falha ao alterar mode recovery para Simples: " + resp, _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
-                //        return resp;
-                //    }
-                //}                
-
                 var isExecuted = await ExecuteDatabaseSchedule(_backupSchedule, _setting);
-                if (isExecuted)
+                if (isExecuted.ToUpperInvariant().Contains("OK"))
                 {
-                    //backup garantido.. então inicie o upload
-                    var googleDriveFileId = await _helperGoogleDrive.UploadBackup(_backupSchedule, _setting);
-                    if (googleDriveFileId.Contains("ERRO"))
-                    {
-                        resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.OutOfDate, true, _setting);
-                        _utilTelegram.SendMessage($"Falha no Upload do Backup: {googleDriveFileId}", _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
-                        new Exception(googleDriveFileId);
-                    }
-                    else
-                    {
-                        _backupSchedule.GoogleDriveFileId = googleDriveFileId;
-                        resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Success, true, _setting);
-                        if (!resp.Equals("sucess"))
-                        {
-                            _utilTelegram.SendMessage($"Falha no serviço TaskManager: Erro ao atualizar status do backup, GoogleFileId e Status. " + resp, _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
-                        }
-                        //else
-                        //{
-                        //    resp = await ExecShrink(_backupSchedule, Model.Enum.BackupStatus.Runing, true, _setting);
-                        //    if(!resp.Equals("sucess"))
-                        //        _utilTelegram.SendMessage($"Falha no serviço TaskManager: Erro ao realizar Shrink database: " + _backupSchedule.Databases.DatabaseName + "\n" + resp, _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
-                        //}
-                    }
+                    var resp = await UpdateStatusDateTimeBackup(_backupSchedule, Model.Enum.BackupStatus.Success, _setting);
+
+                    return isExecuted;
+                    #region lixeira
+                    ////backup garantido.. então inicie o upload
+                    //var googleDriveFileId = await _helperGoogleDrive.UploadBackup(_backupSchedule, _setting);
+                    //if (googleDriveFileId.Contains("ERRO"))
+                    //{
+                    //    resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.OutOfDate, true, _setting);
+                    //    _utilTelegram.SendMessage($"Falha no Upload do Backup {_backupSchedule.Databases.DatabaseName}, tipo {_backupSchedule.Type}: {googleDriveFileId}", _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
+                    //    new Exception(googleDriveFileId);
+                    //}
+                    //else
+                    //{
+                    //    _backupSchedule.GoogleDriveFileId = googleDriveFileId;
+                    //    resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Success, true, _setting);
+                    //    if (!resp.Equals("sucess"))
+                    //    {
+                    //        _utilTelegram.SendMessage($"Falha no serviço TaskManager: Erro ao atualizar status do backup, GoogleFileId e Status. " + resp, _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
+                    //    }
+                    //}
+                    #endregion
                 }
-                return resp;
+
+                return isExecuted;
             }
             catch (Exception err)
             {
+                var isUpdated = await UpdateStatusDateTimeBackup(_backupSchedule, Model.Enum.BackupStatus.Failed, _setting);
+
                 _utilTelegram.SendMessage($"Falha no serviço TaskManager: " + err.Message + "\n" + err.StackTrace , _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
+                if (err.InnerException != null)
+                {
+                    HelperLogs.WriteLog("HelperSqlDatabase", err.Message + "\n" + err.InnerException.Message);                    
+                    return (err.Message + "\n" + err.InnerException.Message);
+                }
+                return err.Message;
+            }
+        }
+
+        public async Task<string> ExecuteUpload(Model.ModelBackupSchedule _backupSchedule, ModelTaskServiceSettings _setting)
+        {
+            UtilitariosInfra.UtilTelegram _utilTelegram = new UtilitariosInfra.UtilTelegram(_setting.UidTelegramToken);
+            bool isUpdated;
+            try
+            {
+                string resp = null;
+                isUpdated = await UpdateStatusDateTimeUpload(_backupSchedule, Model.Enum.BackupStatus.Uploading, _setting);
+                var googleDriveFileId = await _helperGoogleDrive.UploadBackup(_backupSchedule, _setting);
+                if (googleDriveFileId.ToUpperInvariant().Contains("ERRO"))
+                {
+                    isUpdated = await UpdateStatusDateTimeUpload(_backupSchedule, Model.Enum.BackupStatus.OutOfDate, _setting);
+                    _utilTelegram.SendMessage($"Falha no Upload do Backup {_backupSchedule.Databases.DatabaseName}, tipo {_backupSchedule.Type}: {googleDriveFileId}", _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
+                    new Exception(googleDriveFileId);
+                }
+                else
+                {
+                    _backupSchedule.GoogleDriveFileId = googleDriveFileId;
+                    isUpdated = await UpdateStatusDateTimeUpload(_backupSchedule, Model.Enum.BackupStatus.Success, _setting);
+                    if (!isUpdated)
+                    {
+                        _utilTelegram.SendMessage($"Falha ao atualizar status do backup, TaskService ExecUpload. \n" + resp, _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
+                    }
+                }
+
+                return resp;
+            }
+            catch(Exception err)
+            {
+                isUpdated = await UpdateStatusDateTimeUpload(_backupSchedule, Model.Enum.BackupStatus.OutOfDate, _setting);
+                if (!isUpdated)
+                {
+                    _utilTelegram.SendMessage($"Falha ao atualizar status do backup, TaskService ExecUpload. \n", _configuration.GetSection("Services").GetSection("UidTelegramDestino").Value);
+                }
+                if (err.InnerException != null)
+                {
+                    HelperLogs.WriteLog("HelperSqlDatabase", err.Message + "\n" + err.InnerException.Message);
+                    return (err.Message + "\n" + err.InnerException.Message);
+                }
+                HelperLogs.WriteLog("HelperSqlDatabase", err.Message);
                 return err.Message;
             }
         }
             
 
-        public async Task<bool> ExecuteDatabaseSchedule(Model.ModelBackupSchedule _backupSchedule, ModelTaskServiceSettings _setting)
+        public async Task<string> ExecuteDatabaseSchedule(Model.ModelBackupSchedule _backupSchedule, ModelTaskServiceSettings _setting)
         {
             UtilitariosInfra.UtilTelegram _utilTelegram = new UtilitariosInfra.UtilTelegram(_setting.UidTelegramToken);
+            bool isUpdated;
             try
             {
 
@@ -129,8 +136,9 @@ namespace ServicesCeltaWare.TaskService.Helpers
                 else
                 {
                     _utilTelegram.SendMessage($"Falha na execução de backup: {_backupSchedule.Databases.DatabaseName}:{_backupSchedule.DateHourExecution.ToShortTimeString()}\n Tipo: {_backupSchedule.Type}", _setting.UidTelegramDestino);
-                    var responseUpdate = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Corrupted, true, _setting);
-                    return false;
+
+                    isUpdated = await UpdateStatusDateTimeBackup(_backupSchedule, Model.Enum.BackupStatus.Corrupted, _setting);
+                    return "Arquivo corrompido.";
                 }
 
                 if (response)
@@ -139,24 +147,34 @@ namespace ServicesCeltaWare.TaskService.Helpers
                     {
                         _utilTelegram.SendMessage($"Backup Executado com sucesso: {_backupSchedule.Databases.DatabaseName}:{_backupSchedule.DateHourExecution.ToShortTimeString()}\n Tipo: {_backupSchedule.Type}", _setting.UidTelegramDestino);
                     }
-                    return true;
+                    return "OK";
                 }
                 _utilTelegram.SendMessage($"Falha ao validar arquivo backup: {_backupSchedule.Databases.DatabaseName}:{_backupSchedule.DateHourExecution.ToShortTimeString()}\n Tipo: {_backupSchedule.Type}", _setting.UidTelegramDestino);
-                var resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Corrupted, true, _setting);
-                return false;
+
+                isUpdated = await UpdateStatusDateTimeBackup(_backupSchedule, Model.Enum.BackupStatus.Corrupted, _setting);
+
+                return "Arquivo corrompido.";
 
             }
             catch (Exception err)
             {
-                var resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Failed, true, _setting);
+                isUpdated = await UpdateStatusDateTimeBackup(_backupSchedule, Model.Enum.BackupStatus.Failed, _setting);
                 _utilTelegram.SendMessage($"Falha no sistema de backup: {_backupSchedule.Databases.DatabaseName}:{_backupSchedule.DateHourExecution.ToString()} - { err.Message}", _setting.UidTelegramDestino);
-                throw err;
+
+                if (err.InnerException != null)
+                {
+                    HelperLogs.WriteLog("HelperSqlDatabase", err.Message + "\n" + err.InnerException.Message);
+                    return (err.Message + "\n" + err.InnerException.Message);
+                }
+                HelperLogs.WriteLog("HelperSqlDatabase", err.Message);              
+                return err.Message;
             }
         }
 
         public async Task<bool> ExecuteBackup(Model.ModelBackupSchedule _backupSchedule, ModelTaskServiceSettings _setting)
         {
             UtilitariosInfra.UtilTelegram _utilTelegram = new UtilitariosInfra.UtilTelegram(_setting.UidTelegramToken);
+            
             try
             {                
                 string url = "http://" + _backupSchedule.CustomerProduct.Server.IpAddress + ":" + _backupSchedule.CustomerProduct.Server.Port;
@@ -173,14 +191,10 @@ namespace ServicesCeltaWare.TaskService.Helpers
                 else
                 {
                     var errorResponse = await streamResult.Content.ReadAsStringAsync();
-                    new Exception(errorResponse);
+                    var isUpdated = await UpdateStatusDateTimeBackup(_backupSchedule, Model.Enum.BackupStatus.Failed, _setting);
+                    _utilTelegram.SendMessage($"Falha na execução de Backup: {_backupSchedule.Databases.DatabaseName}:{_backupSchedule.DateHourExecution.ToShortTimeString()}", _setting.UidTelegramDestino);
+                    return false;
                 }
-
-
-                await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Failed, true, _setting);
-                
-                _utilTelegram.SendMessage($"Falha na execução de Backup: {_backupSchedule.Databases.DatabaseName}:{_backupSchedule.DateHourExecution.ToShortTimeString()}", _setting.UidTelegramDestino);
-                return false;
             }
             catch (Exception err)
             {
@@ -229,6 +243,160 @@ namespace ServicesCeltaWare.TaskService.Helpers
                 return true;
             else
                 return false;
+        }
+
+        public async Task<bool> UpdateStatusDateTimeBackup(Model.ModelBackupSchedule _backupSchedule, Model.Enum.BackupStatus bkpStatus, ModelTaskServiceSettings _setting)
+        {
+            try
+            {
+                bool isValid = true;
+                switch (bkpStatus)
+                {
+                    case Model.Enum.BackupStatus.Success:
+                        {
+                            //TimeSpan? allTime = null;
+                            //allTime = (_backupSchedule.BackupExecDateHourStart - DateTime.Now);
+                            //_backupSchedule.BackupExecTotalTime = Convert.ToInt32(allTime);
+                            _backupSchedule.BackupExecDateHourFinish = DateTime.Now;
+                            var resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Success, true, _setting);
+
+                            if (resp != "sucess")
+                                isValid = false;
+                            break;
+                        }
+                    case Model.Enum.BackupStatus.Failed:
+                        {
+                            //TimeSpan? allTime = null;
+                            //allTime = (_backupSchedule.BackupExecDateHourStart - DateTime.Now);
+                            //_backupSchedule.BackupExecTotalTime = Convert.ToInt32(allTime);
+                            _backupSchedule.BackupExecDateHourFinish = DateTime.Now;
+                            var resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Failed, true, _setting);
+
+                            if (resp != "sucess")
+                                isValid = false;
+                            break;
+                        }
+                    case Model.Enum.BackupStatus.Runing:
+                        {
+                            _backupSchedule.BackupExecDateHourStart = DateTime.Now;
+                            var respUpd = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Runing, false, _setting);
+                            if (respUpd != "sucess")
+                                isValid = false;
+                            break;
+                        }
+                    case Model.Enum.BackupStatus.Corrupted:
+                        {
+                            //TimeSpan? allTime = null;
+                            //allTime = (_backupSchedule.BackupExecDateHourStart - DateTime.Now);
+                            //_backupSchedule.BackupExecTotalTime = Convert.ToInt32(allTime);
+                            _backupSchedule.BackupExecDateHourFinish = DateTime.Now;
+                            var resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Corrupted, true, _setting);
+
+                            if (resp != "sucess")
+                                isValid = false;
+                            break;
+                        }
+                    case Model.Enum.BackupStatus.None:
+                        {
+                            break;
+                        }
+                    case Model.Enum.BackupStatus.OutOfDate:
+                        {
+                            //TimeSpan? allTime = null;
+                            //allTime = (_backupSchedule.BackupExecDateHourStart - DateTime.Now);
+                            //_backupSchedule.BackupExecTotalTime = Convert.ToInt32(allTime);
+                            _backupSchedule.BackupExecDateHourFinish = DateTime.Now;
+                            var resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.OutOfDate, true, _setting);
+
+                            if (resp != "sucess")
+                                isValid = false;
+                            break;
+                        }
+                }
+
+                return isValid;
+            }
+            catch(Exception err)
+            {
+                throw err;
+            }
+        }
+
+        private async Task<bool> UpdateStatusDateTimeUpload(Model.ModelBackupSchedule _backupSchedule, Model.Enum.BackupStatus bkpStatus, ModelTaskServiceSettings _setting)
+        {
+            try
+            {
+                bool isValid = true;
+                switch (bkpStatus)
+                {
+                    case Model.Enum.BackupStatus.Success:
+                        {
+                            //TimeSpan? allTime = null;
+                            //allTime = (_backupSchedule.BackupExecDateHourStart - DateTime.Now);
+                            //_backupSchedule.BackupExecTotalTime = Convert.ToInt32(allTime);
+                            _backupSchedule.UploadDateHourFinish = DateTime.Now;
+                            var resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Success, true, _setting);
+
+                            if (resp != "sucess")
+                                isValid = false;
+                            break;
+                        }
+                    case Model.Enum.BackupStatus.Failed:
+                        {
+                            //TimeSpan? allTime = null;
+                            //allTime = (_backupSchedule.BackupExecDateHourStart - DateTime.Now);
+                            //_backupSchedule.BackupExecTotalTime = Convert.ToInt32(allTime);
+                            _backupSchedule.UploadDateHourFinish = DateTime.Now;
+                            var resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Failed, true, _setting);
+
+                            if (resp != "sucess")
+                                isValid = false;
+                            break;
+                        }
+                    case Model.Enum.BackupStatus.Runing:
+                        {
+                            _backupSchedule.UploadDateHourStart = DateTime.Now;
+                            var respUpd = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Runing, false, _setting);
+                            if (respUpd != "sucess")
+                                isValid = false;
+                            break;
+                        }
+                    case Model.Enum.BackupStatus.Corrupted:
+                        {
+                            //TimeSpan? allTime = null;
+                            //allTime = (_backupSchedule.BackupExecDateHourStart - DateTime.Now);
+                            //_backupSchedule.BackupExecTotalTime = Convert.ToInt32(allTime);
+                            _backupSchedule.UploadDateHourFinish = DateTime.Now;
+                            var resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.Corrupted, true, _setting);
+
+                            if (resp != "sucess")
+                                isValid = false;
+                            break;
+                        }
+                    case Model.Enum.BackupStatus.None:
+                        {
+                            break;
+                        }
+                    case Model.Enum.BackupStatus.OutOfDate:
+                        {
+                            //TimeSpan? allTime = null;
+                            //allTime = (_backupSchedule.BackupExecDateHourStart - DateTime.Now);
+                            //_backupSchedule.BackupExecTotalTime = Convert.ToInt32(allTime);
+                            _backupSchedule.UploadDateHourFinish = DateTime.Now;
+                            var resp = await UpdateStatusBackup(_backupSchedule, Model.Enum.BackupStatus.OutOfDate, true, _setting);
+
+                            if (resp != "sucess")
+                                isValid = false;
+                            break;
+                        }
+                }
+
+                return isValid;
+            }
+            catch (Exception err)
+            {
+                throw err;
+            }
         }
 
         private async Task<bool> ExecuteValidateBackup(Model.ModelBackupSchedule _backupSchedule, ModelTaskServiceSettings _setting)

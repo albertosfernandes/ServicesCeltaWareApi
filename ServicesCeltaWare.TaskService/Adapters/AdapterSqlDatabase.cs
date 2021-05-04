@@ -44,7 +44,7 @@ namespace ServicesCeltaWare.TaskService.Adapters
             return databases;
         }
 
-        public async Task<List<ModelBackupSchedule>> GetDatabaseBackupSchedule(string _url, int hourNow)
+        public async Task<List<ModelBackupSchedule>> GetDatabaseBackupSchedule(string _url, int hourNow, bool isUpload)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace ServicesCeltaWare.TaskService.Adapters
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 };
 
-                var streamBackupSchedule = client.GetStreamAsync($"{_url}/api/DatabaseSchedule/GetAllByTime?hourSchedule={hourNow}");
+                var streamBackupSchedule = client.GetStreamAsync($"{_url}/api/DatabaseSchedule/GetAllByTime?hourSchedule={hourNow}&isUpload={isUpload}");
                 backupSchedules = await JsonSerializer.DeserializeAsync<List<ModelBackupSchedule>>(await streamBackupSchedule, options);
 
                 return backupSchedules;

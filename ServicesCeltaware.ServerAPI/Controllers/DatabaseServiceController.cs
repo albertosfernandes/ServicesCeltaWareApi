@@ -48,6 +48,7 @@ namespace ServicesCeltaware.ServerAPI.Controllers
             {
                 return _repository.Get()
                     .Include(c => c.CustomerProduct)
+                    .Include(s => s.StorageServer)
                     .Where(s => s.CustomerProduct.ServersId == serverId)
                     .ToList();
 
@@ -64,25 +65,30 @@ namespace ServicesCeltaware.ServerAPI.Controllers
         {
             try
             {
-                string scriptBackup = await DatabaseServiceHelper.GenerateScriptBackup(_databaseSchedule);
-
-                if (scriptBackup.Contains("back"))
+                string message = null;
+                string scriptBackup = null;
+                if (_databaseSchedule.Type == ServicesCeltaWare.Model.Enum.BackuypType.MysqlFull)
                 {
-                    scriptBackup = await DatabaseServiceHelper.GenerateScriptBackup(_databaseSchedule);
-                }
-
-                string message = await DatabaseServiceHelper.Execute(scriptBackup);
-
-                if(message.Contains("Sqlcmd: Error:") || message.Contains("Incorrect syntax") || message.Contains("Unknown Option") 
-                    || message.Contains("Erro") || message.Contains("Invalid filename")
-                    && !message.Contains("BACKUP DATABASE successfully") )
-                {
-                    return BadRequest(message + scriptBackup);
+                    scriptBackup = $"docker exec {_databaseSchedule.Databases.ConteinerName} /usr/bin/mysqldump -u root --password={_databaseSchedule.Databases.DatabaseUserSa.Password}  celtabspdvconcentrador > {_databaseSchedule.Databases.Directory}/{_databaseSchedule.Directory}/{_databaseSchedule.Databases.ConteinerName}Backup.sql";
                 }
                 else
                 {
-                    // 1- testar se backup está integro
-                    // 2- Gravar ultima execução
+                    scriptBackup = await DatabaseServiceHelper.GenerateScriptBackup(_databaseSchedule);
+                    if (scriptBackup.Contains("back"))
+                    {
+                        scriptBackup = await DatabaseServiceHelper.GenerateScriptBackup(_databaseSchedule);
+                    }
+                }
+
+                message = await DatabaseServiceHelper.Execute(scriptBackup);
+                if(message.Contains("Sqlcmd: Error:") || message.Contains("Incorrect syntax") || message.Contains("Unknown Option") 
+                    || message.Contains("Erro") || message.Contains("Invalid filename") || message.Contains("error") || message.Contains("error: 1045")
+                    && !message.Contains("BACKUP DATABASE successfully") )
+                {
+                    return BadRequest(message);
+                }
+                else
+                {
                     return Ok(message);
                 }
             }
@@ -182,6 +188,10 @@ namespace ServicesCeltaware.ServerAPI.Controllers
         {
             try
             {
+                if(_databaseSchedule.Type == ServicesCeltaWare.Model.Enum.BackuypType.MysqlFull)
+                {
+                    return Ok();
+                }
                 string scriptValidate = null;
                 scriptValidate = await DatabaseServiceHelper.GenerateScriptValidate(_databaseSchedule, ServicesCeltaWare.Model.Enum.ValidateType.LabelOnly);
                 string message = await DatabaseServiceHelper.Execute(scriptValidate);

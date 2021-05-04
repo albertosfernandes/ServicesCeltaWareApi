@@ -24,7 +24,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                     case ProductName.BSF:
                         {
                             if (!dir.Exists)
-                                ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\BSF", dir.ToString(), true, true);
+                                await ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\BSF", dir.ToString(), true, true);
                             msgCreateSite = await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\", "appcmd.exe",  // /physicalPath:" + "\"" + DefaultDir + " \"" +                          
                             $" add app /site.name:{customerProduct.Customer.RootDirectory}-CeltaBS /path:/{customerProduct.InstallDirectory} /physicalPath:"+"\""+dir+"\"");
                             
@@ -34,7 +34,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                     case ProductName.CCS:
                         {
                             if (!dir.Exists)
-                                ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\CCS", dir.ToString(), true, true);
+                                await ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\CCS", dir.ToString(), true, true);
                             msgCreateSite = await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\", "appcmd.exe",
                             $" add app /site.name:{customerProduct.Customer.RootDirectory}-CeltaBS /path:/{customerProduct.InstallDirectory} /physicalPath:"+"\""+dir+"\"");
                             
@@ -44,7 +44,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                     case ProductName.CSS:
                         {
                             if (!dir.Exists)
-                                ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\CSS\WebService", dir.ToString(), true, true);
+                                await ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\CSS\WebService", dir.ToString(), true, true);
                             msgCreateSite = await ServicesCeltaWare.Tools.CommandWin32.Execute(@"C:\Windows\System32\inetsrv\", "appcmd.exe",
                             $" add app /site.name:{customerProduct.Customer.RootDirectory}-CeltaBS /path:/{ValidateNameForPathSite(customerProduct.InstallDirectory)} /physicalPath:" + "\"" + dir +" \"");
                             break;
@@ -67,7 +67,7 @@ namespace ServicesCeltaware.BackEnd.Helpers
                             {
                                 dir.Create();
                             }
-                            ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\bsf\certificados", dir.ToString(), true, true);
+                            await ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\bsf\certificados", dir.ToString(), true, true);
                             break;
                         }
                     default: break;

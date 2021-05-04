@@ -1,16 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "XB3nL01wJJGvDkMna/oKFsE/MriHPJqPaDYMl4AeH6cjq346n9rs9jx8tAmU9S98TqgCEc/VANidOuwCvTNveA==",
+  "dgSpecHash": "6XSftST7PCmtMqrFiyGG8Pk7UN0P8BHuDYsCvN90Mis0e8ySc+felmd+48AoYqs4ne7gN4X548itoNh6YYi32g==",
   "success": true,
   "projectFilePath": "C:\\Alberto\\GitHub\\albertosfernandes\\ServicesCeltaWareApi\\ServicesCeltaWare.Tools\\ServicesCeltaWare.Tools.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\Alberto\\.nuget\\packages\\microsoft.netcore.app\\2.1.0\\microsoft.netcore.app.2.1.0.nupkg.sha512",
-    "C:\\Users\\Alberto\\.nuget\\packages\\microsoft.netcore.dotnetapphost\\2.1.0\\microsoft.netcore.dotnetapphost.2.1.0.nupkg.sha512",
-    "C:\\Users\\Alberto\\.nuget\\packages\\microsoft.netcore.dotnethostpolicy\\2.1.0\\microsoft.netcore.dotnethostpolicy.2.1.0.nupkg.sha512",
-    "C:\\Users\\Alberto\\.nuget\\packages\\microsoft.netcore.dotnethostresolver\\2.1.0\\microsoft.netcore.dotnethostresolver.2.1.0.nupkg.sha512",
-    "C:\\Users\\Alberto\\.nuget\\packages\\microsoft.netcore.platforms\\2.1.0\\microsoft.netcore.platforms.2.1.0.nupkg.sha512",
-    "C:\\Users\\Alberto\\.nuget\\packages\\microsoft.netcore.targets\\2.1.0\\microsoft.netcore.targets.2.1.0.nupkg.sha512",
-    "C:\\Users\\Alberto\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
-  ],
+  "expectedPackageFiles": [],
   "logs": []
 }

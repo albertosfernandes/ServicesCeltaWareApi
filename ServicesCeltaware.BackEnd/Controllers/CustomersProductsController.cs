@@ -62,7 +62,7 @@ namespace ServicesCeltaware.BackEnd.Controllers
                     .Include(c => c.Customer)
                     .Include(s => s.Server)
                     .Include(p => p.Product)
-                    .Where(prodId => prodId.ProductId == 6 && prodId.ServersId == serverId)
+                    .Where(prodId => (prodId.ProductId == 6 || prodId.ProductId == 8) && prodId.ServersId == serverId)
                     .OrderBy(cp => cp.Customer.FantasyName)
                     .ToListAsync();
         }

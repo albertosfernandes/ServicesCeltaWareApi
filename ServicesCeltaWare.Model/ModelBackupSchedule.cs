@@ -21,7 +21,16 @@ namespace ServicesCeltaWare.Model
         public int DatabasesId { get; set; }
         public ModelDatabase Databases { get; set; }
         public string GoogleDriveFileId { get; set; }
+        public string GoogleDriveFolderId { get; set; }
         [NotMapped]
         public virtual int RecoveryTypeModel { get; set; }
+
+        public DateTime BackupExecDateHourStart { get; set; }
+        public DateTime BackupExecDateHourFinish { get; set; }
+        public int BackupExecTotalTime { get; set; }
+        public DateTime UploadDateHourStart { get; set; }
+        public DateTime UploadDateHourFinish { get; set; }
+        public int UploadTotalTime { get; set; }
+        public BackupStatus UploadStatus { get; set; }
     }
 }

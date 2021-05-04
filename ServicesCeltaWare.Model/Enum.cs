@@ -15,14 +15,16 @@ namespace ServicesCeltaWare.Model
             Concentrador = 4,
             SynchronizerService = 5,
             Database = 6,
-            CertificadoA1 = 7
+            CertificadoA1 = 7,
+            MysqlDatabase = 8
         }
 
         public enum BackuypType
         {
             Full = 0,
             Diferential = 1,
-            Incremental = 2
+            Incremental = 2,
+            MysqlFull = 3
         }
 
         public enum BackupStatus
@@ -32,7 +34,8 @@ namespace ServicesCeltaWare.Model
             Runing = 2,
             Corrupted = 3,
             None = 4,
-            OutOfDate = 5
+            OutOfDate = 5,
+            Uploading = 6
         }
 
         public enum ValidateType

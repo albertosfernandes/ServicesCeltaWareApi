@@ -27,7 +27,7 @@ namespace ServicesCeltaware.ServerAPI.Controllers
         {
             try
             {
-                ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\", @"c:\Celta Business Solutions\" + customer.RootDirectory, true, true);
+                await ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\", @"c:\Celta Business Solutions\" + customer.RootDirectory, true, true);
                 var message = ServicesCeltaWare.Tools.Helpers.CustomerHelpers.CreateSite(customer);
                 string messagePool = await ServicesCeltaWare.Tools.Helpers.CustomerHelpers.CreatePool(customer);
                 string messageChangePool = await ServicesCeltaWare.Tools.Helpers.CustomerHelpers.ChangePool(customer, ServicesCeltaWare.Model.Enum.ProductName.None);

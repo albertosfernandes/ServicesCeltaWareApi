@@ -34,6 +34,10 @@ namespace ServicesCeltaWare.TaskService
             {
                 listOfSettings.Add(HelperTaskService.LoadSetting("MysqlDatabase", configuration));
             }
+            if (Convert.ToBoolean(configuration.GetSection("Services").GetSection("UploadGoogleDrive").GetSection("IsActive").Value))
+            {
+                listOfSettings.Add(HelperTaskService.LoadSetting("UploadGoogleDrive", configuration));
+            }
             if (Convert.ToBoolean(configuration.GetSection("Services").GetSection("CeltaBSSynch").GetSection("IsActive").Value))
             {
                 listOfSettings.Add(HelperTaskService.LoadSetting("CeltaBSSynch", configuration));

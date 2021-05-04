@@ -30,6 +30,7 @@ namespace ServicesCeltaware.ServerAPI.Controllers
             {
                 var teste = _repository.Get();
                 return teste.
+                    Include(d => d.Databases).ThenInclude(u => u.DatabaseUsers).
                     Include(c => c.CustomerProduct).
                     ThenInclude(s => s.Server).
                     Where(x => x.CustomersProductsId == id).
@@ -48,7 +49,7 @@ namespace ServicesCeltaware.ServerAPI.Controllers
             {
                 return await _repository.Get()
              .Include(c => c.CustomerProduct)
-             .Include(s => s.Databases)
+             .Include(s => s.Databases).ThenInclude(b => b.DatabaseUsers)
              .Where(b => b.CustomersProductsId == customerProductId)
              .FirstOrDefaultAsync();
             }
@@ -65,8 +66,9 @@ namespace ServicesCeltaware.ServerAPI.Controllers
             {
                 return await _repository.Get()
                .Include(c => c.CustomerProduct).ThenInclude(cps => cps.Server)
-               .Include(s => s.Databases)
+               .Include(s => s.Databases).ThenInclude(b => b.DatabaseUsers)
                .Where(b => b.CustomersProductsId == customerProductId)
+               .OrderBy(bs => bs.BackupScheduleId)
                .ToListAsync();
             }
             catch(Exception err)
@@ -76,13 +78,23 @@ namespace ServicesCeltaware.ServerAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<List<ModelBackupSchedule>> GetAllByTime(int hourSchedule)
+        public async Task<List<ModelBackupSchedule>> GetAllByTime(int hourSchedule, bool isUpload)
         {
             try
-            {                
+            {
+                if (isUpload)
+                {
+                    return await _repository.Get()
+                        .Include(c => c.CustomerProduct).ThenInclude(cps => cps.Server)
+                        .Include(s => s.Databases).ThenInclude(u => u.DatabaseUsers)
+                        .Where(t => t.BackupExecDateHourFinish.Date == DateTime.Now.Date 
+                                    && t.UploadDateHourFinish.Date != DateTime.Now.Date
+                                    && t.BackupStatus == ServicesCeltaWare.Model.Enum.BackupStatus.Success)
+                        .ToListAsync();
+                }
                 return await _repository.Get()
                         .Include(c => c.CustomerProduct).ThenInclude(cps => cps.Server)
-                        .Include(s => s.Databases)
+                        .Include(s => s.Databases).ThenInclude(u => u.DatabaseUsers)
                         .Where(t => t.DateHourExecution.Hour == hourSchedule && t.DateHourLastExecution.Date != DateTime.Now.Date)
                         .ToListAsync();
             }
@@ -98,7 +110,8 @@ namespace ServicesCeltaware.ServerAPI.Controllers
             try
             {
                 return _repository.Get()
-                            .Include(cp => cp.CustomerProduct)
+                        .Include(d => d.Databases)    
+                        .Include(cp => cp.CustomerProduct)
                                 .ThenInclude(se => se.Server)
                             .Where(c => c.CustomersProductsId == id)
                             .ToList();
@@ -148,6 +161,12 @@ namespace ServicesCeltaware.ServerAPI.Controllers
                 bkpSchedule.BackupStatus = _databaseSchedule.BackupStatus;
                 bkpSchedule.GoogleDriveFileId = _databaseSchedule.GoogleDriveFileId;
                 bkpSchedule.DateHourLastExecution = DateTime.Now;
+                bkpSchedule.BackupExecDateHourStart = _databaseSchedule.BackupExecDateHourStart;
+                bkpSchedule.BackupExecDateHourFinish = _databaseSchedule.BackupExecDateHourFinish;
+                bkpSchedule.BackupExecTotalTime = 0;
+                bkpSchedule.UploadDateHourStart = _databaseSchedule.UploadDateHourStart;
+                bkpSchedule.UploadDateHourFinish = _databaseSchedule.UploadDateHourFinish;
+                bkpSchedule.UploadTotalTime = 0;
                 _repository.Update(bkpSchedule);
                 return Ok();
             }

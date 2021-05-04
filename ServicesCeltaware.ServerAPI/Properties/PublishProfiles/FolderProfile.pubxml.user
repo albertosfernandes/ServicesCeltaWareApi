@@ -6,6 +6,6 @@ ao editar este arquivo MSBuild. Para saber mais sobre isso, visite https://go.mi
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaware.ServerAPI\bin\Release\netcoreapp3.1\publish\</_PublishTargetUrl>
+    <_PublishTargetUrl>C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaware.ServerAPI\bin\Release\win64x\netcoreapp3.1</_PublishTargetUrl>
   </PropertyGroup>
 </Project>

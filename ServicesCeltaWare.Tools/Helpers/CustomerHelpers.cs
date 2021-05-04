@@ -19,7 +19,7 @@ namespace ServicesCeltaWare.Tools.Helpers
                 {
                     try
                     {
-                        ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\", @"c:\Celta Business Solutions\" + customer.RootDirectory, true, true);
+                        await ServicesCeltaWare.Tools.CommandWin32.Copy(@"c:\Celta Business Solutions\Empty\", @"c:\Celta Business Solutions\" + customer.RootDirectory, true, true);
                     }
                     catch (Exception)
                     {
@@ -94,21 +94,6 @@ namespace ServicesCeltaWare.Tools.Helpers
                 return err.Message;
             }
         }
-
-        public static bool contemLetras(string texto)
-        {
-            if (texto.Where(c => char.IsLetter(c)).Count() > 0)
-                return true;
-            else
-                return false;
-        }
-
-        public static bool contemNumeros(string texto)
-        {
-            if (texto.Where(c => char.IsNumber(c)).Count() > 0)
-                return true;
-            else
-                return false;
-        }
+  
     }
 }

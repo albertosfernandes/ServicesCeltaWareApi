@@ -9,3 +9,4 @@ C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.Tools
 C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.Tools\obj\Debug\netcoreapp3.1\ServicesCeltaWare.Tools.csproj.CopyComplete
 C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.Tools\obj\Debug\netcoreapp3.1\ServicesCeltaWare.Tools.dll
 C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.Tools\obj\Debug\netcoreapp3.1\ServicesCeltaWare.Tools.pdb
+C:\Alberto\GitHub\albertosfernandes\ServicesCeltaWareApi\ServicesCeltaWare.Tools\obj\Debug\netcoreapp3.1\ServicesCeltaWare.Tools.csproj.CoreCompileInputs.cache

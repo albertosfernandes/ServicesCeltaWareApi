@@ -7,13 +7,20 @@ namespace ServicesCeltaWare.Tools
 {
     public class HelperLogs
     {
-        private async static void WriteLog(string _msg)
+        public async static void WriteLog(string origin, string _msg)
         {
-            StreamWriter sw = null;
-            sw = new StreamWriter(AppDomain.CurrentDomain.BaseDirectory + "\\ServicesCeltaWareLog.txt", true);
-            sw.WriteLine(DateTime.Now.ToString() + ": Services CeltaWare - " + _msg);
-            sw.Flush();
-            sw.Close();
+            try
+            {
+                StreamWriter sw = null;
+                sw = new StreamWriter(AppDomain.CurrentDomain.BaseDirectory + $"\\{origin}Log.txt", true);
+                await sw.WriteLineAsync(DateTime.Now.ToString() + $": {origin} - " + _msg);
+                sw.Flush();
+                sw.Close();
+            }
+            catch(Exception err)
+            {
+                throw err;
+            }
         }
     }
 }

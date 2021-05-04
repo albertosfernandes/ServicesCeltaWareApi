@@ -52,23 +52,70 @@ namespace ServicesCeltaware.ServerAPI.Controllers
         public async Task<IActionResult> Upload(ModelBackupSchedule _databaseSchedule)
         {
             try
-            {
+            { 
                 ModelGoogleDrive googleDrive = new ModelGoogleDrive();
                 googleDrive = Helpers.HelperGoogleDrive.LoadSetting(_configuration);
                 string path = _databaseSchedule.Databases.Directory + "/" + _databaseSchedule.Directory + "/";
-                string backupFileName = Helpers.DatabaseServiceHelper.ReturnBackupName(_databaseSchedule);
+                string backupFileName = null;
+                if (_databaseSchedule.Type == ServicesCeltaWare.Model.Enum.BackuypType.MysqlFull)
+                    backupFileName = $"{_databaseSchedule.Databases.ConteinerName}Backup.sql";
+                else
+                    backupFileName = Helpers.DatabaseServiceHelper.ReturnBackupName(_databaseSchedule);
 
-                var resp = await Helpers.HelperGoogleDrive.UploadFromLinux(googleDrive.CredentialFileName, backupFileName, path, googleDrive.FolderId);
-
-                if (resp.Contains("ERRO"))
+                if(_databaseSchedule.GoogleDriveFolderId == null)
                 {
-                    return BadRequest(resp);
+                    return BadRequest($"{_databaseSchedule.Databases.DatabaseName} GoogleDriveFolderId nulo!");                
+                }
+
+                var resp = await Helpers.HelperGoogleDrive.UploadFromLinux(googleDrive.CredentialFileName, backupFileName, path, _databaseSchedule.GoogleDriveFolderId);
+
+                if(resp.Contains("The access token has expired and could not be refreshed"))
+                {
+                    HelperLogs.WriteLog("GoogleDriveServiceController. ", resp);
+                    var respUpdate = await Helpers.HelperGoogleDrive.UpdateCredential(googleDrive.CredentialFileName);
+                    if (respUpdate.ToUpperInvariant().Contains("OK"))
+                    {
+                        var resp2 = await Helpers.HelperGoogleDrive.UploadFromLinux(googleDrive.CredentialFileName, backupFileName, path, _databaseSchedule.GoogleDriveFolderId);
+                    }
+                    else
+                    {
+                        return BadRequest("Não foi possível atualizar arquivo de credencial. \n" + respUpdate);
+                    }
+                }
+
+                if (resp.Contains("Failed"))
+                {
+                    HelperLogs.WriteLog("GoogleDriveServiceController", resp);
+                    await Task.Delay(2000);
+                    var resp2 = await Helpers.HelperGoogleDrive.UploadFromLinux(googleDrive.CredentialFileName, backupFileName, path, _databaseSchedule.GoogleDriveFolderId);
+                    if (resp2.Contains("ok"))
+                    {
+                        resp = resp2;
+                    }
+                    else
+                    {
+                        HelperLogs.WriteLog("GoogleDriveServiceController", resp2);
+                        return BadRequest("Não foi possível atualizar o backup pela segunda vez!. \n" + resp2);
+                    }
+                }
+
+                if (resp.Contains("ERRO: Arquivo não existe") || resp.Contains("Error:\"invalid_grant\"")                    
+                    || resp.Contains("The operation was canceled"))
+                {
+                    HelperLogs.WriteLog("GoogleDriveServiceController", resp);
+                    return Forbid();
                 }
 
                     return Ok(resp);
             }
             catch(Exception err)
-            {
+            {                
+                if (err.InnerException != null)
+                {
+                    HelperLogs.WriteLog("GoogleDriveServiceController", err.Message + "\n" + err.InnerException.Message);
+                    return BadRequest(err.Message + "\n" + err.InnerException.Message);
+                }
+                HelperLogs.WriteLog("GoogleDriveServiceController", err.Message);
                 return BadRequest(err.Message);
             }
         }

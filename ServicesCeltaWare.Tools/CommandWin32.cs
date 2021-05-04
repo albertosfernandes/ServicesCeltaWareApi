@@ -216,7 +216,7 @@ namespace ServicesCeltaWare.Tools
             }
         }
 
-        public async static void Copy(string source, string destination, bool isOverwrite, bool copyWebConfig)
+        public async static Task Copy(string source, string destination, bool isOverwrite, bool copyWebConfig)
         {
             try
             {
@@ -263,11 +263,11 @@ namespace ServicesCeltaWare.Tools
                     Directory.CreateDirectory(Path.Combine(destination, subdirName));
                     if (copyWebConfig)
                     {
-                        Copy(subdir.FullName, Path.Combine(destination, subdirName), true, true);
+                        await Copy(subdir.FullName, Path.Combine(destination, subdirName), true, true);
                     }
                     else
                     {
-                        Copy(subdir.FullName, Path.Combine(destination, subdirName), true, false);
+                        await Copy(subdir.FullName, Path.Combine(destination, subdirName), true, false);
                     }
                 }
             }
@@ -278,7 +278,7 @@ namespace ServicesCeltaWare.Tools
             }
         }
 
-        public async static void Copy(string file, string fileDestinationName, bool isOverwrite)
+        public async static Task Copy(string file, string fileDestinationName, bool isOverwrite)
         {
             try
             {
@@ -321,7 +321,7 @@ namespace ServicesCeltaWare.Tools
         {
             StreamWriter sw = null;
             sw = new StreamWriter(AppDomain.CurrentDomain.BaseDirectory + "\\LogFileCeltaBackEnd.txt", true);
-            sw.WriteLine(DateTime.Now.ToString() + ": ComandWin32 - " + _msg);
+            await sw.WriteLineAsync(DateTime.Now.ToString() + ": ComandWin32 - " + _msg);
             sw.Flush();
             sw.Close();
         }
